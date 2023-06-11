@@ -109,13 +109,13 @@ function MapWrapper(props) {
 
 	// render component
 	return (
-		<div>
+		<>
 			<div ref={mapElement} className="map-container"></div>
 
 			<div className="clicked-coord-label">
 				<p>{selectedCoord ? toStringXY(selectedCoord, 5) : ""}</p>
 			</div>
-		</div>
+		</>
 	);
 }
 
