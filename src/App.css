@@ -62,6 +62,9 @@ html, body {
 	z-index: 2;
 	background: white;
 	pointer-events: none;
+
+	border-radius: 0 0 24px 24px;
+	box-shadow: 0px 8px 16px #00000060;
 }
 
 .map-container {
