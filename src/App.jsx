@@ -42,6 +42,10 @@ function App() {
 			</div>
 
 			<MapWrapper features={features} />
+
+			<div className="map-label app-info">
+				<p>Connor Turlan 2023 - <a href="">GitHub</a></p>
+			</div>
 		</div>
 	);
 }

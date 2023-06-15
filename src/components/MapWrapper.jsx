@@ -84,9 +84,9 @@ function MapWrapper(props) {
 			);
 
 			// fit map to feature extent (with 100px of padding)
-			map.getView().fit(featuresLayer.getSource().getExtent(), {
-				padding: [100, 100, 100, 100],
-			});
+			// map.getView().fit(featuresLayer.getSource().getExtent(), {
+			// 	padding: [100, 100, 100, 100],
+			// });
 		}
 	}, [props.features]);
 
@@ -104,7 +104,7 @@ function MapWrapper(props) {
 		);
 
 		// set React state
-		setSelectedCoord(transormedCoord);
+		setSelectedCoord(clickedCoord);
 	};
 
 	// render component
@@ -112,7 +112,7 @@ function MapWrapper(props) {
 		<>
 			<div ref={mapElement} className="map-container"></div>
 
-			<div className="clicked-coord-label">
+			<div className="map-label clicked-coord-label">
 				<p>{selectedCoord ? toStringXY(selectedCoord, 5) : ""}</p>
 			</div>
 		</>

@@ -67,6 +67,25 @@ html, body {
 	box-shadow: 0px 8px 16px #00000060;
 }
 
+.app-info {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	
+	padding: 8px 16px;
+	z-index: 2;
+	background: white;
+	pointer-events: none;
+
+	border-radius: 0 8px 0 0;
+	box-shadow: 0px 8px 16px #00000060;
+}
+
+.app-info > p {
+	margin: 0;
+	padding: 0;
+}
+
 .map-container {
 	height: 100%;
 	width: 100%;
