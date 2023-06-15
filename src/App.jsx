@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import GeoJSON from "ol/format/GeoJSON";
 import MapWrapper from "./components/MapWrapper";
 import "./App.css";
