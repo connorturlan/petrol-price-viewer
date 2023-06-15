@@ -44,7 +44,7 @@ function App() {
 			<MapWrapper features={features} />
 
 			<div className="map-label app-info">
-				<p>Connor Turlan 2023 - <a href="">GitHub</a></p>
+				<p>Connor Turlan 2023 - <a href="https://github.com/connorturlan/petrol-price-viewer">GitHub</a></p>
 			</div>
 		</div>
 	);
