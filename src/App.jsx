@@ -5,21 +5,35 @@ import "./App.css";
 
 function App() {
   // set intial state
-  const [features, setFeatures] = useState([]);
+  const [features, setFeatures] = useState();
 
   const getSites = async () => {
-    const res = await fetch("http://localhost:3000/sites");
+    let endpoint =
+      import.meta.env.VITE_LOCAL == "TRUE" ? "http://localhost:3000/sites" : "";
+
+    const res = await fetch(endpoint);
+    if (res.status != 200) {
+      window.alert("site data not found.");
+      return;
+    }
+    console.log("data found, parsing.");
     const json = await res.json();
-
-    console.log(json);
-
-    setFeatures(json.map((site) => [site.Lat, site.Lng]));
+    const coords = json.map((site) => [site.Lng, site.Lat]);
+    setFeatures(coords);
   };
 
-  // initialization - retrieve GeoJSON features from Mock JSON API get features from mock
-  //  GeoJson API (read from flat .json file in public directory)
+  const dummyGetSites = async () => {
+    setTimeout(() => {
+      setFeatures([
+        [0, 0],
+        [1, 1],
+      ]);
+    }, 1000);
+  };
+
   useEffect(() => {
     getSites();
+    // dummyGetSites();
   }, []);
 
   return (
@@ -29,7 +43,7 @@ function App() {
         <p>Click the map to reveal location coordinate via React State</p>
       </div>
 
-      {features.length > 0 && <MapWrapper features={features} />}
+      <MapWrapper features={features} />
 
       <div className="map-label app-info">
         <p>

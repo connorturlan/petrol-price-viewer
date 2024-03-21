@@ -19,15 +19,13 @@ import { Point } from "ol/geom";
 const mapCenter = [138.599503, -34.92123];
 const projection = "EPSG:4326";
 
-function MapWrapper(props) {
+function MapWrapper({ features }) {
   // set intial state
   const [map, setMap] = useState();
-  const [featuresLayer, setFeaturesLayer] = useState(
-    new VectorLayer({
-      source: new VectorSource(),
-    })
-  );
+  const [featuresLayer, setFeaturesLayer] = useState();
   const [selectedCoord, setSelectedCoord] = useState();
+
+  const renderCount = useRef(0);
 
   // pull refs
   const mapElement = useRef();
@@ -39,6 +37,11 @@ function MapWrapper(props) {
 
   // initialize map on first render - logic formerly put into componentDidMount
   useEffect(() => {
+    if (renderCount.current > 0) {
+      return;
+    }
+    renderCount.current += 1;
+
     // create and add vector source layer
     const initalFeaturesLayer = new VectorLayer({
       source: new VectorSource(),
@@ -53,6 +56,11 @@ function MapWrapper(props) {
     let marker = new Feature(new Point(fromLonLat(mapCenter, projection)));
     initalFeaturesLayer.getSource().addFeature(marker);
 
+    let marker2 = new Feature(
+      new Point(fromLonLat([138.499503, -34.92123], projection))
+    );
+    initalFeaturesLayer.getSource().addFeature(marker2);
+
     // create map
     const initialMap = new Map({
       target: mapElement.current,
@@ -60,7 +68,7 @@ function MapWrapper(props) {
         // // OSM Topo
         // new TileLayer({
         // 	source: new OSM({
-        // 		// url: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}",
+        //    url: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}",
         // 	}),
         // }),
 
@@ -91,41 +99,29 @@ function MapWrapper(props) {
 
   // update map if features prop changes - logic formerly put into componentDidUpdate
   useEffect(() => {
-    if (props.features.length) {
-      // may be null on first render
-
-      // set features to map
-      // featuresLayer.setSource(
-      //   new VectorSource({
-      //     features: props.features, // make sure features is an array
-      //   })
-      // );
-
-      // fit map to feature extent (with 100px of padding)
-      // map.getView().fit(featuresLayer.getSource().getExtent(), {
-      // 	padding: [100, 100, 100, 100],
-      // });
-
-      props.features.forEach((feature) => {
-        let marker = new Feature(new Point(fromLonLat(feature, projection)));
-        featuresLayer.getSource().addFeature(marker);
-      });
-      setFeaturesLayer(featuresLayer);
-
-      console.log("update");
+    // may be null on first render
+    if (!map || !features || features.length <= 0) {
+      return;
     }
-  }, [props.features]);
 
-  // map click handler
+    const source = new VectorSource();
+
+    features.forEach((feature) => {
+      const point = new Point(fromLonLat(feature, projection));
+      const marker = new Feature({
+        geometry: point,
+        name: "fuel station",
+      });
+      source.addFeature(marker);
+    });
+
+    featuresLayer.setSource(source);
+
+    console.log(`updated ${features.length} features.`);
+  }, [features]);
+
   const handleMapClick = (event) => {
-    // get clicked coordinate using mapRef to access current React state inside OpenLayers callback
-    //  https://stackoverflow.com/a/60643670
-    const clickedCoord = mapRef.current.getCoordinateFromPixel(event.pixel);
-
-    // transform coord to EPSG 4326 standard Lat Long
-    const transormedCoord = transform(clickedCoord, "EPSG:3857", "EPSG:4326");
-
-    // set React state
+    const clickedCoord = event.coordinate;
     setSelectedCoord(clickedCoord);
   };
 
