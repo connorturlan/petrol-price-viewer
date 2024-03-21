@@ -9,7 +9,9 @@ function App() {
 
   const getSites = async () => {
     let endpoint =
-      import.meta.env.VITE_LOCAL == "TRUE" ? "http://localhost:3000/sites" : "";
+      import.meta.env.VITE_LOCAL == "TRUE"
+        ? "http://localhost:3000/sites"
+        : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod/sites";
 
     const res = await fetch(endpoint);
     if (res.status != 200) {
