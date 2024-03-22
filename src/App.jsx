@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import GeoJSON from "ol/format/GeoJSON";
 import MapWrapper from "./components/MapWrapper";
 import "./App.css";
 
@@ -21,7 +20,7 @@ function App() {
     console.log("data found, parsing.");
     const json = await res.json();
     const coords = json.map((site) => [site.Lng, site.Lat]);
-    setFeatures(coords);
+    setFeatures(json);
   };
 
   const dummyGetSites = async () => {

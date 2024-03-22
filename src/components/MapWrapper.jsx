@@ -15,6 +15,8 @@ import Style from "ol/style/Style";
 import Icon from "ol/style/Icon";
 import { Feature } from "ol";
 import { Point } from "ol/geom";
+import Text from "ol/style/Text";
+import Fill from "ol/style/Fill";
 
 const mapCenter = [138.599503, -34.92123];
 const projection = "EPSG:4326";
@@ -42,24 +44,40 @@ function MapWrapper({ features }) {
     }
     renderCount.current += 1;
 
-    // create and add vector source layer
-    const initalFeaturesLayer = new VectorLayer({
-      source: new VectorSource(),
-      style: new Style({
-        image: new Icon({
-          anchor: [0.5, 1],
-          src: "vite.svg",
+    const style = new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: "vite.svg",
+      }),
+      text: new Text({
+        offsetY: "24",
+        font: "bold 12pt sans-serif",
+        fill: new Fill({
+          color: "#555",
         }),
       }),
     });
 
+    // create and add vector source layer
+    const initalFeaturesLayer = new VectorLayer({
+      source: new VectorSource(),
+      style: (feature) => {
+        style
+          .getText()
+          .setText([
+            `${feature.get("name")}`,
+            "bold 12pt sans-serif",
+            "\n",
+            "",
+            `${feature.get("price")}`,
+            "italic 12pt sans-serif",
+          ]);
+        return style;
+      },
+    });
+
     let marker = new Feature(new Point(fromLonLat(mapCenter, projection)));
     initalFeaturesLayer.getSource().addFeature(marker);
-
-    let marker2 = new Feature(
-      new Point(fromLonLat([138.499503, -34.92123], projection))
-    );
-    initalFeaturesLayer.getSource().addFeature(marker2);
 
     // create map
     const initialMap = new Map({
@@ -107,10 +125,13 @@ function MapWrapper({ features }) {
     const source = new VectorSource();
 
     features.forEach((feature) => {
-      const point = new Point(fromLonLat(feature, projection));
+      const point = new Point(
+        fromLonLat([feature.Lng, feature.Lat], projection)
+      );
       const marker = new Feature({
         geometry: point,
-        name: "fuel station",
+        name: feature.Name,
+        price: "a lot",
       });
       source.addFeature(marker);
     });
@@ -121,6 +142,10 @@ function MapWrapper({ features }) {
   }, [features]);
 
   const handleMapClick = (event) => {
+    if (map.hasFeatureAtPixel(event.pixel)) {
+      console.log("clicked feature");
+    }
+
     const clickedCoord = event.coordinate;
     setSelectedCoord(clickedCoord);
   };
