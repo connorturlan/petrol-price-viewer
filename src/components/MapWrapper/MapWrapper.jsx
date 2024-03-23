@@ -25,7 +25,12 @@ import { containsCoordinate } from "ol/extent";
 const mapCenter = [138.599503, -34.92123];
 const projection = "EPSG:4326";
 
-function MapWrapper({ features, updateVisibleFeatures }) {
+function MapWrapper({
+  features,
+  updateVisibleFeatures,
+  updateModalDetails,
+  showModal,
+}) {
   // set intial state
   const [map, setMap] = useState();
   const [featuresLayer, setFeaturesLayer] = useState();
@@ -60,7 +65,7 @@ function MapWrapper({ features, updateVisibleFeatures }) {
       image: new Icon({
         anchor: [0.5, 1],
         src: "red-pin.svg",
-        height: "20",
+        height: "32",
       }),
       text: new Text({
         offsetY: "12",
@@ -97,7 +102,7 @@ function MapWrapper({ features, updateVisibleFeatures }) {
       image: new Icon({
         anchor: [0.5, 1],
         src: "red-pin.svg",
-        height: "40",
+        height: "48",
       }),
       text: new Text({
         offsetY: "12",
@@ -231,19 +236,18 @@ function MapWrapper({ features, updateVisibleFeatures }) {
   }, [features]);
 
   const handleMapClick = (event) => {
-    const clickedCoord = event.coordinate;
-    setSelectedCoord(clickedCoord);
-
     mapRef.current.forEachFeatureAtPixel(event.pixel, (feature) => {
-      console.log(feature);
       console.log(feature.get("siteid"));
 
-      window.open(
-        `https://www.google.com/maps/place/?q=place_id:${feature.get(
-          "placeid"
-        )}`,
-        "_blank"
-      );
+      updateModalDetails(feature.get("siteid"));
+      showModal();
+
+      // window.open(
+      //   `https://www.google.com/maps/place/?q=place_id:${feature.get(
+      //     "placeid"
+      //   )}`,
+      //   "_blank"
+      // );
     });
   };
 
@@ -265,10 +269,6 @@ function MapWrapper({ features, updateVisibleFeatures }) {
   return (
     <>
       <div ref={mapElement} className={styles.Map_Container}></div>
-
-      <div className={styles.Map_Coord}>
-        <p>{selectedCoord ? toStringXY(selectedCoord, 5) : ""}</p>
-      </div>
     </>
   );
 }

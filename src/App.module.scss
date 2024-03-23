@@ -90,6 +90,35 @@ p {
       transition: visibility 0s 0.5s, opacity 0.5s linear;
     }
   }
+
+  &_Modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+
+    z-index: 2;
+
+    background-color: #eee;
+    padding: 8px;
+
+    border-radius: 8px;
+    padding: 8px;
+
+    &__Blackout {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      z-index: 1;
+
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+  }
 }
 
 .lds_dual_ring {

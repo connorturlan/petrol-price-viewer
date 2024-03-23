@@ -13,9 +13,12 @@ const endpoint =
 function App() {
   // set intial state
   const [featureIndex, setFeatureIndex] = useState({});
-  const [allFeatures, setFeatures] = useState();
-  const [mapFeatures, setMapFeatures] = useState();
+  const [allFeatures, setFeatures] = useState([]);
+  const [mapFeatures, setMapFeatures] = useState([]);
   const [visibleFeatures, setVisibleFeatures] = useState([0, 0, 0, 0]);
+
+  const [modalDetails, setModalDetails] = useState({});
+  const [modalVisible, setModalVisibility] = useState(false);
 
   const [featuresLoading, setFeaturesLoading] = useState(true);
   const [pricesLoading, setPricesLoading] = useState(true);
@@ -137,6 +140,46 @@ function App() {
     setFuelType(event.target.value);
   };
 
+  const getModalDetails = () => {
+    if (!allFeatures) {
+      return;
+    }
+
+    const siteId = modalDetails;
+    const index = featureIndex[siteId];
+    if (!index) {
+      return;
+    }
+    const siteDetails = allFeatures[index];
+
+    return (
+      <div className={styles.App_Modal__Blackout}>
+        <div className={styles.App_Modal}>
+          <p>{siteDetails.Name}</p>
+          <p>{siteDetails.Price}</p>
+          <a
+            href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
+            target="_blank"
+          >
+            Navigate
+          </a>
+
+          <button
+            onClick={() => {
+              setModalVisibility(false);
+            }}
+          >
+            hide
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const showModal = () => {
+    setModalVisibility(true);
+  };
+
   useEffect(() => {
     getSites();
   }, []);
@@ -179,9 +222,13 @@ function App() {
         ></div>
       )}
 
+      {modalVisible && getModalDetails()}
+
       <MapWrapper
         features={mapFeatures}
         updateVisibleFeatures={setVisibleFeatures}
+        updateModalDetails={setModalDetails}
+        showModal={showModal}
       />
 
       <div className={styles.App_Info}>
