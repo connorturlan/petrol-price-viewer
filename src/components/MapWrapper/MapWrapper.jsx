@@ -19,6 +19,8 @@ import { Point } from "ol/geom";
 import Text from "ol/style/Text";
 import Fill from "ol/style/Fill";
 import MapRenderer from "ol/renderer/Map";
+import Stroke from "ol/style/Stroke";
+import { containsCoordinate } from "ol/extent";
 
 const mapCenter = [138.599503, -34.92123];
 const projection = "EPSG:4326";
@@ -27,6 +29,7 @@ function MapWrapper({ features, updateVisibleFeatures }) {
   // set intial state
   const [map, setMap] = useState();
   const [featuresLayer, setFeaturesLayer] = useState();
+  const [lowestLayer, setLowestFeaturesLayer] = useState();
   const [selectedCoord, setSelectedCoord] = useState();
 
   const renderCount = useRef(0);
@@ -40,6 +43,12 @@ function MapWrapper({ features, updateVisibleFeatures }) {
   const featureRef = useRef();
   featureRef.current = featuresLayer;
 
+  const lowestRef = useRef();
+  lowestRef.current = lowestLayer;
+
+  const featuresRef = useRef();
+  featuresRef.current = features;
+
   // initialize map on first render - logic formerly put into componentDidMount
   useEffect(() => {
     if (renderCount.current > 0) {
@@ -47,18 +56,27 @@ function MapWrapper({ features, updateVisibleFeatures }) {
     }
     renderCount.current += 1;
 
-    const style = new Style({
+    const defaultStyle = new Style({
       image: new Icon({
         anchor: [0.5, 1],
         src: "red-pin.svg",
-        height: "48",
+        height: "20",
       }),
       text: new Text({
-        offsetY: "24",
+        offsetY: "12",
         font: "bold 12pt sans-serif",
         fill: new Fill({
           color: "#555",
         }),
+        backgroundFill: new Fill({
+          color: "#EEE",
+        }),
+        backgroundStroke: new Stroke({
+          color: "#555",
+          width: "1",
+          lineCap: "butt",
+        }),
+        padding: [2, 4, 2, 4],
       }),
     });
 
@@ -68,22 +86,52 @@ function MapWrapper({ features, updateVisibleFeatures }) {
     const initalFeaturesLayer = new VectorLayer({
       source: initialSource,
       style: (feature) => {
-        style
+        defaultStyle
           .getText()
-          .setText([
-            `${feature.get("name")}`,
-            "bold 12pt sans-serif",
-            "\n",
-            "",
-            `${feature.get("price")}`,
-            "italic 12pt sans-serif",
-          ]);
-        return style;
+          .setText([`${feature.get("price")}`, "italic 12pt sans-serif"]);
+        return defaultStyle;
       },
     });
 
-    // let marker = new Feature(new Point(fromLonLat(mapCenter, projection)));
-    // initalFeaturesLayer.getSource().addFeature(marker);
+    const lowestStyle = new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: "red-pin.svg",
+        height: "40",
+      }),
+      text: new Text({
+        offsetY: "12",
+        font: "italic 12pt sans-serif",
+        fill: new Fill({
+          color: "#555",
+        }),
+        backgroundFill: new Fill({
+          color: "yellow",
+        }),
+        backgroundStroke: new Stroke({
+          color: "orange",
+          width: "2",
+          miterLimit: 2,
+        }),
+        padding: [2, 4, 2, 4],
+      }),
+    });
+    const initialLowestSource = new VectorSource();
+
+    // create and add vector source layer
+    const initalLowestLayer = new VectorLayer({
+      source: initialLowestSource,
+      style: (feature) => {
+        lowestStyle.getText().setText([`${feature.get("price")}`, ""]);
+        return lowestStyle;
+      },
+    });
+
+    // let marker = new Feature({
+    //   geometry: new Point(fromLonLat(mapCenter, projection)),
+    //   name: "hello, world!",
+    // });
+    // initalLowestLayer.getSource().addFeature(marker);
 
     // create map
     const initialMap = new Map({
@@ -91,9 +139,9 @@ function MapWrapper({ features, updateVisibleFeatures }) {
       layers: [
         // // OSM Topo
         // new TileLayer({
-        // 	source: new OSM({
-        //    url: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}",
-        // 	}),
+        //   source: new OSM({
+        //     url: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}",
+        //   }),
         // }),
 
         // Google Maps Terrain
@@ -104,6 +152,7 @@ function MapWrapper({ features, updateVisibleFeatures }) {
         }),
 
         initalFeaturesLayer,
+        initalLowestLayer,
       ],
       view: new View({
         projection: projection,
@@ -116,34 +165,29 @@ function MapWrapper({ features, updateVisibleFeatures }) {
     // set map onclick handler
     initialMap.on("click", handleMapClick);
 
-    // initialMap.on("singleclick", (event) => {
-    // 	initialMap.forEachFeatureAtPixel(event.pixel, (feature) => {
-    // 	  console.log(feature);
-    // 	});
-    // });
-
     initialMap.on("pointermove", function (e) {
       const pixel = initialMap.getEventPixel(e.originalEvent);
       const hit = initialMap.hasFeatureAtPixel(pixel);
       initialMap.getTarget().style.cursor = hit ? "pointer" : "";
     });
 
+    initialMap.on("moveend", handleMapMove);
+
     // save map and vector layer references to state
     setMap(initialMap);
     setFeaturesLayer(initalFeaturesLayer);
-
-    initialMap.on("moveend", updatePricesWithinMap);
+    setLowestFeaturesLayer(initalLowestLayer);
   }, []);
 
   // update map if features prop changes - logic formerly put into componentDidUpdate
   useEffect(() => {
     // may be null on first render
-    if (!map || !features || features.length <= 0) {
+    if (!map || !featureRef.current || !features || features.length <= 0) {
       return;
     }
 
     const source = new VectorSource();
-
+    featureRef.current.setSource(source);
     const filteredFeatures = features.filter((feature) => feature.Price);
 
     filteredFeatures.forEach((feature) => {
@@ -158,12 +202,32 @@ function MapWrapper({ features, updateVisibleFeatures }) {
         placeid: feature.GPI,
       });
       source.addFeature(marker);
+      return marker;
+    });
+    console.log(`added ${filteredFeatures.length} features.`);
+
+    const lowestSource = new VectorSource();
+    lowestRef.current.setSource(lowestSource);
+
+    const lowestSite = features.reduce(
+      (currentLowest, site) =>
+        currentLowest.Price < site.Price ? currentLowest : site,
+      features[0]
+    );
+
+    const point = new Point(
+      fromLonLat([lowestSite.Lng, lowestSite.Lat], projection)
+    );
+    const marker = new Feature({
+      geometry: point,
+      siteid: lowestSite.SiteId,
+      name: lowestSite.Name,
+      price: lowestSite.Price || "loading...",
+      placeid: lowestSite.GPI,
     });
 
-    featuresLayer.setSource(source);
-    setFeaturesLayer(featuresLayer);
-
-    console.log(`added ${filteredFeatures.length} features.`);
+    console.log("lowest site found:", lowestSite);
+    lowestSource.addFeature(marker);
   }, [features]);
 
   const handleMapClick = (event) => {
@@ -183,7 +247,7 @@ function MapWrapper({ features, updateVisibleFeatures }) {
     });
   };
 
-  const updatePricesWithinMap = (event) => {
+  const handleMapMove = (event) => {
     if (!featureRef.current) {
       return;
     }

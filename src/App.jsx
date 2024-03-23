@@ -80,7 +80,7 @@ function App() {
 
     const json = await res.json();
 
-    const newFeatures = allFeatures.slice();
+    const newFeatures = allFeatures;
 
     Object.entries(json).forEach((siteEntry) => {
       const [siteId, sitePrice] = siteEntry;
@@ -98,8 +98,15 @@ function App() {
       return feature;
     });
 
-    const sortedFeatures = newFeatures.sort((a, b) => a.Price - b.Price);
-    const filteredFeatures = sortedFeatures.filter((feature) => feature.Price);
+    const filteredFeatures = newFeatures
+      .sort((a, b) => a.Price - b.Price)
+      .filter((feature) => feature.Price)
+      .filter((feature) => {
+        return (
+          !visibleFeatures ||
+          containsCoordinate(visibleFeatures, [feature.Lng, feature.Lat])
+        );
+      });
 
     console.log(
       `${filteredFeatures.length} prices found for ${allFeatures.length} sites`
