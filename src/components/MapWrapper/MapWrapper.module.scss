@@ -1,0 +1,15 @@
+.Map_Container {
+  height: 100%;
+  width: 100%;
+}
+
+.Map_Coord {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: white;
+  border-radius: 5px;
+  & p {
+    margin: 10px;
+  }
+}

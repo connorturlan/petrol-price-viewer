@@ -1,5 +1,6 @@
 // react
 import React, { useState, useEffect, useRef } from "react";
+import styles from "./MapWrapper.module.scss";
 
 // openlayers
 import Map from "ol/Map";
@@ -17,11 +18,12 @@ import { Feature } from "ol";
 import { Point } from "ol/geom";
 import Text from "ol/style/Text";
 import Fill from "ol/style/Fill";
+import MapRenderer from "ol/renderer/Map";
 
 const mapCenter = [138.599503, -34.92123];
 const projection = "EPSG:4326";
 
-function MapWrapper({ features }) {
+function MapWrapper({ features, updateVisibleFeatures }) {
   // set intial state
   const [map, setMap] = useState();
   const [featuresLayer, setFeaturesLayer] = useState();
@@ -32,10 +34,11 @@ function MapWrapper({ features }) {
   // pull refs
   const mapElement = useRef();
 
-  // create state ref that can be accessed in OpenLayers onclick callback function
-  //  https://stackoverflow.com/a/60643670
   const mapRef = useRef();
   mapRef.current = map;
+
+  const featureRef = useRef();
+  featureRef.current = featuresLayer;
 
   // initialize map on first render - logic formerly put into componentDidMount
   useEffect(() => {
@@ -47,7 +50,8 @@ function MapWrapper({ features }) {
     const style = new Style({
       image: new Icon({
         anchor: [0.5, 1],
-        src: "vite.svg",
+        src: "red-pin.svg",
+        height: "48",
       }),
       text: new Text({
         offsetY: "24",
@@ -58,9 +62,11 @@ function MapWrapper({ features }) {
       }),
     });
 
+    const initialSource = new VectorSource();
+
     // create and add vector source layer
     const initalFeaturesLayer = new VectorLayer({
-      source: new VectorSource(),
+      source: initialSource,
       style: (feature) => {
         style
           .getText()
@@ -76,8 +82,8 @@ function MapWrapper({ features }) {
       },
     });
 
-    let marker = new Feature(new Point(fromLonLat(mapCenter, projection)));
-    initalFeaturesLayer.getSource().addFeature(marker);
+    // let marker = new Feature(new Point(fromLonLat(mapCenter, projection)));
+    // initalFeaturesLayer.getSource().addFeature(marker);
 
     // create map
     const initialMap = new Map({
@@ -110,9 +116,23 @@ function MapWrapper({ features }) {
     // set map onclick handler
     initialMap.on("click", handleMapClick);
 
+    // initialMap.on("singleclick", (event) => {
+    // 	initialMap.forEachFeatureAtPixel(event.pixel, (feature) => {
+    // 	  console.log(feature);
+    // 	});
+    // });
+
+    initialMap.on("pointermove", function (e) {
+      const pixel = initialMap.getEventPixel(e.originalEvent);
+      const hit = initialMap.hasFeatureAtPixel(pixel);
+      initialMap.getTarget().style.cursor = hit ? "pointer" : "";
+    });
+
     // save map and vector layer references to state
     setMap(initialMap);
     setFeaturesLayer(initalFeaturesLayer);
+
+    initialMap.on("moveend", updatePricesWithinMap);
   }, []);
 
   // update map if features prop changes - logic formerly put into componentDidUpdate
@@ -124,38 +144,57 @@ function MapWrapper({ features }) {
 
     const source = new VectorSource();
 
-    features.forEach((feature) => {
+    const filteredFeatures = features.filter((feature) => feature.Price);
+
+    filteredFeatures.forEach((feature) => {
       const point = new Point(
         fromLonLat([feature.Lng, feature.Lat], projection)
       );
       const marker = new Feature({
         geometry: point,
+        siteid: feature.SiteId,
         name: feature.Name,
-        price: "a lot",
+        price: feature.Price || "loading...",
       });
       source.addFeature(marker);
     });
 
     featuresLayer.setSource(source);
+    setFeaturesLayer(featuresLayer);
 
-    console.log(`updated ${features.length} features.`);
+    console.log(`added ${filteredFeatures.length} features.`);
   }, [features]);
 
   const handleMapClick = (event) => {
-    if (map.hasFeatureAtPixel(event.pixel)) {
-      console.log("clicked feature");
-    }
-
     const clickedCoord = event.coordinate;
     setSelectedCoord(clickedCoord);
+
+    mapRef.current.forEachFeatureAtPixel(event.pixel, (feature) => {
+      console.log(feature);
+      console.log(feature.get("siteid"));
+    });
+  };
+
+  const updatePricesWithinMap = (event) => {
+    if (!featureRef.current) {
+      return;
+    }
+
+    const extent = mapRef.current
+      .getView()
+      .calculateExtent(mapRef.current.getSize());
+
+    updateVisibleFeatures(extent);
+
+    console.log("updated extent");
   };
 
   // render component
   return (
     <>
-      <div ref={mapElement} className="map-container"></div>
+      <div ref={mapElement} className={styles.Map_Container}></div>
 
-      <div className="map-label clicked-coord-label">
+      <div className={styles.Map_Coord}>
         <p>{selectedCoord ? toStringXY(selectedCoord, 5) : ""}</p>
       </div>
     </>
