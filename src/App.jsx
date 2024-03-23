@@ -55,9 +55,19 @@ function App() {
 
     const body = allFeatures
       .filter((feature) => {
+        return feature.Price === undefined;
+      })
+      .filter((feature) => {
         return containsCoordinate(visibleFeatures, [feature.Lng, feature.Lat]);
       })
       .map((feature) => feature.SiteId);
+
+    if (body.length <= 0) {
+      console.log("no new data to fetch.");
+      setPricesLoading(false);
+      return;
+    }
+    console.log(`requesting data for ${body.length} sites`);
 
     const res = await fetch(endpoint + `/prices?fuelType=${fuelType}`, {
       method: "POST",
@@ -110,7 +120,7 @@ function App() {
     }
 
     const newFeatures = allFeatures.map((feature) => {
-      feature.Price = 0;
+      feature.Price = undefined;
       return feature;
     });
     setMapFeatures(newFeatures);
