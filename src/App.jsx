@@ -156,12 +156,7 @@ function App() {
     const siteDetails = allFeatures[index];
 
     return (
-      <div
-        className={styles.App_Modal__Blackout}
-        onClick={() => {
-          setModalVisibility(false);
-        }}
-      >
+      <div className={styles.App_Modal__Blackout}>
         <div
           className={styles.App_Modal}
           onClick={(e) => {
