@@ -155,6 +155,7 @@ function MapWrapper({ features, updateVisibleFeatures }) {
         siteid: feature.SiteId,
         name: feature.Name,
         price: feature.Price || "loading...",
+        placeid: feature.GPI,
       });
       source.addFeature(marker);
     });
@@ -172,6 +173,13 @@ function MapWrapper({ features, updateVisibleFeatures }) {
     mapRef.current.forEachFeatureAtPixel(event.pixel, (feature) => {
       console.log(feature);
       console.log(feature.get("siteid"));
+
+      window.open(
+        `https://www.google.com/maps/place/?q=place_id:${feature.get(
+          "placeid"
+        )}`,
+        "_blank"
+      );
     });
   };
 
