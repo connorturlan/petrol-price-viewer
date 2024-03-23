@@ -152,7 +152,7 @@ function MapWrapper({
         // Google Maps Terrain
         new TileLayer({
           source: new XYZ({
-            url: "http://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}",
+            url: "https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}",
           }),
         }),
 
