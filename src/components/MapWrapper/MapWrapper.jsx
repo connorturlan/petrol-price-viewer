@@ -177,6 +177,7 @@ function MapWrapper({
     });
 
     initialMap.on("moveend", handleMapMove);
+    handleMapMove();
 
     // save map and vector layer references to state
     setMap(initialMap);
@@ -237,17 +238,8 @@ function MapWrapper({
 
   const handleMapClick = (event) => {
     mapRef.current.forEachFeatureAtPixel(event.pixel, (feature) => {
-      console.log(feature.get("siteid"));
-
       updateModalDetails(feature.get("siteid"));
       showModal();
-
-      // window.open(
-      //   `https://www.google.com/maps/place/?q=place_id:${feature.get(
-      //     "placeid"
-      //   )}`,
-      //   "_blank"
-      // );
     });
   };
 
@@ -261,8 +253,6 @@ function MapWrapper({
       .calculateExtent(mapRef.current.getSize());
 
     updateVisibleFeatures(extent);
-
-    console.log("updated extent");
   };
 
   // render component

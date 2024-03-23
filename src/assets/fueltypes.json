@@ -5,14 +5,6 @@
       "Name": "Unleaded"
     },
     {
-      "FuelId": 3,
-      "Name": "Diesel"
-    },
-    {
-      "FuelId": 4,
-      "Name": "LPG"
-    },
-    {
       "FuelId": 5,
       "Name": "Premium Unleaded 95"
     },
@@ -23,6 +15,14 @@
     {
       "FuelId": 12,
       "Name": "e10"
+    },
+    {
+      "FuelId": 3,
+      "Name": "Diesel"
+    },
+    {
+      "FuelId": 4,
+      "Name": "LPG"
     },
     {
       "FuelId": 14,

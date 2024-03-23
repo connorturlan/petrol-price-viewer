@@ -20,6 +20,8 @@ function App() {
   const [modalDetails, setModalDetails] = useState({});
   const [modalVisible, setModalVisibility] = useState(false);
 
+  const [warningVisible, setWarning] = useState(false);
+
   const [featuresLoading, setFeaturesLoading] = useState(true);
   const [pricesLoading, setPricesLoading] = useState(true);
 
@@ -49,8 +51,9 @@ function App() {
     setFeaturesLoading(false);
   };
 
-  const getSitePrices = async () => {
-    if (!allFeatures) {
+  const getSitePrices = async ({ reload } = {}) => {
+    setWarning(false);
+    if (!allFeatures || allFeatures.length <= 0) {
       return;
     }
 
@@ -116,7 +119,7 @@ function App() {
     );
 
     if (filteredFeatures.length <= 0) {
-      window.alert(`no site returned for fuel type ${fuelType}`);
+      setWarning(true);
     }
 
     setMapFeatures(filteredFeatures);
@@ -153,24 +156,38 @@ function App() {
     const siteDetails = allFeatures[index];
 
     return (
-      <div className={styles.App_Modal__Blackout}>
-        <div className={styles.App_Modal}>
-          <p>{siteDetails.Name}</p>
-          <p>{siteDetails.Price}</p>
-          <a
-            href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
-            target="_blank"
-          >
-            Navigate
-          </a>
-
+      <div
+        className={styles.App_Modal__Blackout}
+        onClick={() => {
+          setModalVisibility(false);
+        }}
+      >
+        <div
+          className={styles.App_Modal}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
           <button
             onClick={() => {
               setModalVisibility(false);
             }}
           >
-            hide
+            X
           </button>
+          <div className={styles.App_Modal_Container}>
+            <p>Name:</p>
+            <p>{siteDetails.Name}</p>
+            <p>Price per litre:</p>
+            <p>{siteDetails.Price}</p>
+            <p></p>
+            <a
+              href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
+              target="_blank"
+            >
+              Navigate
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -193,7 +210,7 @@ function App() {
 
   useEffect(() => {
     resetFuelPrices();
-    getSitePrices();
+    getSitePrices({ reload: true });
   }, [fuelType]);
 
   return (
@@ -239,6 +256,12 @@ function App() {
           </a>
         </p>
       </div>
+
+      {warningVisible && (
+        <div className={styles.App_Warning}>
+          <p>No stations in current area</p>
+        </div>
+      )}
     </div>
   );
 }

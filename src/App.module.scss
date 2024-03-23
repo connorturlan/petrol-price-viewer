@@ -45,13 +45,37 @@ p {
     bottom: 0;
     left: 0;
 
+    max-width: 40%;
+
     padding: 8px 16px;
     z-index: 2;
     background: white;
-    pointer-events: none;
 
     border-radius: 0 8px 0 0;
+    outline: 2px solid rgb(122, 24, 24);
+    box-shadow: 0px 4px 8px #00000060;
+
+    pointer-events: none;
+    & a {
+      pointer-events: all;
+    }
+  }
+
+  &_Warning {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    max-width: 40%;
+
+    padding: 8px 16px;
+    z-index: 2;
+    background: rgb(255, 100, 100);
+
+    border-radius: 8px 0 0 0;
     box-shadow: 0px 8px 16px #00000060;
+
+    pointer-events: none;
   }
 
   &_Loader {
@@ -69,8 +93,6 @@ p {
     opacity: 60%;
 
     position: absolute;
-
-    animation: fadeIn 1s;
 
     & > * {
       opacity: 100%;
@@ -92,19 +114,33 @@ p {
   }
 
   &_Modal {
+    &_Container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 4px;
+
+      width: 320px;
+
+      text-align: left;
+    }
+
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     flex-direction: column;
-    gap: 8px;
 
-    z-index: 2;
+    width: 360px;
+
+    z-index: 10;
 
     background-color: #eee;
     padding: 8px;
 
     border-radius: 8px;
     padding: 8px;
+
+    cursor: default;
 
     &__Blackout {
       display: flex;
@@ -117,6 +153,8 @@ p {
       z-index: 1;
 
       background-color: rgba(0, 0, 0, 0.4);
+
+      cursor: pointer;
     }
   }
 }
