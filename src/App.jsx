@@ -99,6 +99,7 @@ function App() {
       feature.Price = (sitePrice / 1000).toLocaleString("en-AU", {
         style: "currency",
         currency: "AUD",
+        maximumSignificantDigits: 4,
       });
 
       return feature;
