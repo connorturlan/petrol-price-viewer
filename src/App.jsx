@@ -75,10 +75,29 @@ function App() {
     }
     console.log(`requesting data for ${body.length} sites`);
 
-    const res = await fetch(endpoint + `/prices?fuelType=${fuelType}`, {
+    const req = fetch(endpoint + `/prices?fuelType=${fuelType}`, {
       method: "POST",
       body: JSON.stringify(body),
     });
+    const request = new Promise((accept, reject) => {
+      let accepted = false;
+
+      setTimeout(() => {
+        if (accepted) return;
+
+        window.alert("Prices request timed out, try again later.");
+        setPricesLoading(false);
+        reject();
+        return;
+      }, 10_000);
+
+      req.then((data) => {
+        accepted = true;
+        accept(data);
+      });
+    });
+
+    const res = await request;
     if (res.status != 200) {
       window.alert("error while handling site prices.");
       return;
