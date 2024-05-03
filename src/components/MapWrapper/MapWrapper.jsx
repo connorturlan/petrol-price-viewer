@@ -200,11 +200,14 @@ function MapWrapper({
       const point = new Point(
         fromLonLat([feature.Lng, feature.Lat], projection)
       );
+
+      let price = ((feature.Price || 0) / 10).toFixed(1);
+
       const marker = new Feature({
         geometry: point,
         siteid: feature.SiteId,
         name: feature.Name,
-        price: feature.Price || "loading...",
+        price: price || "loading...",
         placeid: feature.GPI,
       });
       source.addFeature(marker);
@@ -224,11 +227,14 @@ function MapWrapper({
     const point = new Point(
       fromLonLat([lowestSite.Lng, lowestSite.Lat], projection)
     );
+
+    let price = ((lowestSite.Price || 0) / 10).toFixed(1);
+
     const marker = new Feature({
       geometry: point,
       siteid: lowestSite.SiteId,
       name: lowestSite.Name,
-      price: lowestSite.Price || "loading...",
+      price: price || "loading...",
       placeid: lowestSite.GPI,
     });
 

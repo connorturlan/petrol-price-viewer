@@ -115,11 +115,14 @@ function App() {
       }
 
       const feature = newFeatures[siteIndex];
-      feature.Price = (sitePrice / 1000).toLocaleString("en-AU", {
-        style: "currency",
-        currency: "AUD",
-        maximumSignificantDigits: 4,
-      });
+      // show prices with dollar sign.
+      // feature.Price = (sitePrice / 1000).toLocaleString("en-AU", {
+      //   style: "currency",
+      //   currency: "AUD",
+      //   maximumSignificantDigits: 4,
+      // });
+      // show prices without dollar sign.
+      feature.Price = sitePrice;
 
       return feature;
     });
@@ -194,7 +197,7 @@ function App() {
             <p>Name:</p>
             <p>{siteDetails.Name}</p>
             <p>Price per litre:</p>
-            <p>{siteDetails.Price}</p>
+            <p>{((siteDetails.Price || 0) / 10).toFixed(1)}</p>
             <p></p>
             <a
               href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
