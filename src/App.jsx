@@ -57,8 +57,6 @@ function App() {
       return;
     }
 
-    setPricesLoading(true);
-
     const body = allFeatures
       .filter((feature) => {
         return feature.Price === undefined;
@@ -70,10 +68,16 @@ function App() {
 
     if (body.length <= 0) {
       console.log("no new data to fetch.");
-      setPricesLoading(false);
+      return;
+    }
+    if (body.length >= 100) {
+      console.warn("request body length exceeds 100.");
+      window.alert("Search area too large, try zooming in.");
       return;
     }
     console.log(`requesting data for ${body.length} sites`);
+
+    setPricesLoading(true);
 
     const req = fetch(endpoint + `/prices?fuelType=${fuelType}`, {
       method: "POST",
