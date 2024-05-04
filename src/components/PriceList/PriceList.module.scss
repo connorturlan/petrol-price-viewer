@@ -3,29 +3,42 @@
     margin: 60px;
     padding: 12px;
 
+    display: grid;
+    grid-template-rows: auto 1fr;
+
     max-width: 400px;
+    max-height: 80vh;
     background-color: #eee;
 
     border-radius: 4px;
     outline: 2px solid rgb(122, 24, 24);
     box-shadow: 0px 4px 8px #00000060;
+
+    z-index: 10;
+  }
+
+  &_List {
+    display: grid;
+    padding: 12px;
+    max-height: 100%;
+    overflow-y: scroll;
+    gap: 4px;
   }
 
   &_Container {
-    width: 100%;
-    height: 100%;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: #eeeeee86;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    z-index: 10;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+
+    z-index: 1;
   }
 
   &_Title {

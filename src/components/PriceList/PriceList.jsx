@@ -11,11 +11,23 @@ function PriceList({ children }) {
         setVisible(false);
       }}
     >
-      <div className={styles.PriceList_Body}>
+      <div
+        className={styles.PriceList_Body}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <h2 className={styles.PriceList_Title}>Price List</h2>
-        {children}
+        <div
+          className={styles.PriceList_List}
+          onClick={() => {
+            setVisible(false);
+          }}
+        >
+          {children}
+        </div>
+        <p>Touch anywhere to hide</p>
       </div>
-      <p>Touch anywhere to hide</p>
     </div>
   ) : (
     <div

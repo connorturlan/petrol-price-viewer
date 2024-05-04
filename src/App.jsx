@@ -6,6 +6,7 @@ import "./App.css";
 import { containsCoordinate } from "ol/extent";
 import PriceList from "./components/PriceList/PriceList";
 import StationModal from "./components/StationModal/StationModal";
+import PriceListItem from "./components/PriceList/PriceListItem/PriceListItem";
 
 const endpoint =
   import.meta.env.VITE_LOCAL == "TRUE"
@@ -248,7 +249,21 @@ function App() {
         showModal={showModal}
       />
 
-      <PriceList />
+      <PriceList>
+        {mapFeatures
+          .sort((a, b) => a.Price - b.Price)
+          .map((feature) => (
+            <PriceListItem
+              key={feature.SiteId}
+              name={feature.Name}
+              price={((feature.Price || 0) / 10).toFixed(1)}
+              showDetails={() => {
+                setModalDetails(feature.SiteId);
+                showModal();
+              }}
+            />
+          ))}
+      </PriceList>
 
       <div className={styles.App_Info}>
         <p>
