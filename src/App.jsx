@@ -4,6 +4,7 @@ import styles from "./App.module.scss";
 import fueltypes from "./assets/fueltypes.json";
 import "./App.css";
 import { containsCoordinate } from "ol/extent";
+import PriceList from "./components/PriceList/PriceList";
 
 const endpoint =
   import.meta.env.VITE_LOCAL == "TRUE"
@@ -70,9 +71,10 @@ function App() {
       console.log("no new data to fetch.");
       return;
     }
-    if (body.length >= 100) {
+    if (body.length >= 200) {
       console.warn("request body length exceeds 100.");
       window.alert("Search area too large, try zooming in.");
+      setPricesLoading(false);
       return;
     }
     console.log(`requesting data for ${body.length} sites`);
@@ -93,7 +95,7 @@ function App() {
         setPricesLoading(false);
         reject();
         return;
-      }, 10_000);
+      }, 5_000);
 
       req.then((data) => {
         accepted = true;
@@ -104,6 +106,7 @@ function App() {
     const res = await request;
     if (res.status != 200) {
       window.alert("error while handling site prices.");
+      setPricesLoading(false);
       return;
     }
 
@@ -269,6 +272,8 @@ function App() {
         updateModalDetails={setModalDetails}
         showModal={showModal}
       />
+
+      <PriceList />
 
       <div className={styles.App_Info}>
         <p>
