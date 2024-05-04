@@ -5,6 +5,7 @@ import fueltypes from "./assets/fueltypes.json";
 import "./App.css";
 import { containsCoordinate } from "ol/extent";
 import PriceList from "./components/PriceList/PriceList";
+import StationModal from "./components/StationModal/StationModal";
 
 const endpoint =
   import.meta.env.VITE_LOCAL == "TRUE"
@@ -173,7 +174,7 @@ function App() {
     setFuelType(event.target.value);
   };
 
-  const getModalDetails = () => {
+  const getStationModal = () => {
     if (!allFeatures) {
       return;
     }
@@ -186,35 +187,7 @@ function App() {
     const siteDetails = allFeatures[index];
 
     return (
-      <div className={styles.App_Modal__Blackout}>
-        <div
-          className={styles.App_Modal}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <button
-            onClick={() => {
-              setModalVisibility(false);
-            }}
-          >
-            X
-          </button>
-          <div className={styles.App_Modal_Container}>
-            <p>Name:</p>
-            <p>{siteDetails.Name}</p>
-            <p>Price per litre:</p>
-            <p>{((siteDetails.Price || 0) / 10).toFixed(1)}</p>
-            <p></p>
-            <a
-              href={`https://maps.google.com/?q=place_id:${siteDetails.GPI}`}
-              target="_blank"
-            >
-              Navigate
-            </a>
-          </div>
-        </div>
-      </div>
+      <StationModal siteDetails={siteDetails} setVisible={setModalVisibility} />
     );
   };
 
@@ -264,7 +237,7 @@ function App() {
         ></div>
       )}
 
-      {modalVisible && getModalDetails()}
+      {modalVisible && getStationModal()}
 
       <MapWrapper
         features={mapFeatures}

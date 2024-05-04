@@ -112,51 +112,6 @@ p {
       transition: visibility 0s 0.5s, opacity 0.5s linear;
     }
   }
-
-  &_Modal {
-    &_Container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      padding: 4px;
-
-      width: 320px;
-
-      text-align: left;
-    }
-
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    flex-direction: column;
-
-    width: 360px;
-
-    z-index: 10;
-
-    background-color: #eee;
-    padding: 8px;
-
-    border-radius: 8px;
-    padding: 8px;
-
-    cursor: default;
-
-    &__Blackout {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      width: 100vw;
-      height: 100vh;
-      position: absolute;
-      z-index: 1;
-
-      background-color: rgba(0, 0, 0, 0.4);
-
-      cursor: pointer;
-    }
-  }
 }
 
 .lds_dual_ring {

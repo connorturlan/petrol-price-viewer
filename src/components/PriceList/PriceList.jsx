@@ -14,7 +14,7 @@ function PriceList({ children, stations }) {
       <div className={styles.PriceList_Body}>
         <h2 className={styles.PriceList_Title}>Price List</h2>
       </div>
-      <p>touch anywhere to hide</p>
+      <p>Touch anywhere to hide</p>
     </div>
   ) : (
     <div
