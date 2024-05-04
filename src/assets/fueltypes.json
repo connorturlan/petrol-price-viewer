@@ -1,32 +1,32 @@
 {
   "Fuels": [
     {
+      "FuelId": 12,
+      "Name": "e10"
+    },
+    {
       "FuelId": 2,
-      "Name": "Unleaded"
+      "Name": "Unleaded 91"
     },
     {
       "FuelId": 5,
-      "Name": "Premium Unleaded 95"
+      "Name": "Unleaded 95"
     },
     {
       "FuelId": 8,
-      "Name": "Premium Unleaded 98"
-    },
-    {
-      "FuelId": 12,
-      "Name": "e10"
+      "Name": "Unleaded 98"
     },
     {
       "FuelId": 3,
       "Name": "Diesel"
     },
     {
-      "FuelId": 4,
-      "Name": "LPG"
-    },
-    {
       "FuelId": 14,
       "Name": "Premium Diesel"
+    },
+    {
+      "FuelId": 4,
+      "Name": "LPG"
     },
     {
       "FuelId": 19,

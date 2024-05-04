@@ -1,8 +1,8 @@
 import { useState } from "react";
 import styles from "./PriceList.module.scss";
 
-function PriceList({ children, stations }) {
-  const [visible, setVisible] = useState(true);
+function PriceList({ children }) {
+  const [visible, setVisible] = useState(false);
 
   return visible ? (
     <div
@@ -13,6 +13,7 @@ function PriceList({ children, stations }) {
     >
       <div className={styles.PriceList_Body}>
         <h2 className={styles.PriceList_Title}>Price List</h2>
+        {children}
       </div>
       <p>Touch anywhere to hide</p>
     </div>

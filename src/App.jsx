@@ -123,12 +123,14 @@ function App() {
       }
 
       const feature = newFeatures[siteIndex];
+
       // show prices with dollar sign.
       // feature.Price = (sitePrice / 1000).toLocaleString("en-AU", {
       //   style: "currency",
       //   currency: "AUD",
       //   maximumSignificantDigits: 4,
       // });
+
       // show prices without dollar sign.
       feature.Price = sitePrice;
 
@@ -215,7 +217,7 @@ function App() {
     <div className={styles.App}>
       <div className={styles.App_Label + " " + styles.App_FuelSelector}>
         <p>Select Fuel</p>
-        <select onChange={handleFuelChange}>
+        <select onChange={handleFuelChange} value={fuelType}>
           {fueltypes["Fuels"].map((t) => {
             return (
               <option key={t.FuelId} value={t.FuelId}>
