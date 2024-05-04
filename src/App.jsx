@@ -207,7 +207,7 @@ function App() {
             <p>{((siteDetails.Price || 0) / 10).toFixed(1)}</p>
             <p></p>
             <a
-              href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
+              href={`https://maps.google.com/?q=place_id:${siteDetails.GPI}`}
               target="_blank"
             >
               Navigate
