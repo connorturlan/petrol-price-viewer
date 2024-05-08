@@ -23,7 +23,8 @@ p {
     align-items: center;
     gap: 16px;
 
-    width: fit-content;
+    width: 100vw;
+    max-width: fit-content;
     overflow: auto;
     margin: auto;
     padding: 8px 16px;
@@ -35,7 +36,7 @@ p {
     background: white;
     // pointer-events: none;
 
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 8px 8px;
     outline: 2px solid rgb(122, 24, 24);
     box-shadow: 0px 4px 8px #00000060;
   }

@@ -1,19 +1,18 @@
 .StationModal {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-end;
   flex-direction: column;
 
-  width: 360px;
+  width: 320px;
+  height: 320px;
 
   z-index: 10;
 
   background-color: #eee;
   outline: 2px solid rgb(122, 24, 24);
-  padding: 8px;
 
   border-radius: 8px;
-  padding: 8px;
 
   cursor: default;
 
@@ -21,9 +20,9 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
-    padding: 4px;
+    padding: 20px;
 
-    width: 320px;
+    width: 280px;
 
     text-align: left;
   }

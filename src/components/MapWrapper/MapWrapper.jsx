@@ -33,6 +33,7 @@ function MapWrapper({
 }) {
   // set intial state
   const [map, setMap] = useState();
+  const [view, setView] = useState();
   const [featuresLayer, setFeaturesLayer] = useState();
   const [lowestLayer, setLowestFeaturesLayer] = useState();
   const [selectedCoord, setSelectedCoord] = useState();
@@ -44,6 +45,9 @@ function MapWrapper({
 
   const mapRef = useRef();
   mapRef.current = map;
+
+  const viewRef = useRef();
+  viewRef.current = view;
 
   const featureRef = useRef();
   featureRef.current = featuresLayer;
@@ -138,6 +142,13 @@ function MapWrapper({
     // });
     // initalLowestLayer.getSource().addFeature(marker);
 
+    // create the map view.
+    const view = new View({
+      projection: projection,
+      center: mapCenter,
+      zoom: 13,
+    });
+
     // create map
     const initialMap = new Map({
       target: mapElement.current,
@@ -159,11 +170,7 @@ function MapWrapper({
         initalFeaturesLayer,
         initalLowestLayer,
       ],
-      view: new View({
-        projection: projection,
-        center: mapCenter,
-        zoom: 13,
-      }),
+      view,
       controls: [],
     });
 
@@ -181,6 +188,7 @@ function MapWrapper({
 
     // save map and vector layer references to state
     setMap(initialMap);
+    setView(view);
     setFeaturesLayer(initalFeaturesLayer);
     setLowestFeaturesLayer(initalLowestLayer);
   }, []);
@@ -247,6 +255,8 @@ function MapWrapper({
       updateModalDetails(feature.get("siteid"));
       console.log(feature);
       showModal();
+
+      viewRef.current.setCenter(feature.get("geometry").getCoordinates());
     });
   };
 

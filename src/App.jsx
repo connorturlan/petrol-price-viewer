@@ -259,7 +259,7 @@ function App() {
           ))}
       </PriceList>
 
-      <div className={styles.App_Info}>
+      <div className={styles.App_Info} hidden>
         <p>
           Connor Turlan 2024 -{" "}
           <a href="https://github.com/connorturlan/petrol-price-viewer">
