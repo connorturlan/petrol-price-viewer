@@ -39,11 +39,7 @@ function App() {
     const json = await res.json();
     setFeatures(json);
 
-    console.log(
-      `updated ${json.length} features, added ${
-        Object.keys(index).length
-      } features to index.`
-    );
+    console.log(`updated ${json.length} features.`);
 
     setFeaturesLoading(false);
   };
