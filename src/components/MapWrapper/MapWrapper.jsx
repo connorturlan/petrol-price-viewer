@@ -168,7 +168,7 @@ function MapWrapper({
     });
 
     // set map onclick handler
-    initialMap.on("click", handleMapClick);
+    initialMap.on("singleclick", handleMapClick);
 
     initialMap.on("pointermove", function (e) {
       const pixel = initialMap.getEventPixel(e.originalEvent);
