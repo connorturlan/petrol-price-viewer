@@ -245,6 +245,7 @@ function MapWrapper({
   const handleMapClick = (event) => {
     mapRef.current.forEachFeatureAtPixel(event.pixel, (feature) => {
       updateModalDetails(feature.get("siteid"));
+      console.log(feature);
       showModal();
     });
   };

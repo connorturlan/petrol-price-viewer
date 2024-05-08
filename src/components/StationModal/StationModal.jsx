@@ -1,6 +1,10 @@
 import styles from "./StationModal.module.scss";
 
 function StationModal({ siteDetails, setVisible }) {
+  if (!siteDetails) {
+    return <></>;
+  }
+
   return (
     <div
       className={styles.StationModal_Blackout}

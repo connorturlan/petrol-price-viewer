@@ -15,11 +15,11 @@ const endpoint =
 
 function App() {
   // set intial state
-  const [featureIndex, setFeatureIndex] = useState({});
   const [allFeatures, setFeatures] = useState([]);
   const [mapFeatures, setMapFeatures] = useState([]);
   const [visibleFeatures, setVisibleFeatures] = useState([0, 0, 0, 0]);
 
+  const [modalSite, setModalSite] = useState(0);
   const [modalDetails, setModalDetails] = useState({});
   const [modalVisible, setModalVisibility] = useState(false);
 
@@ -37,13 +37,7 @@ function App() {
       return;
     }
     const json = await res.json();
-    const index = json.reduce((siteindex, site, i) => {
-      siteindex[site.SiteId] = i;
-      return siteindex;
-    }, {});
-
     setFeatures(json);
-    setFeatureIndex(index);
 
     console.log(
       `updated ${json.length} features, added ${
@@ -118,12 +112,14 @@ function App() {
 
     Object.entries(json).forEach((siteEntry) => {
       const [siteId, sitePrice] = siteEntry;
-      const siteIndex = featureIndex[siteId];
-      if (!siteIndex) {
-        return undefined;
-      }
 
-      const feature = newFeatures[siteIndex];
+      const feature = allFeatures.find((feature) => {
+        if (feature.SiteId == siteId) {
+          return feature;
+        }
+      });
+
+      if (!feature) return undefined;
 
       // show prices with dollar sign.
       // feature.Price = (sitePrice / 1000).toLocaleString("en-AU", {
@@ -177,22 +173,19 @@ function App() {
     setFuelType(event.target.value);
   };
 
-  const getStationModal = () => {
+  useEffect(() => {
     if (!allFeatures) {
       return;
     }
 
-    const siteId = modalDetails;
-    const index = featureIndex[siteId];
-    if (!index) {
-      return;
-    }
-    const siteDetails = allFeatures[index];
+    const details = allFeatures.find((feature) => {
+      if (feature.SiteId == modalSite) {
+        return feature;
+      }
+    });
 
-    return (
-      <StationModal siteDetails={siteDetails} setVisible={setModalVisibility} />
-    );
-  };
+    setModalDetails(details);
+  }, [modalSite]);
 
   const showModal = () => {
     setModalVisibility(true);
@@ -240,12 +233,17 @@ function App() {
         ></div>
       )}
 
-      {modalVisible && getStationModal()}
+      {modalVisible && (
+        <StationModal
+          siteDetails={modalDetails}
+          setVisible={setModalVisibility}
+        />
+      )}
 
       <MapWrapper
         features={mapFeatures}
         updateVisibleFeatures={setVisibleFeatures}
-        updateModalDetails={setModalDetails}
+        updateModalDetails={setModalSite}
         showModal={showModal}
       />
 
@@ -258,7 +256,7 @@ function App() {
               name={feature.Name}
               price={((feature.Price || 0) / 10).toFixed(1)}
               showDetails={() => {
-                setModalDetails(feature.SiteId);
+                setModalSite(feature.SiteId);
                 showModal();
               }}
             />
