@@ -7,6 +7,7 @@ import { containsCoordinate } from "ol/extent";
 import PriceList from "./components/PriceList/PriceList";
 import StationModal from "./components/StationModal/StationModal";
 import PriceListItem from "./components/PriceList/PriceListItem/PriceListItem";
+import { getCookie, setCookie } from "./utils/cookies";
 
 const endpoint =
   import.meta.env.VITE_LOCAL == "TRUE"
@@ -28,7 +29,7 @@ function App() {
   const [featuresLoading, setFeaturesLoading] = useState(true);
   const [pricesLoading, setPricesLoading] = useState(true);
 
-  const [fuelType, setFuelType] = useState(2);
+  const [fuelType, setFuelType] = useState(parseInt(getCookie("fuelType")));
 
   const getSites = async () => {
     const res = await fetch(endpoint + "/sites");
@@ -201,6 +202,7 @@ function App() {
   useEffect(() => {
     resetFuelPrices();
     getSitePrices({ reload: true });
+    setCookie("fuelType", fuelType, 365);
   }, [fuelType]);
 
   return (
