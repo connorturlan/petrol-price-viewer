@@ -9,6 +9,8 @@ import StationModal from "./components/StationModal/StationModal";
 import PriceListItem from "./components/PriceList/PriceListItem/PriceListItem";
 import { getCookie, setCookie } from "./utils/cookies";
 
+const DEFAULT_FUEL_TYPE = 2;
+
 const endpoint =
   import.meta.env.VITE_LOCAL == "TRUE"
     ? "http://localhost:3000"
@@ -29,7 +31,9 @@ function App() {
   const [featuresLoading, setFeaturesLoading] = useState(true);
   const [pricesLoading, setPricesLoading] = useState(true);
 
-  const [fuelType, setFuelType] = useState(parseInt(getCookie("fuelType")));
+  let fuelTypeCookie = parseInt(getCookie("fuelType"));
+  const [fuelType, setFuelType] = useState(fuelTypeCookie || DEFAULT_FUEL_TYPE);
+  console.log(`fuel type set to ${fuelType}`);
 
   const getSites = async () => {
     const res = await fetch(endpoint + "/sites");
