@@ -226,28 +226,34 @@ function MapWrapper({
     const lowestSource = new VectorSource();
     lowestRef.current.setSource(lowestSource);
 
-    const lowestSite = features.reduce(
+    const lowestPrice = features.reduce(
       (currentLowest, site) =>
         currentLowest.Price < site.Price ? currentLowest : site,
       features[0]
     );
 
-    const point = new Point(
-      fromLonLat([lowestSite.Lng, lowestSite.Lat], projection)
+    const lowestSites = features.filter(
+      (currentSite) => currentSite.Price <= lowestPrice.Price
     );
 
-    let price = ((lowestSite.Price || 0) / 10).toFixed(1);
+    lowestSites.forEach((feature) => {
+      const point = new Point(
+        fromLonLat([feature.Lng, feature.Lat], projection)
+      );
 
-    const marker = new Feature({
-      geometry: point,
-      siteid: lowestSite.SiteId,
-      name: lowestSite.Name,
-      price: price || "loading...",
-      placeid: lowestSite.GPI,
+      let price = ((feature.Price || 0) / 10).toFixed(1);
+
+      const marker = new Feature({
+        geometry: point,
+        siteid: feature.SiteId,
+        name: feature.Name,
+        price: price || "loading...",
+        placeid: feature.GPI,
+      });
+
+      console.log("lowest site found:", feature);
+      lowestSource.addFeature(marker);
     });
-
-    console.log("lowest site found:", lowestSite);
-    lowestSource.addFeature(marker);
   }, [features]);
 
   const handleMapClick = (event) => {
