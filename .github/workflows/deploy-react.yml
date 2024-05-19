@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - react/**
 
 jobs:
   build:
@@ -24,7 +22,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - run: |
-          cd react
           npm i
           npm run build
 
@@ -32,6 +29,6 @@ jobs:
         uses: crazy-max/ghaction-github-pages@v3
         with:
           target_branch: gh-pages
-          build_dir: react/dist
+          build_dir: dist
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
