@@ -39,7 +39,7 @@ function PriceList({ children }) {
         }}
       >
         <img
-          src="public/list_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+          src="list_24dp_FILL0_wght400_GRAD0_opsz24.svg"
           alt="Show price list"
           srcset=""
           title="Show price list"

@@ -37,7 +37,7 @@ function StationModal({ siteDetails, setVisible }) {
             className={styles.StationModal_Maps}
           >
             <img
-              src="public/explore_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+              src="explore_24dp_FILL0_wght400_GRAD0_opsz24.svg"
               alt="Navigate"
               srcset=""
               title="Navigate"
