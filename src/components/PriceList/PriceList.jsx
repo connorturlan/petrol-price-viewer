@@ -4,40 +4,49 @@ import styles from "./PriceList.module.scss";
 function PriceList({ children }) {
   const [visible, setVisible] = useState(false);
 
-  return visible ? (
-    <div
-      className={styles.PriceList_Container}
-      onClick={() => {
-        setVisible(false);
-      }}
-    >
-      <div
-        className={styles.PriceList_Body}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <h2 className={styles.PriceList_Title}>Price List</h2>
+  return (
+    <>
+      {visible && (
         <div
-          className={styles.PriceList_List}
+          className={styles.PriceList_Container}
           onClick={() => {
             setVisible(false);
           }}
         >
-          {children}
+          <div
+            className={styles.PriceList_Body}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <h2 className={styles.PriceList_Title}>Price List</h2>
+            <div
+              className={styles.PriceList_List}
+              onClick={() => {
+                setVisible(false);
+              }}
+            >
+              {children}
+            </div>
+            <p>Touch anywhere to hide</p>
+          </div>
         </div>
-        <p>Touch anywhere to hide</p>
+      )}
+      <div
+        className={styles.PriceList_Show}
+        onClick={() => {
+          setVisible(true);
+        }}
+      >
+        <img
+          src="public/list_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+          alt="Show price list"
+          srcset=""
+          title="Show price list"
+        />
+        <p>List</p>
       </div>
-    </div>
-  ) : (
-    <div
-      className={styles.PriceList_Show}
-      onClick={() => {
-        setVisible(true);
-      }}
-    >
-      Show price list
-    </div>
+    </>
   );
 }
 

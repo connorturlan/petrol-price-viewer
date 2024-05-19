@@ -34,8 +34,15 @@ function StationModal({ siteDetails, setVisible }) {
           <a
             href={`https://maps.google.com/?q=place_id:${siteDetails.GPI}`}
             target="_blank"
+            className={styles.StationModal_Maps}
           >
-            Navigate
+            <img
+              src="public/explore_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+              alt="Navigate"
+              srcset=""
+              title="Navigate"
+            />
+            <p>Open Maps</p>
           </a>
         </div>
       </div>

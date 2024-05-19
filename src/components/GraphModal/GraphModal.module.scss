@@ -1,4 +1,4 @@
-.PriceList {
+.GraphModal {
   &_Body {
     margin: 120px 60px;
     padding: 12px;
@@ -29,12 +29,6 @@
     margin: 24px 0;
     border: 1px solid black;
     border-radius: 4px;
-
-    & div:first-child {
-      outline: 4px solid gold;
-
-      border-radius: 2px;
-    }
   }
 
   &_Container {

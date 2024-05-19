@@ -58,7 +58,7 @@ echo ".$name {}" > $localPath/$name/$name.module.scss
 echo \
 'import styles from "./'$name'.module.scss";
 
-function '$name'(props) {
+const '$name' = (props) => {
 	return <></>;
 }
 

@@ -35,10 +35,21 @@
     width: 100vw;
     height: 100vh;
     position: absolute;
-    z-index: 1;
+    z-index: 9;
 
     background-color: rgba(0, 0, 0, 0.4);
 
     cursor: pointer;
+  }
+
+  &_Maps {
+    padding: 4px;
+    border-radius: 4px;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    text-decoration: none;
   }
 }
