@@ -44,7 +44,7 @@ const GraphModal = () => {
       >
         <img
           src="monitoring_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-          alt="Show price chart"
+          alt="Show"
           srcset=""
           title="Show price chart"
         />
