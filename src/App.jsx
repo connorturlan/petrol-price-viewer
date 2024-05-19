@@ -12,6 +12,8 @@ import FeatureContext from "./containers/FeatureContext/FeatureContext";
 import GraphModal from "./components/GraphModal/GraphModal";
 import ToolBar from "./containers/ToolBar/ToolBar";
 
+const DEFAULT_FUEL_TYPE = 1;
+
 const endpoint =
   import.meta.env.VITE_LOCAL == "TRUE"
     ? "http://localhost:3000"
@@ -33,7 +35,8 @@ function App() {
   const [pricesLoading, setPricesLoading] = useState(true);
 
   const initialFuelType =
-    parseInt(getCookie("fuelType")) || fueltypes["Fuels"][1].FuelId;
+    parseInt(getCookie("fuelType")) ||
+    fueltypes["Fuels"][DEFAULT_FUEL_TYPE].FuelId;
   const [fuelType, setFuelType] = useState(initialFuelType);
 
   const getSites = async () => {
