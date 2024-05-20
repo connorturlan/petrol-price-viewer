@@ -127,7 +127,7 @@ function App() {
       if (!feature) return undefined;
 
       // show prices with dollar sign.
-      // feature.Price = (sitePrice / 1000).toLocaleString("en-AU", {
+      // feature.Price = (sitePrice / 1000)format: 'dd MMM yyyy'
       //   style: "currency",
       //   currency: "AUD",
       //   maximumSignificantDigits: 4,

@@ -24,6 +24,7 @@ const GraphModal = () => {
             ...o,
             cents: parseInt(o.price) / 10,
             index,
+            utc: new Date(o.date),
           };
         })
       );
@@ -52,6 +53,7 @@ const GraphModal = () => {
                 setVisible(false);
               }}
             >
+              <p>Cents per Litre</p>
               <LineChart
                 dataset={data}
                 xAxis={[
@@ -59,16 +61,20 @@ const GraphModal = () => {
                     label: "Date",
                     type: "date",
                     dataKey: "index",
+                    valueFormatter: (v) => data[v]?.date,
                   },
                 ]}
-                yAxis={[
-                  {
-                    label: "Cents per Litre",
-                  },
-                ]}
+                // yAxis={[
+                //   {
+                //     max: 230,
+                //     min: 150,
+                //   },
+                // ]}
                 series={[
                   {
                     dataKey: "cents",
+                    color: "rgb(122, 24, 24)",
+                    padding: 20,
                   },
                 ]}
                 slotProps={{
@@ -77,6 +83,8 @@ const GraphModal = () => {
                   // Custom message for empty chart
                   noDataOverlay: { message: "Waiting for data..." },
                 }}
+                grid={{ vertical: true, horizontal: true }}
+                margin={{ top: 10 }}
               />
             </div>
             <p>Touch anywhere to hide</p>
