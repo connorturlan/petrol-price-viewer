@@ -1,9 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./GraphModal.module.scss";
 import { LineChart } from "@mui/x-charts";
 
 const GraphModal = () => {
   const [visible, setVisible] = useState(false);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setData(
+        [
+          { date: "05-12-2024", price: 2006.95872772235 },
+          { date: "05-13-2024", price: 2003.9345430881867 },
+          { date: "05-14-2024", price: 2004.1536692284517 },
+          { date: "05-15-2024", price: 2016.2008089480107 },
+          { date: "05-16-2024", price: 2041.8070975797157 },
+          { date: "05-17-2024", price: 2076.9949806880313 },
+          { date: "05-18-2024", price: 2093.6417442132715 },
+          { date: "05-19-2024", price: 2092.1089471262057 },
+          { date: "05-20-2024", price: 2095.3593378818323 },
+        ].map((o, index) => {
+          return {
+            ...o,
+            cents: parseInt(o.price) / 10,
+            index,
+          };
+        })
+      );
+    }, 1_000);
+  }, []);
 
   return (
     <>
@@ -28,8 +53,30 @@ const GraphModal = () => {
               }}
             >
               <LineChart
-                xAxis={[{ data: [1, 6, 10] }]}
-                series={[{ data: [1, 10, 2] }]}
+                dataset={data}
+                xAxis={[
+                  {
+                    label: "Date",
+                    type: "date",
+                    dataKey: "index",
+                  },
+                ]}
+                yAxis={[
+                  {
+                    label: "Cents per Litre",
+                  },
+                ]}
+                series={[
+                  {
+                    dataKey: "cents",
+                  },
+                ]}
+                slotProps={{
+                  // Custom loading message
+                  loadingOverlay: { message: "Waiting for data..." },
+                  // Custom message for empty chart
+                  noDataOverlay: { message: "Waiting for data..." },
+                }}
               />
             </div>
             <p>Touch anywhere to hide</p>
