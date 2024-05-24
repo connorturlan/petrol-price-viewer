@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./GraphModal.module.scss";
 import { LineChart } from "@mui/x-charts";
+import { dataset } from "./dataset.json";
 
 const GraphModal = () => {
   const [visible, setVisible] = useState(false);
@@ -9,23 +10,15 @@ const GraphModal = () => {
   useEffect(() => {
     setTimeout(() => {
       setData(
-        [
-          { date: "05-12-2024", price: 2006.95872772235 },
-          { date: "05-13-2024", price: 2003.9345430881867 },
-          { date: "05-14-2024", price: 2004.1536692284517 },
-          { date: "05-15-2024", price: 2016.2008089480107 },
-          { date: "05-16-2024", price: 2041.8070975797157 },
-          { date: "05-17-2024", price: 2076.9949806880313 },
-          { date: "05-18-2024", price: 2093.6417442132715 },
-          { date: "05-19-2024", price: 2092.1089471262057 },
-          { date: "05-20-2024", price: 2095.3593378818323 },
-        ].map((o, index) => {
-          return {
-            ...o,
-            cents: parseInt(o.price) / 10,
-            index,
-            utc: new Date(o.date),
-          };
+        dataset.map((o, index) => {
+          return o.data.map((p, index) => {
+            return {
+              ...p,
+              cents: parseInt(p.price) / 10,
+              index,
+              utc: new Date(p.date),
+            };
+          });
         })
       );
     }, 1_000);
@@ -60,7 +53,7 @@ const GraphModal = () => {
                   {
                     label: "Date",
                     type: "date",
-                    dataKey: "index",
+                    dataKey: "data.index",
                     valueFormatter: (v) => data[v]?.date,
                   },
                 ]}
@@ -70,13 +63,7 @@ const GraphModal = () => {
                 //     min: 150,
                 //   },
                 // ]}
-                series={[
-                  {
-                    dataKey: "cents",
-                    color: "rgb(122, 24, 24)",
-                    padding: 20,
-                  },
-                ]}
+                series={datasets || {}}
                 slotProps={{
                   // Custom loading message
                   loadingOverlay: { message: "Waiting for data..." },

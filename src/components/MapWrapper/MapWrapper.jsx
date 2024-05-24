@@ -193,8 +193,7 @@ function MapWrapper({
     setLowestFeaturesLayer(initalLowestLayer);
   }, []);
 
-  // update map if features prop changes - logic formerly put into componentDidUpdate
-  useEffect(() => {
+  const updateFeatures = () => {
     // may be null on first render
     if (!map || !featureRef.current || !features || features.length <= 0) {
       return;
@@ -254,6 +253,11 @@ function MapWrapper({
       console.log("lowest site found:", feature);
       lowestSource.addFeature(marker);
     });
+  };
+
+  // update map if features prop changes - logic formerly put into componentDidUpdate
+  useEffect(() => {
+    updateFeatures();
   }, [features]);
 
   const handleMapClick = (event) => {
