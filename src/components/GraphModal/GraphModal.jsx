@@ -1,33 +1,48 @@
 import { useEffect, useState } from "react";
 import styles from "./GraphModal.module.scss";
 import { LineChart } from "@mui/x-charts";
-import dataset from "./dataset.json";
+// import dataset from "./dataset.json";
 import { getFuelTypeName } from "../../utils/fueltypes";
 
 const FUELTYPES = [2, 8, 3, 12];
+
+const endpoint =
+  import.meta.env.VITE_LOCAL == "TRUE"
+    ? "http://localhost:3000"
+    : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod/history";
 
 const GraphModal = () => {
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
 
+  const processPriceHistoryData = (dataset) => {
+    const datasets = dataset.datasets
+      .filter((s) => FUELTYPES.some((t) => t == s.fuelId))
+      .map((s) => {
+        return {
+          ...s,
+          label: getFuelTypeName(s.fuelId),
+          cents: s.data.map((p) => parseInt(p) / 10),
+        };
+      });
+    const datasetmappeds = {
+      datasets,
+      datelabels: dataset.dates,
+      dateindexes: [...Array(dataset.dates.length).keys()],
+    };
+    setData(datasetmappeds);
+  };
+
   useEffect(() => {
-    setTimeout(() => {
-      const datasets = dataset.datasets
-        .filter((s) => FUELTYPES.some((t) => t == s.fuelId))
-        .map((s) => {
-          return {
-            ...s,
-            label: getFuelTypeName(s.fuelId),
-            cents: s.data.map((p) => parseInt(p) / 10),
-          };
-        });
-      const datasetmappeds = {
-        datasets,
-        datelabels: dataset.dates,
-        dateindexes: [...Array(dataset.dates.length).keys()],
-      };
-      setData(datasetmappeds);
-    }, 1_000);
+    setTimeout(() => {}, 1_000);
+
+    const getHistoricPrices = async () => {
+      const res = await fetch(endpoint);
+      const json = await res.json();
+      processPriceHistoryData(json);
+    };
+
+    getHistoricPrices();
   }, []);
 
   return (
