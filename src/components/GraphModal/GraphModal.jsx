@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import styles from "./GraphModal.module.scss";
 import { LineChart } from "@mui/x-charts";
-import { dataset } from "./dataset.json";
+import dataset from "./dataset.json";
+import { getFuelTypeName } from "../../utils/fueltypes";
+
+const FUELTYPES = [2, 8, 3, 12];
 
 const GraphModal = () => {
   const [visible, setVisible] = useState(false);
@@ -9,18 +12,21 @@ const GraphModal = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      setData(
-        dataset.map((o, index) => {
-          return o.data.map((p, index) => {
-            return {
-              ...p,
-              cents: parseInt(p.price) / 10,
-              index,
-              utc: new Date(p.date),
-            };
-          });
-        })
-      );
+      const datasets = dataset.datasets
+        .filter((s) => FUELTYPES.some((t) => t == s.fuelId))
+        .map((s) => {
+          return {
+            ...s,
+            label: getFuelTypeName(s.fuelId),
+            cents: s.data.map((p) => parseInt(p) / 10),
+          };
+        });
+      const datasetmappeds = {
+        datasets,
+        datelabels: dataset.dates,
+        dateindexes: [...Array(dataset.dates.length).keys()],
+      };
+      setData(datasetmappeds);
     }, 1_000);
   }, []);
 
@@ -48,22 +54,26 @@ const GraphModal = () => {
             >
               <p>Cents per Litre</p>
               <LineChart
-                dataset={data}
                 xAxis={[
                   {
                     label: "Date",
-                    type: "date",
-                    dataKey: "data.index",
-                    valueFormatter: (v) => data[v]?.date,
+                    data: data.dateindexes,
+                    valueFormatter: (v) => data.datelabels.at(v),
                   },
                 ]}
-                // yAxis={[
-                //   {
-                //     max: 230,
-                //     min: 150,
-                //   },
-                // ]}
-                series={datasets || {}}
+                yAxis={[
+                  {
+                    label: "Price",
+                    valueFormatter: (s) => s.cents,
+                  },
+                ]}
+                series={data.datasets.map((s) => {
+                  return {
+                    type: "line",
+                    data: s.cents || 0,
+                    label: s.label,
+                  };
+                })}
                 slotProps={{
                   // Custom loading message
                   loadingOverlay: { message: "Waiting for data..." },
