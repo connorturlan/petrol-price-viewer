@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, { useState, useEffect } from "react";
 import MapWrapper from "./components/MapWrapper/MapWrapper";
 import styles from "./App.module.scss";
 import fueltypes from "./assets/fueltypes.json";
@@ -11,11 +11,13 @@ import { getCookie, setCookie } from "./utils/cookies";
 import FeatureContext from "./containers/FeatureContext/FeatureContext";
 import GraphModal from "./components/GraphModal/GraphModal";
 import ToolBar from "./containers/ToolBar/ToolBar";
+import { GoogleLogin } from "@react-oauth/google";
 
 const DEFAULT_FUEL_TYPE = 1;
 
 const endpoint =
-  import.meta.env.VITE_LOCAL == "TRUE"
+  import.meta.env.VITE_LOCAL == "TRUE" ||
+  import.meta.env.VITE_LOCAL_API == "TRUE"
     ? "http://localhost:3000"
     : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod";
 
@@ -286,6 +288,15 @@ function App() {
               ))}
           </PriceList>
           <GraphModal />
+          <GoogleLogin
+            type="icon"
+            onSuccess={() => {
+              alert("success");
+            }}
+            onError={() => {
+              alert("error");
+            }}
+          ></GoogleLogin>
         </ToolBar>
       </div>
     </FeatureContext>

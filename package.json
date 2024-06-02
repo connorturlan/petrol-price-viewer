@@ -16,6 +16,7 @@
 		"@emotion/styled": "^11.11.5",
 		"@mui/material": "^5.15.18",
 		"@mui/x-charts": "^7.5.0",
+		"@react-oauth/google": "^0.12.1",
 		"dotenv": "^16.4.5",
 		"ol": "^7.4.0",
 		"react": "^18.2.0",
