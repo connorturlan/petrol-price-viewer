@@ -7,7 +7,8 @@ import { getFuelTypeName } from "../../utils/fueltypes";
 const FUELTYPES = [2, 8, 3, 12];
 
 const endpoint =
-  import.meta.env.VITE_LOCAL == "TRUE"
+  import.meta.env.VITE_LOCAL == "TRUE" ||
+  import.meta.env.VITE_LOCAL_HISTORY == "TRUE"
     ? "http://localhost:3000"
     : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod/history";
 
@@ -103,7 +104,7 @@ const GraphModal = () => {
           </div>
         </div>
       )}
-      <div
+      <button
         className={styles.GraphModal_Show}
         onClick={() => {
           setVisible(true);
@@ -111,12 +112,13 @@ const GraphModal = () => {
       >
         <img
           src="monitoring_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+          className={styles.GraphModal_Image}
           alt="Show"
           srcset=""
           title="Show price chart"
         />
         <p>Graph</p>
-      </div>
+      </button>
     </>
   );
 };

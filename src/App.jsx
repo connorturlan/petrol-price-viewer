@@ -11,7 +11,7 @@ import { getCookie, setCookie } from "./utils/cookies";
 import FeatureContext from "./containers/FeatureContext/FeatureContext";
 import GraphModal from "./components/GraphModal/GraphModal";
 import ToolBar from "./containers/ToolBar/ToolBar";
-import { GoogleLogin } from "@react-oauth/google";
+import LoginControl from "./components/LoginControl/LoginControl";
 
 const DEFAULT_FUEL_TYPE = 1;
 
@@ -35,6 +35,7 @@ function App() {
 
   const [featuresLoading, setFeaturesLoading] = useState(true);
   const [pricesLoading, setPricesLoading] = useState(true);
+
 
   const initialFuelType =
     parseInt(getCookie("fuelType")) ||
@@ -288,15 +289,7 @@ function App() {
               ))}
           </PriceList>
           <GraphModal />
-          <GoogleLogin
-            type="icon"
-            onSuccess={() => {
-              alert("success");
-            }}
-            onError={() => {
-              alert("error");
-            }}
-          ></GoogleLogin>
+          <LoginControl />
         </ToolBar>
       </div>
     </FeatureContext>

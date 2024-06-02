@@ -50,6 +50,7 @@
     padding: 8px;
     z-index: 2;
     background: white;
+    border: none;
     border-radius: 8px;
 
     user-select: none;
@@ -59,6 +60,13 @@
       background: rgb(216, 216, 216);
     }
   }
+
+  &_Image {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+
   &_YAxis {
     font-size: 2px;
   }

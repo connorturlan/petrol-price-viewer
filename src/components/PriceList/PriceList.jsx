@@ -32,7 +32,7 @@ function PriceList({ children }) {
           </div>
         </div>
       )}
-      <div
+      <button
         className={styles.PriceList_Show}
         onClick={() => {
           setVisible(true);
@@ -40,12 +40,13 @@ function PriceList({ children }) {
       >
         <img
           src="list_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+          className={styles.PriceList_Image}
           alt="Show"
           srcset=""
           title="Show price list"
         />
         <p>List</p>
-      </div>
+      </button>
     </>
   );
 }
