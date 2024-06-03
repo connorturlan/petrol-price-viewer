@@ -10,13 +10,17 @@ const endpoint =
   import.meta.env.VITE_LOCAL == "TRUE" ||
   import.meta.env.VITE_LOCAL_HISTORY == "TRUE"
     ? "http://localhost:3000"
-    : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod/history";
+    : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod";
 
 const GraphModal = () => {
   const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
 
   const processPriceHistoryData = (dataset) => {
+    if (!dataset.datasets) {
+      console.log(dataset);
+      return;
+    }
     const datasets = dataset.datasets
       .filter((s) => FUELTYPES.some((t) => t == s.fuelId))
       .map((s) => {
