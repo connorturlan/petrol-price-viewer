@@ -10,6 +10,7 @@ import StationModal from "../../components/StationModal/StationModal";
 import { containsCoordinate } from "ol/extent";
 import LoadingSplash from "../../components/LoadingSplash/LoadingSplash";
 import { createLowestLayer, createStationLayer } from "./layers";
+import { getSites, updateLowestPrices } from "./utils";
 
 const PROJECTION = "EPSG:4326";
 
@@ -41,7 +42,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   useEffect(() => {
     setStationsLayer(createStationLayer());
     setLowestLayer(createLowestLayer());
-    getSites();
+    getSites(setStationsState, setAllStations);
   }, []);
 
   useEffect(() => {
@@ -82,7 +83,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   useEffect(() => {
     if (!stations || !visibleBounds) return;
-    updateLowestPrices();
+    updateLowestPrices(lowestLayer, stations);
     updateStations && updateStations(stations);
   }, [stations, visibleBounds]);
 
@@ -90,55 +91,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     resetFuelPrices();
     getSitePrices({ reload: true });
   }, [fuelType]);
-
-  const updateLowestPrices = () => {
-    const source = new VectorSource();
-    lowestLayer.setSource(source);
-
-    const lowestPrice = stations.reduce(
-      (lowest, station) => (lowest.Price < station.Price ? lowest : station),
-      stations[0]
-    );
-
-    const lowestStations = stations.filter(
-      (station) => station.Price <= lowestPrice.Price
-    );
-
-    lowestStations.forEach((station) => {
-      const point = new Point(
-        fromLonLat([station.Lng, station.Lat], PROJECTION)
-      );
-
-      let price = ((station.Price || 0) / 10).toFixed(1);
-
-      const marker = new Feature({
-        geometry: point,
-        siteid: station.SiteId,
-        name: station.Name,
-        price: price || "loading...",
-        placeid: station.GPI,
-      });
-
-      console.log("lowest site found:", station);
-      source.addFeature(marker);
-    });
-  };
-
-  const getSites = async () => {
-    setStationsState(true);
-
-    const res = await fetch(ENDPOINT + "/sites");
-    if (res.status != 200) {
-      window.alert("site data not found.");
-      return;
-    }
-    const json = await res.json();
-    setAllStations(json);
-
-    console.log(`updated ${json.length} stations.`);
-
-    setStationsState(false);
-  };
 
   const getSitePrices = async ({ reload } = {}) => {
     // setWarning(false);
