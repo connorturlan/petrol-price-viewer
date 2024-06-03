@@ -21,8 +21,6 @@ export const getSites = async (setLoading, setStations) => {
   const json = await res.json();
   setStations(json);
 
-  console.log(`updated ${json.length} stations.`);
-
   setLoading(false);
 };
 

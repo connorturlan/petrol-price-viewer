@@ -73,7 +73,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       return marker;
     });
 
-    console.log(`added ${filteredstations.length} stations.`);
+    // console.log(`added ${filteredstations.length} stations.`);
   }, [stations, allStations]);
 
   useEffect(() => {
@@ -107,69 +107,70 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       })
       .map((feature) => feature.SiteId);
 
-    if (body.length <= 0) {
-      console.log("no new data to fetch.");
-      return;
-    }
     if (body.length >= 200) {
-      console.warn("request body length exceeds 100.");
+      console.warn("request body length exceeds 200.");
       window.alert("Search area too large, try zooming in.");
       setLoading(false);
       return;
     }
-    console.log(`requesting data for ${body.length} sites`);
 
     setPricesState(true);
 
-    const req = fetch(ENDPOINT + `/prices?fuelType=${fuelType}`, {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-    const request = new Promise((accept, reject) => {
-      let accepted = false;
-
-      setTimeout(() => {
-        if (accepted) return;
-
-        window.alert("Prices request timed out, try again later.");
-        setLoading(false);
-        reject();
-        return;
-      }, 5_000);
-
-      req.then((data) => {
-        accepted = true;
-        accept(data);
-      });
-    });
-
-    const res = await request;
-    if (res.status != 200) {
-      window.alert("error while handling site prices.");
-      setPricesState(false);
-      return;
-    }
-
-    const json = await res.json();
-
     const newStations = allStations;
+    if (body.length <= 0) {
+      console.log("no new data to fetch.");
+    } else {
+      // console.log(`requesting data for ${body.length} sites`);
+      const req = fetch(ENDPOINT + `/prices?fuelType=${fuelType}`, {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      const request = new Promise((accept, reject) => {
+        let accepted = false;
 
-    Object.entries(json).forEach((site) => {
-      const [siteId, sitePrice] = site;
+        setTimeout(() => {
+          if (accepted) return;
 
-      const station = allStations.find((station) => {
-        if (station.SiteId == siteId) {
-          return station;
-        }
+          window.alert("Prices request timed out, try again later.");
+          setLoading(false);
+          reject();
+          return;
+        }, 5_000);
+
+        req.then((data) => {
+          accepted = true;
+          accept(data);
+        });
       });
 
-      if (!station) return undefined;
+      const res = await request;
+      if (res.status != 200) {
+        window.alert(
+          "error while handling site prices. please try again later"
+        );
+        setPricesState(false);
+        return;
+      }
 
-      // show prices without dollar sign.
-      station.Price = sitePrice;
+      const json = await res.json();
 
-      return station;
-    });
+      Object.entries(json).forEach((site) => {
+        const [siteId, sitePrice] = site;
+
+        const station = allStations.find((station) => {
+          if (station.SiteId == siteId) {
+            return station;
+          }
+        });
+
+        if (!station) return undefined;
+
+        // show prices without dollar sign.
+        station.Price = sitePrice;
+
+        return station;
+      });
+    }
 
     const filteredStations = newStations
       .sort((a, b) => a.Price - b.Price)
@@ -187,14 +188,13 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     // }
 
     setStations(filteredStations);
-
     setPricesState(false);
   };
 
   const resetFuelPrices = () => {
     if (!stations) return;
 
-    const newStations = stations.slice().map((station) => {
+    const newStations = allStations.slice().map((station) => {
       station.Price = undefined;
       return station;
     });

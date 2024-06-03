@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import MapWrapper from "./components/MapWrapper/MapWrapper";
 import styles from "./App.module.scss";
 import fueltypes from "./assets/fueltypes.json";
 import "./App.css";
-import { containsCoordinate } from "ol/extent";
 import PriceList from "./components/PriceList/PriceList";
 import StationModal from "./components/StationModal/StationModal";
 import PriceListItem from "./components/PriceList/PriceListItem/PriceListItem";
