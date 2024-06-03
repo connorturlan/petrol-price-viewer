@@ -192,9 +192,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   };
 
   const resetFuelPrices = () => {
-    if (!stations) {
-      return;
-    }
+    if (!stations) return;
 
     const newStations = stations.slice().map((station) => {
       station.Price = undefined;
