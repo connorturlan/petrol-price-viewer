@@ -8,10 +8,10 @@ import PriceList from "./components/PriceList/PriceList";
 import StationModal from "./components/StationModal/StationModal";
 import PriceListItem from "./components/PriceList/PriceListItem/PriceListItem";
 import { getCookie, setCookie } from "./utils/cookies";
-import FeatureContext from "./containers/FeatureContext/FeatureContext";
 import GraphModal from "./components/GraphModal/GraphModal";
 import ToolBar from "./containers/ToolBar/ToolBar";
 import LoginControl from "./components/LoginControl/LoginControl";
+import PetrolMap from "./containers/PetrolMap/PetrolMap";
 
 const DEFAULT_FUEL_TYPE = 1;
 
@@ -33,9 +33,8 @@ function App() {
 
   const [warningVisible, setWarning] = useState(false);
 
-  const [featuresLoading, setFeaturesLoading] = useState(true);
-  const [pricesLoading, setPricesLoading] = useState(true);
-
+  const [featuresLoading, setFeaturesLoading] = useState(false);
+  const [pricesLoading, setPricesLoading] = useState(false);
 
   const initialFuelType =
     parseInt(getCookie("fuelType")) ||
@@ -200,7 +199,7 @@ function App() {
   };
 
   useEffect(() => {
-    getSites();
+    // getSites();
   }, []);
 
   useEffect(() => {
@@ -211,88 +210,91 @@ function App() {
   }, [allFeatures, visibleFeatures, featuresLoading]);
 
   useEffect(() => {
-    resetFuelPrices();
+    // resetFuelPrices();
     getSitePrices({ reload: true });
     setCookie("fuelType", fuelType, 365);
   }, [fuelType]);
 
   return (
-    <FeatureContext>
-      <div className={styles.App}>
-        <div className={styles.App_Label + " " + styles.App_FuelSelector}>
-          <p>Select Fuel</p>
-          <select onChange={handleFuelChange} value={fuelType}>
-            {fueltypes["Fuels"].map((t) => {
-              return (
-                <option key={t.FuelId} value={t.FuelId}>
-                  {t.Name}
-                </option>
-              );
-            })}
-          </select>
+    <div className={styles.App}>
+      <div className={styles.App_Label + " " + styles.App_FuelSelector}>
+        <p>Select Fuel</p>
+        <select onChange={handleFuelChange} value={fuelType}>
+          {fueltypes["Fuels"].map((t) => {
+            return (
+              <option key={t.FuelId} value={t.FuelId}>
+                {t.Name}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+
+      {featuresLoading || pricesLoading ? (
+        <div className={styles.App_Loader + " " + styles.App_Loader__FadeIn}>
+          <div className={styles.lds_dual_ring}></div>
+          <p>loading...</p>
         </div>
+      ) : (
+        <div
+          className={styles.App_Loader + " " + styles.App_Loader__FadeOut}
+        ></div>
+      )}
 
-        {featuresLoading || pricesLoading ? (
-          <div className={styles.App_Loader + " " + styles.App_Loader__FadeIn}>
-            <div className={styles.lds_dual_ring}></div>
-            <p>loading...</p>
-          </div>
-        ) : (
-          <div
-            className={styles.App_Loader + " " + styles.App_Loader__FadeOut}
-          ></div>
-        )}
+      {modalVisible && (
+        <StationModal
+          siteDetails={modalDetails}
+          setVisible={setModalVisibility}
+        />
+      )}
 
-        {modalVisible && (
-          <StationModal
-            siteDetails={modalDetails}
-            setVisible={setModalVisibility}
-          />
-        )}
-
-        <MapWrapper
+      {/* <MapWrapper
           features={mapFeatures}
           updateVisibleFeatures={setVisibleFeatures}
           updateModalDetails={setModalSite}
           showModal={showModal}
-        />
+        /> */}
 
-        <div className={styles.App_Info} hidden>
-          <p>
-            Connor Turlan 2024 -{" "}
-            <a href="https://github.com/connorturlan/petrol-price-viewer">
-              GitHub
-            </a>
-          </p>
-        </div>
+      <PetrolMap
+        fuelType={fuelType}
+        updateStations={setMapFeatures}
+      ></PetrolMap>
 
-        {warningVisible && (
-          <div className={styles.App_Warning}>
-            <p>No stations in current area</p>
-          </div>
-        )}
-
-        <ToolBar>
-          <PriceList>
-            {mapFeatures
-              .sort((a, b) => a.Price - b.Price)
-              .map((feature) => (
-                <PriceListItem
-                  key={feature.SiteId}
-                  name={feature.Name}
-                  price={((feature.Price || 0) / 10).toFixed(1)}
-                  showDetails={() => {
-                    setModalSite(feature.SiteId);
-                    showModal();
-                  }}
-                />
-              ))}
-          </PriceList>
-          <GraphModal />
-          <LoginControl />
-        </ToolBar>
+      <div className={styles.App_Info} hidden>
+        <p>
+          Connor Turlan 2024 -{" "}
+          <a href="https://github.com/connorturlan/petrol-price-viewer">
+            GitHub
+          </a>
+        </p>
       </div>
-    </FeatureContext>
+
+      {warningVisible && (
+        <div className={styles.App_Warning}>
+          <p>No stations in current area</p>
+        </div>
+      )}
+
+      <ToolBar>
+        <PriceList>
+          {mapFeatures
+            .sort((a, b) => a.Price - b.Price)
+            .map((feature) => (
+              <PriceListItem
+                key={feature.SiteId}
+                name={feature.Name}
+                price={((feature.Price || 0) / 10).toFixed(1)}
+                showDetails={() => {
+                  setModalSite(feature.SiteId);
+                  showModal();
+                }}
+              />
+            ))}
+        </PriceList>
+        <GraphModal />
+        <LoginControl />
+      </ToolBar>
+    </div>
   );
 }
 

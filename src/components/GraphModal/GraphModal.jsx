@@ -38,7 +38,7 @@ const GraphModal = () => {
     setTimeout(() => {}, 1_000);
 
     const getHistoricPrices = async () => {
-      const res = await fetch(endpoint);
+      const res = await fetch(endpoint + "/history");
       const json = await res.json();
       processPriceHistoryData(json);
     };
@@ -114,7 +114,7 @@ const GraphModal = () => {
           src="monitoring_24dp_FILL0_wght400_GRAD0_opsz24.svg"
           className={styles.GraphModal_Image}
           alt="Show"
-          srcset=""
+          srcSet=""
           title="Show price chart"
         />
         <p>Graph</p>

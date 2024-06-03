@@ -39,7 +39,7 @@ function StationModal({ siteDetails, setVisible }) {
             <img
               src="explore_24dp_FILL0_wght400_GRAD0_opsz24.svg"
               alt="Navigate"
-              srcset=""
+              srcSet=""
               title="Navigate"
             />
             <p>Open Maps</p>
