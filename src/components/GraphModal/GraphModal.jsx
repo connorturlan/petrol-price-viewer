@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./GraphModal.module.scss";
 import { LineChart } from "@mui/x-charts";
 // import dataset from "./dataset.json";
-import { getFuelTypeName } from "../../utils/fueltypes";
+import { getFuelTypeColor, getFuelTypeName } from "../../utils/fueltypes";
 
 const FUELTYPES = [2, 8, 3, 12];
 
@@ -73,36 +73,40 @@ const GraphModal = () => {
               }}
             >
               <p>Cents per Litre</p>
-              <LineChart
-                xAxis={[
-                  {
-                    label: "Date",
-                    data: data.dateindexes,
-                    valueFormatter: (v) => data.datelabels.at(v),
-                  },
-                ]}
-                yAxis={[
-                  {
-                    label: "Price",
-                    valueFormatter: (s) => s.cents,
-                  },
-                ]}
-                series={data.datasets.map((s) => {
-                  return {
-                    type: "line",
-                    data: s.cents || 0,
-                    label: s.label,
-                  };
-                })}
-                slotProps={{
-                  // Custom loading message
-                  loadingOverlay: { message: "Waiting for data..." },
-                  // Custom message for empty chart
-                  noDataOverlay: { message: "Waiting for data..." },
-                }}
-                grid={{ vertical: true, horizontal: true }}
-                margin={{ top: 10 }}
-              />
+              {data && data.datasets && (
+                <LineChart
+                  xAxis={[
+                    {
+                      label: "Date",
+                      data: data.dateindexes,
+                      valueFormatter: (v) => data.datelabels.at(v),
+                    },
+                  ]}
+                  yAxis={[
+                    {
+                      label: "Price",
+                      valueFormatter: (s) => s.cents,
+                    },
+                  ]}
+                  series={data.datasets.map((s) => {
+                    return {
+                      type: "line",
+                      data: s.cents || 0,
+                      label: s.label,
+                      color: getFuelTypeColor(s.fuelId),
+                      showMark: false,
+                    };
+                  })}
+                  slotProps={{
+                    // Custom loading message
+                    loadingOverlay: { message: "Waiting for data..." },
+                    // Custom message for empty chart
+                    noDataOverlay: { message: "Waiting for data..." },
+                  }}
+                  grid={{ vertical: true, horizontal: true }}
+                  margin={{ top: 10 }}
+                />
+              )}
             </div>
             <p>Touch anywhere to hide</p>
           </div>

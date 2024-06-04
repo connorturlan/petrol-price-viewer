@@ -2,35 +2,43 @@
   "Fuels": [
     {
       "FuelId": 12,
-      "Name": "e10"
+      "Name": "e10",
+      "Color": "green"
     },
     {
       "FuelId": 2,
-      "Name": "Unleaded 91"
+      "Name": "Unleaded 91",
+      "Color": "blue"
     },
     {
       "FuelId": 5,
-      "Name": "Unleaded 95"
+      "Name": "Unleaded 95",
+      "Color": "yellow"
     },
     {
       "FuelId": 8,
-      "Name": "Unleaded 98"
+      "Name": "Unleaded 98",
+      "Color": "red"
     },
     {
       "FuelId": 3,
-      "Name": "Diesel"
+      "Name": "Diesel",
+      "Color": "black"
     },
     {
       "FuelId": 14,
-      "Name": "Premium Diesel"
+      "Name": "Premium Diesel",
+      "Color": "black"
     },
     {
       "FuelId": 4,
-      "Name": "LPG"
+      "Name": "LPG",
+      "Color": "blue"
     },
     {
       "FuelId": 19,
-      "Name": "e85"
+      "Name": "e85",
+      "Color": "orange"
     }
   ]
 }
