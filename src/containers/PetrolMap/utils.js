@@ -37,19 +37,18 @@ export const updateLowestPrices = (layer, stations) => {
     (station) => station.Price <= lowestPrice.Price
   );
 
-  lowestStations.forEach((station) => {
+  const features = lowestStations.map((station) => {
     const point = new Point(fromLonLat([station.Lng, station.Lat], PROJECTION));
 
     let price = ((station.Price || 0) / 10).toFixed(1);
 
-    const marker = new Feature({
+    return new Feature({
       geometry: point,
       siteid: station.SiteId,
       name: station.Name,
       price: price || "loading...",
       placeid: station.GPI,
     });
-
-    source.addFeature(marker);
   });
+  source.addFeatures(features);
 };

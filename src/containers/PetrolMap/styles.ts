@@ -51,3 +51,27 @@ export const lowestStyle = new Style({
     padding: [2, 4, 2, 4],
   }),
 });
+
+export const customStyle = new Style({
+  image: new Icon({
+    anchor: [0.5, 1],
+    src: "red-pin.svg",
+    height: 48,
+  }),
+  text: new Text({
+    offsetY: 12,
+    font: "italic 12pt sans-serif",
+    fill: new Fill({
+      color: "#555",
+    }),
+    backgroundFill: new Fill({
+      color: "green",
+    }),
+    backgroundStroke: new Stroke({
+      color: "green",
+      width: 2,
+      miterLimit: 2,
+    }),
+    padding: [2, 4, 2, 4],
+  }),
+});

@@ -9,7 +9,11 @@ import { Feature } from "ol";
 import StationModal from "../../components/StationModal/StationModal";
 import { containsCoordinate } from "ol/extent";
 import LoadingSplash from "../../components/LoadingSplash/LoadingSplash";
-import { createLowestLayer, createStationLayer } from "./layers";
+import {
+  createCustomLayer,
+  createLowestLayer,
+  createStationLayer,
+} from "./layers";
 import { getSites, updateLowestPrices } from "./utils";
 
 const PROJECTION = "EPSG:4326";
@@ -20,7 +24,12 @@ const ENDPOINT =
     ? "http://localhost:3000"
     : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod";
 
-const PetrolMap = ({ fuelType, updateStations }) => {
+export const MODES = Object.freeze({
+  DEFAULT: 0,
+  ADD_HOME: 1,
+});
+
+const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
   const [allStations, setAllStations] = useState([]);
 
   const [visibleBounds, setVisibleBounds] = useState([0, 0, 0, 0]);
@@ -30,48 +39,47 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const [lowestLayer, setLowestLayer] = useState(new VectorLayer());
 
+  const [customLayer, setCustomLayer] = useState(new VectorLayer());
+
   const [modalDetails, setModalDetails] = useState({});
   const [modalVisible, setModalVisibility] = useState(false);
 
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
 
-  const stationRef = useRef();
-  stationRef.current = stationLayer;
-
   useEffect(() => {
     setStationsLayer(createStationLayer());
     setLowestLayer(createLowestLayer());
+    setCustomLayer(createCustomLayer());
     getSites(setStationsState, setAllStations);
   }, []);
 
   useEffect(() => {
     // may be null on first render
-    if (!stationRef.current || !stations || stations.length <= 0) return;
+    if (!stations || stations.length <= 0) return;
 
     const source = new VectorSource();
-    stationRef.current.setSource(source);
+    stationLayer.setSource(source);
     const filteredstations = stations.filter(
       (feature) => feature.Price && feature.Price < 9999
     );
 
-    filteredstations.forEach((feature) => {
+    const features = filteredstations.map((feature) => {
       const point = new Point(
         fromLonLat([feature.Lng, feature.Lat], PROJECTION)
       );
 
       let price = ((feature.Price || 0) / 10).toFixed(1);
 
-      const marker = new Feature({
+      return new Feature({
         geometry: point,
         siteid: feature.SiteId,
         name: feature.Name,
         price: price || "loading...",
         placeid: feature.GPI,
       });
-      source.addFeature(marker);
-      return marker;
     });
+    source.addFeatures(features);
 
     // console.log(`added ${filteredstations.length} stations.`);
   }, [stations, allStations]);
@@ -203,16 +211,28 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   };
 
   const onClick = (event, map) => {
-    map.forEachFeatureAtPixel(event.pixel, (feature) => {
-      const details = allStations.find((station) => {
-        if (station.SiteId == feature.get("siteid")) {
-          return station;
-        }
-      });
-      setModalDetails(details);
+    const clickMode = localStorage.getItem("clickMode") || 0;
 
-      setModalVisibility(true);
-    });
+    console.log("current mode", clickMode);
+    setClickMode(0);
+
+    if (clickMode == MODES.DEFAULT) {
+      map.forEachFeatureAtPixel(event.pixel, (feature) => {
+        const details = allStations.find((station) => {
+          if (station.SiteId == feature.get("siteid")) {
+            return station;
+          }
+        });
+        setModalDetails(details);
+
+        setModalVisibility(true);
+      });
+    } else if (clickMode === MODES.ADD_HOME) {
+      map.forEachFeatureAtPixel(event.pixel, (feature) => {});
+
+      // reset the mode.
+      setClickMode(0);
+    }
   };
 
   const onInit = (map) => {
@@ -241,7 +261,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       )}
       <MapContainer
         layer={stationLayer}
-        layers={[stationLayer, lowestLayer]}
+        layers={[stationLayer, lowestLayer, customLayer]}
         onInit={onInit}
         onClick={onClick}
         onMove={onMove}

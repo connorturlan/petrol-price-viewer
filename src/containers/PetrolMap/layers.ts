@@ -27,3 +27,17 @@ export const createLowestLayer = () => {
     },
   });
 };
+
+export const createCustomLayer = () => {
+  const initialLowestSource = new VectorSource();
+
+  initialLowestSource.addFeatures([]);
+
+  return new VectorLayer({
+    source: initialLowestSource,
+    style: () => {
+      lowestStyle.getText().setText("Home");
+      return lowestStyle;
+    },
+  });
+};

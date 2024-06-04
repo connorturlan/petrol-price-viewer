@@ -9,15 +9,9 @@ import { getCookie, setCookie } from "./utils/cookies";
 import GraphModal from "./components/GraphModal/GraphModal";
 import ToolBar from "./containers/ToolBar/ToolBar";
 import LoginControl from "./components/LoginControl/LoginControl";
-import PetrolMap from "./containers/PetrolMap/PetrolMap";
+import PetrolMap, { MODES } from "./containers/PetrolMap/PetrolMap";
 
 const DEFAULT_FUEL_TYPE = 1;
-
-const endpoint =
-  import.meta.env.VITE_LOCAL == "TRUE" ||
-  import.meta.env.VITE_LOCAL_API == "TRUE"
-    ? "http://localhost:3000"
-    : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod";
 
 function App() {
   // set intial state
@@ -28,6 +22,8 @@ function App() {
   const [modalVisible, setModalVisibility] = useState(false);
 
   const [warningVisible, setWarning] = useState(false);
+
+  const [clickMode, setClickMode] = useState(0);
 
   const initialFuelType =
     parseInt(getCookie("fuelType")) ||
@@ -45,6 +41,11 @@ function App() {
   useEffect(() => {
     setCookie("fuelType", fuelType, 365);
   }, [fuelType]);
+
+  useEffect(() => {
+    console.log("setting mode", clickMode);
+    localStorage.setItem("clickMode", clickMode);
+  }, [clickMode]);
 
   return (
     <div className={styles.App}>
@@ -71,6 +72,7 @@ function App() {
       <PetrolMap
         fuelType={fuelType}
         updateStations={setMapFeatures}
+        setClickMode={setClickMode}
       ></PetrolMap>
 
       {warningVisible && (
@@ -97,6 +99,13 @@ function App() {
         </PriceList>
         <GraphModal />
         <LoginControl />
+        <button
+          onClick={() => {
+            setClickMode(MODES.ADD_HOME);
+          }}
+        >
+          Add Home
+        </button>
       </ToolBar>
     </div>
   );
