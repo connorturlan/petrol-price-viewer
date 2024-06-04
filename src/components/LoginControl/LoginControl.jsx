@@ -1,15 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./LoginControl.module.scss";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
+import { getCookie } from "../../utils/cookies";
 
 const LoginControl = (props) => {
-  const [user, setUser] = useState([]);
-  const [profile, setProfile] = useState([]);
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+
+  const ref = useRef(0);
 
   const login = useGoogleLogin({
     onSuccess: (res) => setUser(res),
     onError: (err) => console.error("login failed:", err),
   });
+
+  const logout = () => {
+    googleLogout();
+    setProfile(null);
+  };
 
   useEffect(() => {
     if (!user) {
@@ -35,17 +43,17 @@ const LoginControl = (props) => {
       });
   }, [user]);
 
-  const logout = () => {
-    googleLogout();
-    setProfile(null);
-  };
-
   return (
     <>
-      {profile ? (
+      {profile != undefined ? (
         <button className={styles.LoginControl} onClick={logout}>
-          <img src={profile.picture} className={styles.LoginControl_Image} />
-          {/* <p>{profile.given_name || "user"}</p> */}
+          <img
+            src={
+              profile.picture ||
+              "account_circle_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+            }
+            className={styles.LoginControl_Image}
+          />
           <p>Logout</p>
         </button>
       ) : (
