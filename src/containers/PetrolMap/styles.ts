@@ -55,7 +55,7 @@ export const lowestStyle = new Style({
 export const customStyle = new Style({
   image: new Icon({
     anchor: [0.5, 1],
-    src: "red-pin.svg",
+    src: "home_pin_24dp_FILL0_wght400_GRAD0_opsz24_dkgreen.svg",
     height: 48,
   }),
   text: new Text({

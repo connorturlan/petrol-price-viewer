@@ -100,6 +100,7 @@ function App() {
         </PriceList>
         <GraphModal />
         <LoginControl setUserProfile={setProfile} />
+        {/* Set Home Control */}
         {profile && (
           <button
             className={styles.SetHome}

@@ -14,7 +14,7 @@ const LoginControl = ({ setUserProfile }) => {
 
   const logout = () => {
     googleLogout();
-    setUserProfile(null);
+    setProfile(null);
   };
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const LoginControl = ({ setUserProfile }) => {
     )
       .then(async (res) => {
         const json = await res.json();
-        setUserProfile(json);
+        setProfile(json);
         console.log("login complete:", json);
       })
       .catch((err) => {
@@ -42,6 +42,7 @@ const LoginControl = ({ setUserProfile }) => {
   }, [user]);
 
   useEffect(() => {
+    setUserProfile(profile);
     localStorage.setItem("userProfile", profile);
   }, [profile]);
 

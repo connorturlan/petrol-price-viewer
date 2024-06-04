@@ -224,14 +224,6 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
   const onClick = (event, map) => {
     const clickMode = localStorage.getItem("clickMode") || 0;
 
-    console.log(
-      "current mode",
-      clickMode,
-      clickMode == MODES.DEFAULT,
-      clickMode == MODES.ADD_HOME
-    );
-    setClickMode(0);
-
     if (clickMode == MODES.DEFAULT) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
         const details = allStations.find((station) => {
@@ -244,8 +236,6 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
         setModalVisibility(true);
       });
     } else if (clickMode == MODES.ADD_HOME) {
-      map.forEachFeatureAtPixel(event.pixel, (feature) => {});
-      console.log(event);
       setHome(event);
       // reset the mode.
       setClickMode(0);
