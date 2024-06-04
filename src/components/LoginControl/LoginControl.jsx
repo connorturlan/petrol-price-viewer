@@ -3,11 +3,9 @@ import styles from "./LoginControl.module.scss";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { getCookie } from "../../utils/cookies";
 
-const LoginControl = (props) => {
+const LoginControl = ({ setUserProfile }) => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
-
-  const ref = useRef(0);
 
   const login = useGoogleLogin({
     onSuccess: (res) => setUser(res),
@@ -16,7 +14,7 @@ const LoginControl = (props) => {
 
   const logout = () => {
     googleLogout();
-    setProfile(null);
+    setUserProfile(null);
   };
 
   useEffect(() => {
@@ -35,13 +33,17 @@ const LoginControl = (props) => {
     )
       .then(async (res) => {
         const json = await res.json();
-        setProfile(json);
+        setUserProfile(json);
         console.log("login complete:", json);
       })
       .catch((err) => {
         console.error("Error while getting profile:", err);
       });
   }, [user]);
+
+  useEffect(() => {
+    localStorage.setItem("userProfile", profile);
+  }, [profile]);
 
   return (
     <>

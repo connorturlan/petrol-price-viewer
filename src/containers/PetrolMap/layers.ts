@@ -1,6 +1,9 @@
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { defaultStyle, lowestStyle } from "./styles";
+import { customStyle, defaultStyle, lowestStyle } from "./styles";
+import { Feature } from "ol";
+import { Point } from "ol/geom";
+import { fromLonLat } from "ol/proj";
 
 export const createStationLayer = () => {
   const initialSource = new VectorSource();
@@ -31,13 +34,19 @@ export const createLowestLayer = () => {
 export const createCustomLayer = () => {
   const initialLowestSource = new VectorSource();
 
-  initialLowestSource.addFeatures([]);
+  const point = new Point(fromLonLat([138.599503, -34.92123], "EPSG:4326"));
+
+  const feature = new Feature({
+    geometry: point,
+  });
+
+  initialLowestSource.addFeature(feature);
 
   return new VectorLayer({
     source: initialLowestSource,
     style: () => {
-      lowestStyle.getText().setText("Home");
-      return lowestStyle;
+      customStyle.getText().setText("Home");
+      return customStyle;
     },
   });
 };

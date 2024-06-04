@@ -210,10 +210,26 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
     setStations(newStations);
   };
 
+  const setHome = (event) => {
+    const source = new VectorSource();
+    const point = new Point(event.coordinate, "EPSG:4326");
+    const feature = new Feature({
+      geometry: point,
+    });
+
+    source.addFeature(feature);
+    customLayer.setSource(source);
+  };
+
   const onClick = (event, map) => {
     const clickMode = localStorage.getItem("clickMode") || 0;
 
-    console.log("current mode", clickMode);
+    console.log(
+      "current mode",
+      clickMode,
+      clickMode == MODES.DEFAULT,
+      clickMode == MODES.ADD_HOME
+    );
     setClickMode(0);
 
     if (clickMode == MODES.DEFAULT) {
@@ -227,9 +243,10 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
 
         setModalVisibility(true);
       });
-    } else if (clickMode === MODES.ADD_HOME) {
+    } else if (clickMode == MODES.ADD_HOME) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {});
-
+      console.log(event);
+      setHome(event);
       // reset the mode.
       setClickMode(0);
     }

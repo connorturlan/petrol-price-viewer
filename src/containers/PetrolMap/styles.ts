@@ -62,15 +62,16 @@ export const customStyle = new Style({
     offsetY: 12,
     font: "italic 12pt sans-serif",
     fill: new Fill({
-      color: "#555",
+      color: "black",
     }),
     backgroundFill: new Fill({
-      color: "green",
+      color: "white",
     }),
     backgroundStroke: new Stroke({
       color: "green",
       width: 2,
       miterLimit: 2,
+      lineCap: "butt",
     }),
     padding: [2, 4, 2, 4],
   }),

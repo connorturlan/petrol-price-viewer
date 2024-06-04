@@ -23,6 +23,7 @@ function App() {
 
   const [warningVisible, setWarning] = useState(false);
 
+  const [profile, setProfile] = useState(null);
   const [clickMode, setClickMode] = useState(0);
 
   const initialFuelType =
@@ -98,14 +99,22 @@ function App() {
             ))}
         </PriceList>
         <GraphModal />
-        <LoginControl />
-        <button
-          onClick={() => {
-            setClickMode(MODES.ADD_HOME);
-          }}
-        >
-          Add Home
-        </button>
+        <LoginControl setUserProfile={setProfile} />
+        {profile && (
+          <button
+            className={styles.SetHome}
+            onClick={() => {
+              setClickMode(MODES.ADD_HOME);
+            }}
+            disabled={clickMode == MODES.ADD_HOME}
+          >
+            <img
+              src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+              className={styles.SetHome_Image}
+            ></img>
+            <p>Set</p>
+          </button>
+        )}
       </ToolBar>
     </div>
   );
