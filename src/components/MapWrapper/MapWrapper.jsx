@@ -21,9 +21,9 @@ import Fill from "ol/style/Fill";
 import MapRenderer from "ol/renderer/Map";
 import Stroke from "ol/style/Stroke";
 import { containsCoordinate } from "ol/extent";
+import { PROJECTION } from "../../utils/defaults";
 
 const mapCenter = [138.599503, -34.92123];
-const projection = "EPSG:4326";
 
 function MapWrapper({
   features,
@@ -137,14 +137,14 @@ function MapWrapper({
     });
 
     // let marker = new Feature({
-    //   geometry: new Point(fromLonLat(mapCenter, projection)),
+    //   geometry: new Point(fromLonLat(mapCenter, PROJECTION)),
     //   name: "hello, world!",
     // });
     // initalLowestLayer.getSource().addFeature(marker);
 
     // create the map view.
     const view = new View({
-      projection: projection,
+      projection: PROJECTION,
       center: mapCenter,
       zoom: 13,
     });
@@ -205,7 +205,7 @@ function MapWrapper({
 
     filteredFeatures.forEach((feature) => {
       const point = new Point(
-        fromLonLat([feature.Lng, feature.Lat], projection)
+        fromLonLat([feature.Lng, feature.Lat], PROJECTION)
       );
 
       let price = ((feature.Price || 0) / 10).toFixed(1);
@@ -237,7 +237,7 @@ function MapWrapper({
 
     lowestSites.forEach((feature) => {
       const point = new Point(
-        fromLonLat([feature.Lng, feature.Lat], projection)
+        fromLonLat([feature.Lng, feature.Lat], PROJECTION)
       );
 
       let price = ((feature.Price || 0) / 10).toFixed(1);

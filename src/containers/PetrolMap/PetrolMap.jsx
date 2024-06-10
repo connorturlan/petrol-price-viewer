@@ -15,14 +15,7 @@ import {
   createStationLayer,
 } from "./layers";
 import { getSites, updateLowestPrices } from "./utils";
-
-const PROJECTION = "EPSG:4326";
-
-const ENDPOINT =
-  import.meta.env.VITE_LOCAL == "TRUE" ||
-  import.meta.env.VITE_LOCAL_API == "TRUE"
-    ? "http://localhost:3000"
-    : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod";
+import { ENDPOINT, PROJECTION } from "../../utils/defaults";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -110,6 +103,11 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
       .filter((station) => {
         return !station.Price;
       })
+      // .filter((station) => {
+      //   return !stations.some((existingStation) => {
+      //     return existingStation.SiteId === station.SiteId;
+      //   });
+      // })
       .filter((station) => {
         return containsCoordinate(visibleBounds, [station.Lng, station.Lat]);
       })
@@ -207,7 +205,7 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
       return station;
     });
 
-    setStations(newStations);
+    setStations([]);
   };
 
   const setHome = (event) => {

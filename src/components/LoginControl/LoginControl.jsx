@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./LoginControl.module.scss";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { getCookie } from "../../utils/cookies";
+import { ENDPOINT } from "../../utils/defaults";
 
 const LoginControl = ({ setUserProfile }) => {
   const [user, setUser] = useState(null);
@@ -11,6 +12,53 @@ const LoginControl = ({ setUserProfile }) => {
     onSuccess: (res) => setUser(res),
     onError: (err) => console.error("login failed:", err),
   });
+
+  const handleLogin = async (profileData) => {
+    if (!profileData) return;
+
+    const userData = {
+      UserID: profileData.id,
+      GoogleID: profileData.id,
+    };
+
+    console.log(profileData);
+
+    const res = await fetch(ENDPOINT + "/login" + `?userid=${userData.UserID}`);
+    if (res.status != 202) {
+      console.error("user failed to login.");
+      if (res.status != 403) {
+        return;
+      }
+
+      if (
+        window.confirm(
+          "You're not a registered user, would you like to register?"
+        )
+      ) {
+        register(profileData, userData);
+        return;
+      }
+
+      setUser(null);
+      setProfile(null);
+    }
+  };
+
+  const register = async (profileData, userData) => {
+    const body = JSON.stringify(userData);
+
+    const res = await fetch(ENDPOINT + "/auth" + `?userid=${userData.UserID}`, {
+      method: "POST",
+      body: body,
+    });
+
+    if (res.status != 202) {
+      console.error("error while registering user.");
+      return;
+    }
+
+    handleLogin(profileData);
+  };
 
   const logout = () => {
     googleLogout();
@@ -42,6 +90,8 @@ const LoginControl = ({ setUserProfile }) => {
   }, [user]);
 
   useEffect(() => {
+    handleLogin(profile);
+
     setUserProfile(profile);
     localStorage.setItem("userProfile", profile);
   }, [profile]);

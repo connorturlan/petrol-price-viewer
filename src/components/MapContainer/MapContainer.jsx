@@ -6,9 +6,9 @@ import Map from "ol/Map";
 import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
 import XYZ from "ol/source/XYZ";
+import { PROJECTION } from "../../utils/defaults";
 
 const MAP_CENTER = [138.599503, -34.92123];
-const PROJECTION = "EPSG:4326";
 
 const MapContainer = ({ layers, onInit, onClick, onMove }) => {
   const [map, setMap] = useState();

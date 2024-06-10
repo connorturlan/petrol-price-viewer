@@ -10,6 +10,7 @@ import GraphModal from "./components/GraphModal/GraphModal";
 import ToolBar from "./containers/ToolBar/ToolBar";
 import LoginControl from "./components/LoginControl/LoginControl";
 import PetrolMap, { MODES } from "./containers/PetrolMap/PetrolMap";
+import SettingsModal from "./containers/SettingsModal/SettingsModal";
 
 const DEFAULT_FUEL_TYPE = 1;
 
@@ -37,6 +38,18 @@ function App() {
 
   const showModal = () => {
     setModalVisibility(true);
+  };
+
+  const clickModeTip = () => {
+    switch (clickMode) {
+      default:
+      case 0:
+        return "Nothing";
+      case 1:
+        return "Setting Home...";
+      case 2:
+        return "Placing Work...";
+    }
   };
 
   useEffect(() => {
@@ -100,23 +113,25 @@ function App() {
         </PriceList>
         <GraphModal />
         <LoginControl setUserProfile={setProfile} />
-        {/* Set Home Control */}
         {profile && (
-          <button
-            className={styles.SetHome}
-            onClick={() => {
-              setClickMode(MODES.ADD_HOME);
-            }}
-            disabled={clickMode == MODES.ADD_HOME}
-          >
-            <img
-              src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-              className={styles.SetHome_Image}
-            ></img>
-            <p>Set</p>
-          </button>
+          <SettingsModal clickMode={clickMode} setClickMode={setClickMode} />
         )}
       </ToolBar>
+      {clickMode != 0 && (
+        <>
+          <div className={styles.App__Active}></div>
+          <div className={styles.App_Info}>
+            <p>{clickModeTip()}</p>
+            <button
+              onClick={() => {
+                setClickMode(0);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

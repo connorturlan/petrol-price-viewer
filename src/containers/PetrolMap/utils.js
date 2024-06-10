@@ -2,13 +2,7 @@ import { Feature } from "ol";
 import { Point } from "ol/geom";
 import { fromLonLat } from "ol/proj";
 import VectorSource from "ol/source/Vector";
-
-const ENDPOINT =
-  import.meta.env.VITE_LOCAL == "TRUE" ||
-  import.meta.env.VITE_LOCAL_API == "TRUE"
-    ? "http://localhost:3000"
-    : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod";
-const PROJECTION = "EPSG:4326";
+import { ENDPOINT, PROJECTION } from "../../utils/defaults";
 
 export const getSites = async (setLoading, setStations) => {
   setLoading(true);

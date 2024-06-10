@@ -3,14 +3,9 @@ import styles from "./GraphModal.module.scss";
 import { LineChart } from "@mui/x-charts";
 // import dataset from "./dataset.json";
 import { getFuelTypeColor, getFuelTypeName } from "../../utils/fueltypes";
+import { ENDPOINT } from "../../utils/defaults";
 
 const FUELTYPES = [2, 8, 3, 12];
-
-const endpoint =
-  import.meta.env.VITE_LOCAL == "TRUE" ||
-  import.meta.env.VITE_LOCAL_HISTORY == "TRUE"
-    ? "http://localhost:3000"
-    : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod";
 
 const GraphModal = () => {
   const [visible, setVisible] = useState(false);
@@ -42,7 +37,7 @@ const GraphModal = () => {
     setTimeout(() => {}, 1_000);
 
     const getHistoricPrices = async () => {
-      const res = await fetch(endpoint + "/history");
+      const res = await fetch(ENDPOINT + "/history");
       const json = await res.json();
       processPriceHistoryData(json);
     };
