@@ -103,11 +103,6 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
       .filter((station) => {
         return !station.Price;
       })
-      // .filter((station) => {
-      //   return !stations.some((existingStation) => {
-      //     return existingStation.SiteId === station.SiteId;
-      //   });
-      // })
       .filter((station) => {
         return containsCoordinate(visibleBounds, [station.Lng, station.Lat]);
       })
@@ -116,7 +111,7 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
     if (body.length >= 200) {
       console.warn("request body length exceeds 200.");
       window.alert("Search area too large, try zooming in.");
-      setLoading(false);
+      setPricesState(false);
       return;
     }
 
@@ -138,7 +133,7 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
           if (accepted) return;
 
           window.alert("Prices request timed out, try again later.");
-          setLoading(false);
+          setPricesState(false);
           reject();
           return;
         }, 5_000);
