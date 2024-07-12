@@ -7,7 +7,7 @@ import { fromLonLat } from "ol/proj";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { ENDPOINT } from "../../utils/defaults";
-import { ObjectIsEmpty } from "../../utils/utils";
+import { Capitalize, ObjectIsEmpty } from "../../utils/utils";
 
 export const createStationLayer = () => {
   const initialSource = new VectorSource();
@@ -53,8 +53,12 @@ export const addPOIs = async (source, profile) => {
 
   // get the user's POIS.
   const res = await fetch(`${ENDPOINT}/poi?userid=${profile.id}`);
-  const json = (await res.json()) as object;
+  if (res.status != 200) {
+    addDefaultHome(source);
+    return;
+  }
 
+  const json = (await res.json()) as object;
   Array.from(Object.values(json)).forEach((obj) => {
     const point = new Point(fromLonLat([obj.Lat, obj.Lng], "EPSG:4326"));
     const feature = new Feature({
@@ -65,7 +69,7 @@ export const addPOIs = async (source, profile) => {
   });
 };
 
-// createCustomLayer creates the POI layer.
+// createCustomLayer creates the POI layer
 export const createCustomLayer = (profile) => {
   console.log("creating custom layer");
 
@@ -75,8 +79,10 @@ export const createCustomLayer = (profile) => {
 
   return new VectorLayer({
     source: initialLowestSource,
-    style: () => {
-      customStyle.getText().setText("Home");
+    style: (feature) => {
+      customStyle
+        .getText()
+        .setText([`${Capitalize(feature.get("name") || "POI")}`, ""]);
       return customStyle;
     },
   });
