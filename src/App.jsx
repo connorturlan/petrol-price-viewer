@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styles from "./App.module.scss";
 import fueltypes from "./assets/fueltypes.json";
 import "./App.css";
@@ -12,6 +12,8 @@ import LoginControl from "./components/LoginControl/LoginControl";
 import PetrolMap, { MODES } from "./containers/PetrolMap/PetrolMap";
 import SettingsModal from "./containers/SettingsModal/SettingsModal";
 import { ENDPOINT } from "./utils/defaults";
+import UserProvider, { UserContext } from "./contexts/UserContext";
+import { AppContext } from "./contexts/AppContext";
 
 const DEFAULT_FUEL_TYPE = 1;
 
@@ -25,46 +27,8 @@ function App() {
 
   const [warningVisible, setWarning] = useState(false);
 
-  const [profile, setProfile] = useState(null);
-  const [clickMode, setClickMode] = useState(0);
-
-  const setHome = async (coord) => {
-    // if (!profile) {
-    //   window.alert("you are not logged in.");
-    //   return;
-    // }
-    const profile = {
-      id: "103543322161248628853",
-    };
-    console.log(profile);
-
-    const sites = {
-      home: {
-        Name: "home",
-        Lat: coord[0],
-        Lng: coord[1],
-      },
-    };
-
-    const body = JSON.stringify(sites);
-
-    const res = await fetch(`${ENDPOINT}/poi?userid=${profile.id}`, {
-      method: "POST",
-      body,
-    });
-
-    const json = await res.json();
-
-    console.log(res.status, res.statusText);
-  };
-
-  const setUserProfile = (profile) => {
-    setProfile(profile);
-  };
-
-  useEffect(() => {
-    console.log("setting profile:", profile);
-  }, [profile]);
+  const { profile } = useContext(UserContext);
+  const { clickMode, setClickMode } = useContext(AppContext);
 
   const initialFuelType =
     parseInt(getCookie("fuelType")) ||
@@ -113,14 +77,6 @@ function App() {
             );
           })}
         </select>
-        <button
-          onClick={() => {
-            console.log(profile);
-            setHome();
-          }}
-        >
-          Profile
-        </button>
       </div>
 
       {modalVisible && (
@@ -133,8 +89,6 @@ function App() {
       <PetrolMap
         fuelType={fuelType}
         updateStations={setMapFeatures}
-        setClickMode={setClickMode}
-        setHome={setHome}
       ></PetrolMap>
 
       {warningVisible && (
@@ -160,10 +114,8 @@ function App() {
             ))}
         </PriceList>
         <GraphModal />
-        <LoginControl setUserProfile={setUserProfile} />
-        {profile && (
-          <SettingsModal clickMode={clickMode} setClickMode={setClickMode} />
-        )}
+        <LoginControl />
+        <SettingsModal />
       </ToolBar>
       {clickMode != 0 && (
         <>

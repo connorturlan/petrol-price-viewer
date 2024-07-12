@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./LoginControl.module.scss";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { getCookie } from "../../utils/cookies";
 import { ENDPOINT } from "../../utils/defaults";
+import { UserContext } from "../../contexts/UserContext";
+import { ObjectIsEmpty } from "../../utils/utils";
 
-const LoginControl = ({ setUserProfile }) => {
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
+const LoginControl = () => {
+  const { user, setUser, profile, setProfile } = useContext(UserContext);
 
   const login = useGoogleLogin({
     onSuccess: (res) => setUser(res),
@@ -14,14 +15,12 @@ const LoginControl = ({ setUserProfile }) => {
   });
 
   const handleLogin = async (profileData) => {
-    if (!profileData) return;
+    if (ObjectIsEmpty(profileData)) return;
 
     const userData = {
       UserID: profileData.id,
       GoogleID: profileData.id,
     };
-
-    console.log(profileData);
 
     const res = await fetch(ENDPOINT + "/login" + `?userid=${userData.UserID}`);
     if (res.status != 202) {
@@ -35,8 +34,8 @@ const LoginControl = ({ setUserProfile }) => {
           "You're not a registered user, would you like to register?"
         )
       ) {
-        setUser(null);
-        setProfile(null);
+        setUser({});
+        setProfile({});
         return;
       }
 
@@ -62,11 +61,11 @@ const LoginControl = ({ setUserProfile }) => {
 
   const logout = () => {
     googleLogout();
-    setProfile(null);
+    setProfile({});
   };
 
   useEffect(() => {
-    if (!user) {
+    if (ObjectIsEmpty(user)) {
       return;
     }
 
@@ -81,7 +80,7 @@ const LoginControl = ({ setUserProfile }) => {
     )
       .then(async (res) => {
         const json = await res.json();
-        setProfile(json);
+        setProfile({ ...json });
         console.log("login complete:", json);
       })
       .catch((err) => {
@@ -91,12 +90,11 @@ const LoginControl = ({ setUserProfile }) => {
 
   useEffect(() => {
     handleLogin(profile);
-    setUserProfile(profile);
   }, [profile]);
 
   return (
     <>
-      {profile != undefined ? (
+      {!ObjectIsEmpty(profile) ? (
         <button className={styles.LoginControl} onClick={logout}>
           <img
             src={

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import MapContainer from "../../components/MapContainer/MapContainer";
 import styles from "./PetrolMap.module.scss";
 import VectorSource from "ol/source/Vector";
@@ -16,13 +16,19 @@ import {
 } from "./layers";
 import { getSites, updateLowestPrices } from "./utils";
 import { ENDPOINT, PROJECTION } from "../../utils/defaults";
+import { AppContext } from "../../contexts/AppContext";
+import { UserContext } from "../../contexts/UserContext";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
   ADD_HOME: 1,
 });
 
-const PetrolMap = ({ fuelType, updateStations, setClickMode, setHome }) => {
+const PetrolMap = ({ fuelType, updateStations }) => {
+  const { setClickMode } = useContext(AppContext);
+  const { setHome, profile } = useContext(UserContext);
+
+  const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
 
   const [visibleBounds, setVisibleBounds] = useState([0, 0, 0, 0]);
@@ -43,9 +49,18 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode, setHome }) => {
   useEffect(() => {
     setStationsLayer(createStationLayer());
     setLowestLayer(createLowestLayer());
-    setCustomLayer(createCustomLayer());
+    setCustomLayer(createCustomLayer(profile));
     getSites(setStationsState, setAllStations);
   }, []);
+
+  useEffect(() => {
+    triggerReload(false);
+    setCustomLayer(createCustomLayer(profile));
+  }, [reload]);
+
+  useEffect(() => {
+    triggerReload(true);
+  }, [profile]);
 
   useEffect(() => {
     // may be null on first render
@@ -231,7 +246,7 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode, setHome }) => {
     } else if (clickMode == MODES.ADD_HOME) {
       createHomeFeature(event);
       // post the new home.
-      setHome(event.coordinate);
+      setHome(profile, event.coordinate);
       // reset the mode.
       setClickMode(0);
     }
@@ -249,7 +264,13 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode, setHome }) => {
     setVisibleBounds(extent);
   };
 
-  if (!stationLayer || !lowestLayer || !allStations || allStations.length <= 0)
+  if (
+    reload ||
+    !stationLayer ||
+    !lowestLayer ||
+    !allStations ||
+    allStations.length <= 0
+  )
     return;
 
   return (
