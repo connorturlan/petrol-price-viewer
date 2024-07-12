@@ -31,16 +31,16 @@ const LoginControl = ({ setUserProfile }) => {
       }
 
       if (
-        window.confirm(
+        !window.confirm(
           "You're not a registered user, would you like to register?"
         )
       ) {
-        register(profileData, userData);
+        setUser(null);
+        setProfile(null);
         return;
       }
 
-      setUser(null);
-      setProfile(null);
+      register(profileData, userData);
     }
   };
 
@@ -91,9 +91,7 @@ const LoginControl = ({ setUserProfile }) => {
 
   useEffect(() => {
     handleLogin(profile);
-
     setUserProfile(profile);
-    localStorage.setItem("userProfile", profile);
   }, [profile]);
 
   return (

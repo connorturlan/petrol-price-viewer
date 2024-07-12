@@ -11,6 +11,7 @@ import ToolBar from "./containers/ToolBar/ToolBar";
 import LoginControl from "./components/LoginControl/LoginControl";
 import PetrolMap, { MODES } from "./containers/PetrolMap/PetrolMap";
 import SettingsModal from "./containers/SettingsModal/SettingsModal";
+import { ENDPOINT } from "./utils/defaults";
 
 const DEFAULT_FUEL_TYPE = 1;
 
@@ -26,6 +27,44 @@ function App() {
 
   const [profile, setProfile] = useState(null);
   const [clickMode, setClickMode] = useState(0);
+
+  const setHome = async (coord) => {
+    // if (!profile) {
+    //   window.alert("you are not logged in.");
+    //   return;
+    // }
+    const profile = {
+      id: "103543322161248628853",
+    };
+    console.log(profile);
+
+    const sites = {
+      home: {
+        Name: "home",
+        Lat: coord[0],
+        Lng: coord[1],
+      },
+    };
+
+    const body = JSON.stringify(sites);
+
+    const res = await fetch(`${ENDPOINT}/poi?userid=${profile.id}`, {
+      method: "POST",
+      body,
+    });
+
+    const json = await res.json();
+
+    console.log(res.status, res.statusText);
+  };
+
+  const setUserProfile = (profile) => {
+    setProfile(profile);
+  };
+
+  useEffect(() => {
+    console.log("setting profile:", profile);
+  }, [profile]);
 
   const initialFuelType =
     parseInt(getCookie("fuelType")) ||
@@ -74,6 +113,14 @@ function App() {
             );
           })}
         </select>
+        <button
+          onClick={() => {
+            console.log(profile);
+            setHome();
+          }}
+        >
+          Profile
+        </button>
       </div>
 
       {modalVisible && (
@@ -87,6 +134,7 @@ function App() {
         fuelType={fuelType}
         updateStations={setMapFeatures}
         setClickMode={setClickMode}
+        setHome={setHome}
       ></PetrolMap>
 
       {warningVisible && (
@@ -112,7 +160,7 @@ function App() {
             ))}
         </PriceList>
         <GraphModal />
-        <LoginControl setUserProfile={setProfile} />
+        <LoginControl setUserProfile={setUserProfile} />
         {profile && (
           <SettingsModal clickMode={clickMode} setClickMode={setClickMode} />
         )}

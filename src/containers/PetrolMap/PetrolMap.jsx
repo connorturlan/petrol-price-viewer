@@ -22,7 +22,7 @@ export const MODES = Object.freeze({
   ADD_HOME: 1,
 });
 
-const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
+const PetrolMap = ({ fuelType, updateStations, setClickMode, setHome }) => {
   const [allStations, setAllStations] = useState([]);
 
   const [visibleBounds, setVisibleBounds] = useState([0, 0, 0, 0]);
@@ -203,7 +203,7 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
     setStations([]);
   };
 
-  const setHome = (event) => {
+  const createHomeFeature = (event) => {
     const source = new VectorSource();
     const point = new Point(event.coordinate, "EPSG:4326");
     const feature = new Feature({
@@ -229,7 +229,9 @@ const PetrolMap = ({ fuelType, updateStations, setClickMode }) => {
         setModalVisibility(true);
       });
     } else if (clickMode == MODES.ADD_HOME) {
-      setHome(event);
+      createHomeFeature(event);
+      // post the new home.
+      setHome(event.coordinate);
       // reset the mode.
       setClickMode(0);
     }
