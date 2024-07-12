@@ -80,7 +80,7 @@ const LoginControl = () => {
     )
       .then(async (res) => {
         const json = await res.json();
-        setProfile({ ...json });
+        setProfile(json);
         console.log("login complete:", json);
       })
       .catch((err) => {
