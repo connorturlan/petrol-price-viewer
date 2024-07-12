@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styles from "./App.module.scss";
 import fueltypes from "./assets/fueltypes.json";
 import "./App.css";
@@ -11,6 +11,9 @@ import ToolBar from "./containers/ToolBar/ToolBar";
 import LoginControl from "./components/LoginControl/LoginControl";
 import PetrolMap, { MODES } from "./containers/PetrolMap/PetrolMap";
 import SettingsModal from "./containers/SettingsModal/SettingsModal";
+import { ENDPOINT } from "./utils/defaults";
+import UserProvider, { UserContext } from "./contexts/UserContext";
+import { AppContext } from "./contexts/AppContext";
 
 const DEFAULT_FUEL_TYPE = 1;
 
@@ -24,8 +27,8 @@ function App() {
 
   const [warningVisible, setWarning] = useState(false);
 
-  const [profile, setProfile] = useState(null);
-  const [clickMode, setClickMode] = useState(0);
+  const { profile } = useContext(UserContext);
+  const { clickMode, setClickMode } = useContext(AppContext);
 
   const initialFuelType =
     parseInt(getCookie("fuelType")) ||
@@ -86,7 +89,6 @@ function App() {
       <PetrolMap
         fuelType={fuelType}
         updateStations={setMapFeatures}
-        setClickMode={setClickMode}
       ></PetrolMap>
 
       {warningVisible && (
@@ -112,10 +114,8 @@ function App() {
             ))}
         </PriceList>
         <GraphModal />
-        <LoginControl setUserProfile={setProfile} />
-        {profile && (
-          <SettingsModal clickMode={clickMode} setClickMode={setClickMode} />
-        )}
+        <LoginControl />
+        <SettingsModal />
       </ToolBar>
       {clickMode != 0 && (
         <>

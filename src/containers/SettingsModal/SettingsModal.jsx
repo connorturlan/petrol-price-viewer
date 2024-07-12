@@ -1,9 +1,19 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import styles from "./SettingsModal.module.scss";
 import { MODES } from "../PetrolMap/PetrolMap";
+import { UserContext } from "../../contexts/UserContext";
+import { AppContext } from "../../contexts/AppContext";
+import { ObjectIsEmpty } from "../../utils/utils";
 
-const SettingsModal = ({ clickMode, setClickMode }) => {
+const SettingsModal = () => {
+  // validate that the user is logged in before showing.
+  const { profile } = useContext(UserContext);
+  const { clickMode, setClickMode } = useContext(AppContext);
   const [visible, setVisible] = useState(false);
+
+  if (ObjectIsEmpty(profile)) return <></>;
+
+  //
   return (
     <>
       {visible && (

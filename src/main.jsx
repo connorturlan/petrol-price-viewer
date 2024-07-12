@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import UserProvider from "./contexts/UserContext.jsx";
+import AppProvider from "./contexts/AppContext.jsx";
 
 let clientId =
   import.meta.env.VITE_LOCAL == "TRUE" ||
@@ -10,9 +12,13 @@ let clientId =
     : "216192949490-7fp8gs05dpg3r4nfv8mqgof7d77qd3fq.apps.googleusercontent.com"; // use prod creds.
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <GoogleOAuthProvider clientId={clientId}>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </GoogleOAuthProvider>
+  <AppProvider>
+    <UserProvider>
+      <GoogleOAuthProvider clientId={clientId}>
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      </GoogleOAuthProvider>
+    </UserProvider>
+  </AppProvider>
 );
