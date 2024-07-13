@@ -7,7 +7,7 @@ import { getFuelTypeName } from "../../utils/fueltypes";
 import LoadingSplash from "../LoadingSplash/LoadingSplash";
 
 function StationModal() {
-  const { siteId, unselectSite } = useContext(AppContext);
+  const { siteId, unselectSite, fuelType } = useContext(AppContext);
   const [siteDetails, setSiteDetails] = useState({});
 
   // hide the modal.
@@ -30,8 +30,16 @@ function StationModal() {
 
   const getSitePrices = () => {
     return Array.from(Object.values(siteDetails.FuelTypes)).map((record) => {
+      const className =
+        fuelType == record.FuelId
+          ? [
+              styles.StationModal_Prices_Row,
+              styles.StationModal_Prices_Row__Selected,
+            ].join(" ")
+          : styles.StationModal_Prices_Row;
+
       return (
-        <div className={styles.StationModal_Prices_Row} key={record.FuelId}>
+        <div className={className} key={record.FuelId}>
           <p>{getFuelTypeName(record.FuelId)}</p>
           <p>{((record.Price || 0) / 10).toFixed(1)}</p>
         </div>

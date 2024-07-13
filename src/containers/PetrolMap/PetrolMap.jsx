@@ -18,15 +18,18 @@ import { getSites, updateLowestPrices } from "./utils";
 import { ENDPOINT, PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
 import { UserContext } from "../../contexts/UserContext";
+import { ObjectIsEmpty } from "../../utils/utils";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
   ADD_HOME: 1,
 });
 
+const MAP_CENTER = [138.599503, -34.92123];
+
 const PetrolMap = ({ fuelType, updateStations }) => {
   const { setClickMode, selectSite } = useContext(AppContext);
-  const { setHome, profile } = useContext(UserContext);
+  const { setHome, profile, POI } = useContext(UserContext);
 
   const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
@@ -43,6 +46,11 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
 
+  const center =
+    !ObjectIsEmpty(profile) && !ObjectIsEmpty(POI) && !ObjectIsEmpty(POI.home)
+      ? [POI.home.Lat, POI.home.Lng]
+      : MAP_CENTER;
+
   useEffect(() => {
     setStationsLayer(createStationLayer());
     setLowestLayer(createLowestLayer());
@@ -51,6 +59,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   }, []);
 
   useEffect(() => {
+    if (!reload) return;
+
     triggerReload(false);
     setCustomLayer(createCustomLayer(profile));
   }, [reload]);
@@ -228,11 +238,12 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         selectSite(details.SiteId);
       });
     } else if (clickMode == MODES.ADD_HOME) {
-      createHomeFeature(event);
       // post the new home.
       setHome(profile, event.coordinate);
       // reset the mode.
       setClickMode(0);
+      // reset the map.
+      triggerReload(true);
     }
   };
 
@@ -263,6 +274,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       <MapContainer
         layer={stationLayer}
         layers={[stationLayer, lowestLayer, customLayer]}
+        mapCenter={center}
         onInit={onInit}
         onClick={onClick}
         onMove={onMove}

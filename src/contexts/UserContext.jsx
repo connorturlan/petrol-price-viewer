@@ -7,6 +7,7 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [profile, setProfile] = useState({});
+  const [POI, setPOI] = useState({});
 
   const postHome = async (body) => {
     // send the site update.
@@ -39,8 +40,18 @@ export const UserProvider = ({ children }) => {
     postHome(body);
   };
 
+  const updatePOIs = async () => {
+    const res = await fetch(`${ENDPOINT}/poi?userid=${profile.id}`);
+    if (res.status != 200) {
+      setPOI({});
+      return;
+    }
+    setPOI(await res.json());
+  };
+
   useEffect(() => {
     console.log("profile has been set:", profile);
+    updatePOIs();
   }, [profile]);
 
   const context = {
@@ -49,6 +60,7 @@ export const UserProvider = ({ children }) => {
     profile,
     setProfile,
     setHome,
+    POI,
   };
 
   return (

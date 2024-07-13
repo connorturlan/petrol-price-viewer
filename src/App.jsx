@@ -15,18 +15,12 @@ import { ENDPOINT } from "./utils/defaults";
 import UserProvider, { UserContext } from "./contexts/UserContext";
 import { AppContext } from "./contexts/AppContext";
 
-const DEFAULT_FUEL_TYPE = 1;
-
 function App() {
   // set intial state
   const [mapFeatures, setMapFeatures] = useState([]);
   const [warningVisible, setWarning] = useState(false);
-  const { clickMode, setClickMode, selectSite } = useContext(AppContext);
-
-  const initialFuelType =
-    parseInt(getCookie("fuelType")) ||
-    fueltypes["Fuels"][DEFAULT_FUEL_TYPE].FuelId;
-  const [fuelType, setFuelType] = useState(initialFuelType);
+  const { clickMode, setClickMode, selectSite, fuelType, setFuelType } =
+    useContext(AppContext);
 
   const handleFuelChange = (event) => {
     setFuelType(event.target.value);

@@ -8,9 +8,7 @@ import TileLayer from "ol/layer/Tile";
 import XYZ from "ol/source/XYZ";
 import { PROJECTION } from "../../utils/defaults";
 
-const MAP_CENTER = [138.599503, -34.92123];
-
-const MapContainer = ({ layers, onInit, onClick, onMove }) => {
+const MapContainer = ({ layers, onInit, onClick, onMove, mapCenter }) => {
   const [map, setMap] = useState();
 
   const renderCount = useRef(0);
@@ -25,7 +23,7 @@ const MapContainer = ({ layers, onInit, onClick, onMove }) => {
 
     const view = new View({
       projection: PROJECTION,
-      center: MAP_CENTER,
+      center: mapCenter,
       zoom: 13,
     });
 
