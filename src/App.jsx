@@ -20,15 +20,8 @@ const DEFAULT_FUEL_TYPE = 1;
 function App() {
   // set intial state
   const [mapFeatures, setMapFeatures] = useState([]);
-
-  const [modalSite, setModalSite] = useState(0);
-  const [modalDetails, setModalDetails] = useState({});
-  const [modalVisible, setModalVisibility] = useState(false);
-
   const [warningVisible, setWarning] = useState(false);
-
-  const { profile } = useContext(UserContext);
-  const { clickMode, setClickMode } = useContext(AppContext);
+  const { clickMode, setClickMode, selectSite } = useContext(AppContext);
 
   const initialFuelType =
     parseInt(getCookie("fuelType")) ||
@@ -37,10 +30,6 @@ function App() {
 
   const handleFuelChange = (event) => {
     setFuelType(event.target.value);
-  };
-
-  const showModal = () => {
-    setModalVisibility(true);
   };
 
   const clickModeTip = () => {
@@ -79,12 +68,7 @@ function App() {
         </select>
       </div>
 
-      {modalVisible && (
-        <StationModal
-          siteDetails={modalDetails}
-          setVisible={setModalVisibility}
-        />
-      )}
+      <StationModal />
 
       <PetrolMap
         fuelType={fuelType}
@@ -107,8 +91,7 @@ function App() {
                 name={feature.Name}
                 price={((feature.Price || 0) / 10).toFixed(1)}
                 showDetails={() => {
-                  setModalSite(feature.SiteId);
-                  showModal();
+                  selectSite(feature.SiteId);
                 }}
               />
             ))}

@@ -25,7 +25,7 @@ export const MODES = Object.freeze({
 });
 
 const PetrolMap = ({ fuelType, updateStations }) => {
-  const { setClickMode } = useContext(AppContext);
+  const { setClickMode, selectSite } = useContext(AppContext);
   const { setHome, profile } = useContext(UserContext);
 
   const [reload, triggerReload] = useState(false);
@@ -39,9 +39,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   const [lowestLayer, setLowestLayer] = useState(new VectorLayer());
 
   const [customLayer, setCustomLayer] = useState(new VectorLayer());
-
-  const [modalDetails, setModalDetails] = useState({});
-  const [modalVisible, setModalVisibility] = useState(false);
 
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
@@ -218,17 +215,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setStations([]);
   };
 
-  const createHomeFeature = (event) => {
-    const source = new VectorSource();
-    const point = new Point(event.coordinate, "EPSG:4326");
-    const feature = new Feature({
-      geometry: point,
-    });
-
-    source.addFeature(feature);
-    customLayer.setSource(source);
-  };
-
   const onClick = (event, map) => {
     const clickMode = localStorage.getItem("clickMode") || 0;
 
@@ -239,9 +225,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
             return station;
           }
         });
-        setModalDetails(details);
-
-        setModalVisibility(true);
+        selectSite(details.SiteId);
       });
     } else if (clickMode == MODES.ADD_HOME) {
       createHomeFeature(event);
@@ -275,13 +259,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   return (
     <>
-      <LoadingSplash fadeIn={loadingStations || loadingPrices} />
-      {modalVisible && (
-        <StationModal
-          siteDetails={modalDetails}
-          setVisible={setModalVisibility}
-        />
-      )}
+      <LoadingSplash fadeIn={loadingStations || loadingPrices} />{" "}
       <MapContainer
         layer={stationLayer}
         layers={[stationLayer, lowestLayer, customLayer]}

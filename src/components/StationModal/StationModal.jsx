@@ -1,38 +1,75 @@
+import { useContext, useEffect, useState } from "react";
 import styles from "./StationModal.module.scss";
+import { AppContext } from "../../contexts/AppContext";
+import { ENDPOINT } from "../../utils/defaults";
+import { ObjectIsEmpty } from "../../utils/utils";
+import { getFuelTypeName } from "../../utils/fueltypes";
+import LoadingSplash from "../LoadingSplash/LoadingSplash";
 
-function StationModal({ siteDetails, setVisible }) {
-  if (!siteDetails) {
-    return <></>;
-  }
+function StationModal() {
+  const { siteId, unselectSite } = useContext(AppContext);
+  const [siteDetails, setSiteDetails] = useState({});
 
-  return (
-    <div
-      className={styles.StationModal_Blackout}
-      onClick={() => {
-        setVisible(false);
-      }}
-    >
+  // hide the modal.
+  const hideModal = () => {
+    unselectSite();
+    setSiteDetails({});
+  };
+
+  // fetch the station details for the modal.
+  const getSiteDetails = async () => {
+    const res = await fetch(`${ENDPOINT}/station?siteid=${siteId}`);
+    if (res.status != 200) {
+      console.error("unable to get site details");
+      return;
+    }
+
+    const json = await res.json();
+    setSiteDetails(json);
+  };
+
+  const getSitePrices = () => {
+    return Array.from(Object.values(siteDetails.FuelTypes)).map((record) => {
+      return (
+        <div className={styles.StationModal_Prices_Row} key={record.FuelId}>
+          <p>{getFuelTypeName(record.FuelId)}</p>
+          <p>{((record.Price || 0) / 10).toFixed(1)}</p>
+        </div>
+      );
+    });
+  };
+
+  // get details for the modal to display.
+  useEffect(() => {
+    // catch falsey site ids.
+    if (!siteId) return;
+
+    // get the station details to display.
+    getSiteDetails();
+  }, [siteId]);
+
+  // if anything has a falsey value, return to prevent errors.
+  if (!siteId) return <></>;
+
+  return ObjectIsEmpty(siteDetails) ? (
+    <LoadingSplash />
+  ) : (
+    <div className={styles.StationModal_Blackout} onClick={hideModal}>
       <div
         className={styles.StationModal}
         onClick={(e) => {
           e.stopPropagation();
         }}
       >
-        <button
-          onClick={() => {
-            setVisible(false);
-          }}
-        >
-          X
-        </button>
+        <button onClick={hideModal}>X</button>
         <div className={styles.StationModal_Container}>
-          <p>Name:</p>
-          <p>{siteDetails.Name}</p>
-          <p>Price per litre:</p>
-          <p>{((siteDetails.Price || 0) / 10).toFixed(1)}</p>
+          <div className={styles.StationModal_Title}>
+            <h2>{siteDetails.Name}</h2>
+          </div>
+          <div className={styles.StationModal_Prices}>{getSitePrices()}</div>
           <p></p>
           <a
-            href={`https://maps.google.com/?q=place_id:${siteDetails.GPI}`}
+            href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
             target="_blank"
             className={styles.StationModal_Maps}
           >
