@@ -7,7 +7,7 @@ import { ObjectIsEmpty } from "../../utils/utils";
 
 const SettingsModal = () => {
   // validate that the user is logged in before showing.
-  const { profile } = useContext(UserContext);
+  const { profile, POI } = useContext(UserContext);
   const { clickMode, setClickMode } = useContext(AppContext);
   const [visible, setVisible] = useState(false);
 
@@ -30,12 +30,8 @@ const SettingsModal = () => {
             }}
           >
             <h2 className={styles.SettingsModal_Title}>Settings</h2>
-            <div
-              className={styles.SettingsModal_List}
-              onClick={() => {
-                setVisible(false);
-              }}
-            >
+            <div className={styles.SettingsModal_List}>
+              <h3>Points of Interest</h3>
               <button
                 className={styles.SetHome}
                 onClick={() => {
@@ -64,6 +60,16 @@ const SettingsModal = () => {
                 ></img>
                 <p>Set Work</p>
               </button>
+              <h3>Details</h3>
+              <div>
+                {Object.keys(POI).map((poi) => {
+                  return (
+                    <p key={poi}>
+                      {poi}: {POI[poi].Lat}, {POI[poi].Lng}
+                    </p>
+                  );
+                })}
+              </div>
             </div>
             <p>Touch anywhere to hide</p>
           </div>

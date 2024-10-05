@@ -12,9 +12,11 @@ import LoadingSplash from "../../components/LoadingSplash/LoadingSplash";
 import {
   createCustomLayer,
   createLowestLayer,
+  createOnRouteLayer,
   createStationLayer,
+  createWaypointLayer,
 } from "./layers";
-import { getSites, updateLowestPrices } from "./utils";
+import { getSites, updateLowestPrices, updateOnRoute } from "./utils";
 import { ENDPOINT, PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
 import { UserContext } from "../../contexts/UserContext";
@@ -41,8 +43,11 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   const [stationLayer, setStationsLayer] = useState(new VectorLayer());
 
   const [lowestLayer, setLowestLayer] = useState(new VectorLayer());
+  const [onRouteLayer, setOnRouteLayer] = useState(new VectorLayer());
 
   const [customLayer, setCustomLayer] = useState(new VectorLayer());
+
+  const [waypointLayer, setWaypointLayer] = useState(new VectorLayer());
 
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
@@ -55,20 +60,25 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   useEffect(() => {
     setStationsLayer(createStationLayer());
     setLowestLayer(createLowestLayer());
+    setOnRouteLayer(createOnRouteLayer());
     setCustomLayer(createCustomLayer(profile));
+    setWaypointLayer(createWaypointLayer(POI.home, POI.work));
     getSites(setStationsState, setAllStations);
   }, []);
 
   useEffect(() => {
+    console.log(`reloading state: ${reload}`);
     if (!reload) return;
-
-    triggerReload(false);
-    setCustomLayer(createCustomLayer(profile));
+    setTimeout(() => {
+      triggerReload(false);
+    }, 0);
   }, [reload]);
 
   useEffect(() => {
     triggerReload(true);
-  }, [profile]);
+    setCustomLayer(createCustomLayer(profile));
+    setWaypointLayer(createWaypointLayer(POI.home, POI.work));
+  }, [profile, POI]);
 
   useEffect(() => {
     // may be null on first render
@@ -109,12 +119,26 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     if (!stations || !visibleBounds) return;
     updateLowestPrices(lowestLayer, stations);
     updateStations && updateStations(stations);
+    updateOnRouteStations();
   }, [stations, visibleBounds]);
 
   useEffect(() => {
     resetFuelPrices();
     getSitePrices({ reload: true });
   }, [fuelType]);
+
+  const updateOnRouteStations = async () => {
+    if (!waypointLayer || !waypointLayer.getSource()) {
+      setTimeout(updateOnRouteStations, 1_000);
+      return;
+    }
+    const waypointFeatures = waypointLayer.getSource().getFeatures();
+    if (waypointFeatures.length <= 0) {
+      setTimeout(updateOnRouteStations, 1_000);
+      return;
+    }
+    updateOnRoute(onRouteLayer, waypointFeatures, stations);
+  };
 
   const getSitePrices = async ({ reload } = {}) => {
     // setWarning(false);
@@ -281,7 +305,15 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       <LoadingSplash fadeIn={loadingStations || loadingPrices} />{" "}
       <MapContainer
         layer={stationLayer}
-        layers={[stationLayer, lowestLayer, customLayer]}
+        layers={[
+          waypointLayer,
+          stationLayer,
+
+          onRouteLayer,
+          lowestLayer,
+
+          customLayer,
+        ]}
         mapCenter={center}
         onInit={onInit}
         onClick={onClick}

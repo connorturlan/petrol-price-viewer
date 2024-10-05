@@ -8,7 +8,7 @@ export const defaultStyle = new Style({
   image: new Icon({
     anchor: [0.5, 1],
     src: "red-pin.svg",
-    height: 32,
+    height: 24,
   }),
   text: new Text({
     offsetY: 12,
@@ -32,7 +32,7 @@ export const lowestStyle = new Style({
   image: new Icon({
     anchor: [0.5, 1],
     src: "red-pin.svg",
-    height: 48,
+    height: 40,
   }),
   text: new Text({
     offsetY: 12,
@@ -45,6 +45,30 @@ export const lowestStyle = new Style({
     }),
     backgroundStroke: new Stroke({
       color: "orange",
+      width: 2,
+      miterLimit: 2,
+    }),
+    padding: [2, 4, 2, 4],
+  }),
+});
+
+export const onRouteStyle = new Style({
+  image: new Icon({
+    anchor: [0.5, 1],
+    src: "red-pin.svg",
+    height: 40,
+  }),
+  text: new Text({
+    offsetY: 12,
+    font: "italic 12pt sans-serif",
+    fill: new Fill({
+      color: "#555",
+    }),
+    backgroundFill: new Fill({
+      color: "#CEC",
+    }),
+    backgroundStroke: new Stroke({
+      color: "#555",
       width: 2,
       miterLimit: 2,
     }),
@@ -71,6 +95,29 @@ export const customStyle = new Style({
       color: "green",
       width: 2,
       miterLimit: 2,
+      lineCap: "butt",
+    }),
+    padding: [2, 4, 2, 4],
+  }),
+});
+
+export const waypointStyle = new Style({
+  stroke: new Stroke({ color: "#038cfc60", width: 100 }),
+  fill: new Fill({
+    color: "#038cfc",
+  }),
+  text: new Text({
+    offsetY: 12,
+    font: "bold 12pt sans-serif",
+    fill: new Fill({
+      color: "#555",
+    }),
+    backgroundFill: new Fill({
+      color: "#EEE",
+    }),
+    backgroundStroke: new Stroke({
+      color: "#555",
+      width: 1,
       lineCap: "butt",
     }),
     padding: [2, 4, 2, 4],
