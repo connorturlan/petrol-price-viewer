@@ -17,5 +17,5 @@
 - [ ] add routed stations section to the price list
 - [ ] show when price was last updated
 - [ ] add rate limiting for requesting prices
-- [ ] add licence plate search
+- [ ] add licence plate search - https://docs.autograb.com.au/guide/auth/ - https://docs.autograb.com.au/guide/vehicle/
 - [ ] address search for home and work
