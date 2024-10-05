@@ -98,14 +98,13 @@ export const addPOIs = async (source, profile) => {
   });
 };
 
-const handleCustomLayer = (name, source) => {
+const handleCustomLayerStyles = (name, source) => {
   const style = new Style({
     text: customStyle.getText(),
     image: new Icon({
       anchor: [0.5, 1],
       src: source,
       height: 48,
-      rotateWithView: true,
     }),
   });
   style.getText().setText([`${Capitalize(name || "POI")}`, ""]);
@@ -125,17 +124,17 @@ export const createCustomLayer = (profile) => {
     style: (feature) => {
       switch (feature.get("name")) {
         case "home":
-          return handleCustomLayer(
+          return handleCustomLayerStyles(
             "home",
             "home_pin_24dp_FILL0_wght400_GRAD0_opsz24_dkgreen.svg"
           );
         case "work":
-          return handleCustomLayer(
+          return handleCustomLayerStyles(
             "work",
             "person_pin_circle_24dp_255290_FILL0_wght400_GRAD0_opsz24.svg"
           );
         default:
-          return handleCustomLayer(
+          return handleCustomLayerStyles(
             feature.get("name"),
             "location_on_24dp_8C1A10_FILL0_wght400_GRAD0_opsz24.svg"
           );
@@ -198,7 +197,7 @@ export const createWaypointLayer = (start, finish) => {
           getPointResolution(PROJECTION, resolution, extent) * 180_000;
 
         const stroke = waypointStyle.getStroke();
-        stroke.setWidth(500 / pointResolution);
+        stroke.setWidth(10);
         waypointStyle.setStroke(stroke);
         // Resolution = number of meters for a pixel (at least for EPSG 3857)
         return waypointStyle;

@@ -65,10 +65,10 @@ export const onRouteStyle = new Style({
       color: "#555",
     }),
     backgroundFill: new Fill({
-      color: "#CEC",
+      color: "#a0ebff",
     }),
     backgroundStroke: new Stroke({
-      color: "#555",
+      color: "#038cfc",
       width: 3,
     }),
     padding: [4, 6, 4, 6],
@@ -101,9 +101,9 @@ export const customStyle = new Style({
 });
 
 export const waypointStyle = new Style({
-  stroke: new Stroke({ color: "#038cfc60", width: 100 }),
+  stroke: new Stroke({ color: "#038cfcbb" }),
   fill: new Fill({
-    color: "#038cfc",
+    color: "#a0ebff",
   }),
   text: new Text({
     offsetY: 12,

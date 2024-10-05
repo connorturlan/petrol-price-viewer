@@ -57,6 +57,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
+  const [loadingRouting, setRoutingState] = useState(false);
 
   const center =
     !ObjectIsEmpty(profile) && !ObjectIsEmpty(POI) && !ObjectIsEmpty(POI.home)
@@ -134,16 +135,18 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   }, [fuelType]);
 
   const updateOnRouteStations = async () => {
-    if (!waypointLayer || !waypointLayer.getSource()) {
+    setRoutingState(true);
+    onRouteLayer.getSource().clear();
+    if (!onRouteLayer || !onRouteLayer.getSource()) {
       setTimeout(updateOnRouteStations, 1_000);
       return;
     }
 
     const routes = await getRoutesBetweenPoints(POI.home, POI.work);
-    onRouteLayer.getSource().clear();
     routes.forEach((route) => {
       updateOnRoute(onRouteLayer, route, stations);
     });
+    setRoutingState(false);
   };
 
   const getSitePrices = async ({ reload } = {}) => {
@@ -308,7 +311,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   return (
     <>
-      <LoadingSplash fadeIn={loadingStations || loadingPrices} />{" "}
+      <LoadingSplash
+        fadeIn={loadingStations || loadingPrices || loadingRouting}
+      />{" "}
       <MapContainer
         layer={stationLayer}
         layers={[
