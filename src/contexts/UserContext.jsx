@@ -8,7 +8,7 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   // const maybeUser = JSON.parse(getCookie("userdata"));
-  const maybeProfile = JSON.parse(getCookie("userprofile"));
+  const maybeProfile = JSON.parse(getCookie("userprofile") || "{}");
 
   const [user, setUser] = useState({});
   const [profile, setProfile] = useState(
