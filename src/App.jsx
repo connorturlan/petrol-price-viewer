@@ -14,6 +14,7 @@ import SettingsModal from "./containers/SettingsModal/SettingsModal";
 import { ENDPOINT } from "./utils/defaults";
 import UserProvider, { UserContext } from "./contexts/UserContext";
 import { AppContext } from "./contexts/AppContext";
+import WelcomeSplash from "./components/WelcomeSplash/WelcomeSplash";
 
 function App() {
   // set intial state
@@ -54,6 +55,8 @@ function App() {
 
   return (
     <div className={styles.App}>
+      <WelcomeSplash />
+
       <div className={styles.App_Label + " " + styles.App_FuelSelector}>
         <p>Select Fuel</p>
         <select onChange={handleFuelChange} value={fuelType}>

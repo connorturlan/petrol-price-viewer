@@ -68,7 +68,7 @@ const LoginControl = () => {
   const logout = () => {
     googleLogout();
     setProfile({});
-    setCookie("userprofile", JSON.stringify({}));
+    setCookie("userprofile", "");
   };
 
   useEffect(() => {
