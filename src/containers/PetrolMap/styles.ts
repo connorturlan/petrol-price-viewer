@@ -11,8 +11,8 @@ export const defaultStyle = new Style({
     height: 24,
   }),
   text: new Text({
-    offsetY: 12,
-    font: "bold 12pt sans-serif",
+    offsetY: 9,
+    font: "bold 9pt sans-serif",
     fill: new Fill({
       color: "#555",
     }),
@@ -69,10 +69,9 @@ export const onRouteStyle = new Style({
     }),
     backgroundStroke: new Stroke({
       color: "#555",
-      width: 2,
-      miterLimit: 2,
+      width: 3,
     }),
-    padding: [2, 4, 2, 4],
+    padding: [4, 6, 4, 6],
   }),
 });
 

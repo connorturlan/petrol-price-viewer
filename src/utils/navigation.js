@@ -20,7 +20,9 @@ export async function getWaypointsBetweenPoints(start, finish) {
   const geometry = body["routes"][0]["geometry"];
 
   // convert to points
-  const points = polyline.decode(geometry);
+  const points = polyline.decode(geometry).map(([lat, lng]) => {
+    return [lng, lat];
+  });
   console.log(points);
 
   // return points
@@ -29,6 +31,8 @@ export async function getWaypointsBetweenPoints(start, finish) {
 
 export async function getRoutesBetweenPoints(start, finish) {
   if (ObjectIsEmpty(start) || ObjectIsEmpty(finish)) return [];
+
+  console.log("getting routes.");
 
   // submit to OSRM
   const res = await fetch(
@@ -45,10 +49,11 @@ export async function getRoutesBetweenPoints(start, finish) {
 
   // convert to routes
   const routes = geometries.map((route) => {
-    const points = polyline.decode(route["geometry"]);
+    const points = polyline.decode(route["geometry"]).map(([lat, lng]) => {
+      return [lng, lat];
+    });
     return points;
   });
-  console.log(body, geometries, routes);
 
   // return routes
   return routes;

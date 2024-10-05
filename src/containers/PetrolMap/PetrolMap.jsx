@@ -16,11 +16,17 @@ import {
   createStationLayer,
   createWaypointLayer,
 } from "./layers";
-import { getSites, updateLowestPrices, updateOnRoute } from "./utils";
+import {
+  getFeaturesOnRoute,
+  getSites,
+  updateLowestPrices,
+  updateOnRoute,
+} from "./utils";
 import { ENDPOINT, PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
 import { UserContext } from "../../contexts/UserContext";
 import { ObjectIsEmpty } from "../../utils/utils";
+import { getRoutesBetweenPoints } from "../../utils/navigation";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -132,12 +138,18 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       setTimeout(updateOnRouteStations, 1_000);
       return;
     }
-    const waypointFeatures = waypointLayer.getSource().getFeatures();
-    if (waypointFeatures.length <= 0) {
-      setTimeout(updateOnRouteStations, 1_000);
-      return;
-    }
-    updateOnRoute(onRouteLayer, waypointFeatures, stations);
+    // const waypointFeatures = waypointLayer.getSource().getFeatures();
+    // if (waypointFeatures.length <= 0) {
+    //   setTimeout(updateOnRouteStations, 1_000);
+    //   return;
+    // }
+    // updateOnRoute(onRouteLayer, waypointFeatures, stations);
+
+    const routes = await getRoutesBetweenPoints(POI.home, POI.work);
+    onRouteLayer.getSource().clear();
+    routes.forEach((route) => {
+      updateOnRoute(onRouteLayer, route, stations);
+    });
   };
 
   const getSitePrices = async ({ reload } = {}) => {
@@ -306,8 +318,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       <MapContainer
         layer={stationLayer}
         layers={[
-          waypointLayer,
           stationLayer,
+          waypointLayer,
 
           onRouteLayer,
           lowestLayer,

@@ -67,27 +67,33 @@ export function getFeaturesOnRoute(route, stations) {
       const end = index < route.length - 1 && route[index + 1];
 
       if (end && getDistance(start, end) > 500) {
-        let iters = getDistance(start, end) / 250;
+        let iters = getDistance(start, end) / 100;
         for (let i = 0; i < iters; i++) {
           const point = lerpCoord(start, end, i / iters);
 
-          if (getDistance(point, coord) < 500) {
+          if (getDistance(point, coord) < 200) {
             return true;
           }
         }
         return false;
       }
 
-      return getDistance(start, coord) < 500;
+      return getDistance(start, coord) < 200;
     });
   });
 }
 
-export const updateOnRoute = async (layer, route, stations) => {
+export const updateOnRoute = (layer, route, stations) => {
   const source = layer.getSource();
-  source.clear();
+  // source.clear();
 
-  const features = stations.map((site) => {
+  // const routeCoords = route.map((waypoint) =>
+  //   waypoint.getGeometry().getCoordinates()
+  // );
+
+  const onRoute = getFeaturesOnRoute(route, stations);
+
+  const features = onRoute.map((site) => {
     const point = new Point(fromLonLat([site.Lng, site.Lat], PROJECTION));
 
     let price = ((site.Price || 0) / 10).toFixed(1);
@@ -101,50 +107,17 @@ export const updateOnRoute = async (layer, route, stations) => {
     });
   });
 
-  const validFeatures = features.filter((feature) => {
-    const featureCoord = feature.getGeometry().getCoordinates();
-
-    return route.some((waypoint, index) => {
-      const start = waypoint.getGeometry().getCoordinates();
-      const end =
-        index < route.length - 1 &&
-        route[index + 1].getGeometry().getCoordinates();
-
-      if (end && getDistance(start, end) > 500) {
-        let iters = getDistance(start, end) / 250;
-        for (let i = 0; i < iters; i++) {
-          const point = lerpCoord(start, end, i / iters);
-
-          // source.addFeature(
-          //   new Feature({
-          //     geometry: new Point(fromLonLat(point, PROJECTION)),
-          //     price: 0,
-          //   })
-          // );
-
-          if (getDistance(point, featureCoord) < 500) {
-            return true;
-          }
-        }
-        return false;
-      }
-
-      return getDistance(start, featureCoord) < 500;
-    });
-  });
-  console.log(`${validFeatures.length}/${features.length} features on route.`);
+  console.log(`${features.length}/${stations.length} features on route.`);
 
   // get the single lowest price.
-  // const lowestPrice = validFeatures.reduce(
-  //   (lowest, feature) =>
-  //     lowest.get("price") < feature.get("price") ? lowest : feature,
-  //   validFeatures[0]
-  // );
-  // source.addFeature(lowestPrice);
+  const lowestPrice = features.reduce(
+    (lowest, feature) =>
+      lowest.get("price") < feature.get("price") ? lowest : feature,
+    features[0]
+  );
+  source.addFeature(lowestPrice);
 
   // get the 10 lowest prices.
-  const lowestPrices = validFeatures.sort(
-    (a, b) => a.get("price") - b.get("price")
-  );
-  source.addFeatures(lowestPrices.slice(0, 4));
+  // const lowestPrices = features.sort((a, b) => a.get("price") - b.get("price"));
+  // source.addFeatures(lowestPrices.slice(0, 4));
 };

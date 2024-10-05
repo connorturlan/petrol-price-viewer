@@ -113,22 +113,15 @@ export const createCustomLayer = (profile) => {
 
 const addRoute = (source, waypoints) => {
   waypoints.forEach((coord) => {
-    const [lat, lng] = coord;
-    const point = new Point(fromLonLat([lng, lat], "EPSG:4326"));
+    const point = new Point(fromLonLat(coord, "EPSG:4326"));
     const feature = new Feature({
       geometry: point,
     });
     source.addFeature(feature);
   });
 
-  const points = waypoints.map((coord) => {
-    const [lat, lng] = coord;
-    // const point = new Point(fromLonLat([lng, lat], "EPSG:4326"));
-    return [lng, lat];
-  });
-
   const feature = new Feature({
-    geometry: new LineString(points),
+    geometry: new LineString(waypoints),
   });
 
   source.addFeature(feature);
