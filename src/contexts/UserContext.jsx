@@ -2,7 +2,6 @@ import { createContext, useEffect, useRef, useState } from "react";
 import { ENDPOINT } from "../utils/defaults";
 import { ObjectIsEmpty } from "../utils/utils";
 import { getCookie } from "../utils/cookies";
-import { getWaypointsBetweenPoints } from "../utils/navigation";
 
 export const UserContext = createContext();
 

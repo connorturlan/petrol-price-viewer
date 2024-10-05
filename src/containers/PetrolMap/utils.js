@@ -85,11 +85,6 @@ export function getFeaturesOnRoute(route, stations) {
 
 export const updateOnRoute = (layer, route, stations) => {
   const source = layer.getSource();
-  // source.clear();
-
-  // const routeCoords = route.map((waypoint) =>
-  //   waypoint.getGeometry().getCoordinates()
-  // );
 
   const onRoute = getFeaturesOnRoute(route, stations);
 

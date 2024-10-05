@@ -138,12 +138,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       setTimeout(updateOnRouteStations, 1_000);
       return;
     }
-    // const waypointFeatures = waypointLayer.getSource().getFeatures();
-    // if (waypointFeatures.length <= 0) {
-    //   setTimeout(updateOnRouteStations, 1_000);
-    //   return;
-    // }
-    // updateOnRoute(onRouteLayer, waypointFeatures, stations);
 
     const routes = await getRoutesBetweenPoints(POI.home, POI.work);
     onRouteLayer.getSource().clear();

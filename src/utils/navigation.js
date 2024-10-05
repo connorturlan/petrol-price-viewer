@@ -8,7 +8,7 @@ export async function getWaypointsBetweenPoints(start, finish) {
 
   // submit to OSRM
   const res = await fetch(
-    `http://router.project-osrm.org/route/v1/driving/${start.Lat},${start.Lng};${finish.Lat},${finish.Lng}`
+    `https://router.project-osrm.org/route/v1/driving/${start.Lat},${start.Lng};${finish.Lat},${finish.Lng}`
   );
   if (res.status != 200) {
     console.warn(`unable to get data from OSRM, code:${res.status}`);
@@ -36,7 +36,7 @@ export async function getRoutesBetweenPoints(start, finish) {
 
   // submit to OSRM
   const res = await fetch(
-    `http://router.project-osrm.org/route/v1/driving/${start.Lat},${start.Lng};${finish.Lat},${finish.Lng}?alternatives=${ALTERNATIVES}`
+    `https://router.project-osrm.org/route/v1/driving/${start.Lat},${start.Lng};${finish.Lat},${finish.Lng}?alternatives=${ALTERNATIVES}`
   );
   if (res.status != 200) {
     console.warn(`unable to get data from OSRM, code:${res.status}`);
