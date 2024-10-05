@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./LoginControl.module.scss";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
-import { getCookie } from "../../utils/cookies";
+import { getCookie, setCookie } from "../../utils/cookies";
 import { ENDPOINT } from "../../utils/defaults";
 import { UserContext } from "../../contexts/UserContext";
 import { ObjectIsEmpty } from "../../utils/utils";
@@ -15,7 +15,10 @@ const LoginControl = () => {
   });
 
   const handleLogin = async (profileData) => {
-    if (ObjectIsEmpty(profileData)) return;
+    if (ObjectIsEmpty(profileData)) {
+      console.log("profileData is empty");
+      return;
+    }
 
     const userData = {
       UserID: profileData.id,
@@ -40,7 +43,10 @@ const LoginControl = () => {
       }
 
       register(profileData, userData);
+      return;
     }
+
+    setCookie("userprofile", JSON.stringify(profileData));
   };
 
   const register = async (profileData, userData) => {
@@ -62,6 +68,7 @@ const LoginControl = () => {
   const logout = () => {
     googleLogout();
     setProfile({});
+    setCookie("userprofile", JSON.stringify({}));
   };
 
   useEffect(() => {
@@ -91,6 +98,12 @@ const LoginControl = () => {
   useEffect(() => {
     handleLogin(profile);
   }, [profile]);
+
+  // useEffect(() => {
+  //   if (!authenticate()) {
+  //     return;
+  //   }
+  // }, []);
 
   return (
     <>

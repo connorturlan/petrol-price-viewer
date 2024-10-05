@@ -50,6 +50,20 @@ const SettingsModal = () => {
                 ></img>
                 <p>Set Home</p>
               </button>
+              <button
+                className={styles.SetHome}
+                onClick={() => {
+                  setVisible(false);
+                  setClickMode(MODES.ADD_WORK);
+                }}
+                disabled={clickMode == MODES.ADD_WORK}
+              >
+                <img
+                  src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                  className={styles.SetHome_Image}
+                ></img>
+                <p>Set Work</p>
+              </button>
             </div>
             <p>Touch anywhere to hide</p>
           </div>

@@ -38,6 +38,10 @@ const GraphModal = () => {
 
     const getHistoricPrices = async () => {
       const res = await fetch(ENDPOINT + "/history");
+      if (res.status % 200 != 200) {
+        console.warn("unable to reach server.");
+        return;
+      }
       const json = await res.json();
       processPriceHistoryData(json);
     };

@@ -1,15 +1,21 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { ENDPOINT } from "../utils/defaults";
 import { ObjectIsEmpty } from "../utils/utils";
+import { getCookie } from "../utils/cookies";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  // const maybeUser = JSON.parse(getCookie("userdata"));
+  const maybeProfile = JSON.parse(getCookie("userprofile"));
+
   const [user, setUser] = useState({});
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState(
+    !ObjectIsEmpty(maybeProfile) ? maybeProfile : {}
+  );
   const [POI, setPOI] = useState({});
 
-  const postHome = async (body) => {
+  const postPOIs = async (body) => {
     // send the site update.
     const res = await fetch(`${ENDPOINT}/poi?userid=${profile.id}`, {
       method: "POST",
@@ -21,6 +27,14 @@ export const UserProvider = ({ children }) => {
   };
 
   const setHome = (profile, coord) => {
+    setPoi(profile, "home", coord);
+  };
+
+  const setWork = (profile, coord) => {
+    setPoi(profile, "work", coord);
+  };
+
+  const setPoi = (profile, poiName, coord) => {
     // auth the user.
     if (ObjectIsEmpty(profile)) {
       window.alert("you are not logged in.");
@@ -28,16 +42,19 @@ export const UserProvider = ({ children }) => {
     }
 
     // construct the site.
-    const sites = {
-      home: {
-        Name: "home",
-        Lat: coord[0],
-        Lng: coord[1],
-      },
+
+    const sites = { ...POI };
+
+    sites[poiName] = {
+      Name: poiName,
+      Lat: coord[0],
+      Lng: coord[1],
     };
+    console.log(POI, sites);
 
     const body = JSON.stringify(sites);
-    postHome(body);
+    setPOI(sites);
+    postPOIs(body);
   };
 
   const updatePOIs = async () => {
@@ -51,6 +68,9 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     console.log("profile has been set:", profile);
+    if (ObjectIsEmpty(profile)) {
+      return;
+    }
     updatePOIs();
   }, [profile]);
 
@@ -60,6 +80,7 @@ export const UserProvider = ({ children }) => {
     profile,
     setProfile,
     setHome,
+    setWork,
     POI,
   };
 

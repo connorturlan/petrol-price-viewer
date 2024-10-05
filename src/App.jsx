@@ -47,6 +47,11 @@ function App() {
     localStorage.setItem("clickMode", clickMode);
   }, [clickMode]);
 
+  useEffect(() => {
+    console.log("setting mode", clickMode);
+    localStorage.setItem("clickMode", clickMode);
+  }, [clickMode]);
+
   return (
     <div className={styles.App}>
       <div className={styles.App_Label + " " + styles.App_FuelSelector}>

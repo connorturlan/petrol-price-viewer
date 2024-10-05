@@ -23,13 +23,14 @@ import { ObjectIsEmpty } from "../../utils/utils";
 export const MODES = Object.freeze({
   DEFAULT: 0,
   ADD_HOME: 1,
+  ADD_WORK: 2,
 });
 
 const MAP_CENTER = [138.599503, -34.92123];
 
 const PetrolMap = ({ fuelType, updateStations }) => {
   const { setClickMode, selectSite } = useContext(AppContext);
-  const { setHome, profile, POI } = useContext(UserContext);
+  const { setHome, setWork, profile, POI } = useContext(UserContext);
 
   const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
@@ -241,7 +242,14 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       // post the new home.
       setHome(profile, event.coordinate);
       // reset the mode.
-      setClickMode(0);
+      setClickMode(MODES.DEFAULT);
+      // reset the map.
+      triggerReload(true);
+    } else if (clickMode == MODES.ADD_WORK) {
+      // post the new home.
+      setWork(profile, event.coordinate);
+      // reset the mode.
+      setClickMode(MODES.DEFAULT);
       // reset the map.
       triggerReload(true);
     }
