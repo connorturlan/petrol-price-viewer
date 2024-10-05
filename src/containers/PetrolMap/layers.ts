@@ -60,7 +60,7 @@ export const createOnRouteLayer = () => {
 
 // addDefaultHome will add adelaide city center as home.
 const addDefaultHome = (source) => {
-  const point = new Point(fromLonLat([138.599503, -34.92123], "EPSG:4326"));
+  const point = new Point(fromLonLat([138.599503, -34.92123], PROJECTION));
   const feature = new Feature({
     geometry: point,
   });
@@ -70,7 +70,7 @@ const addDefaultHome = (source) => {
 // addPOIs will add all user defined POIs.
 export const addPOIs = async (source, profile) => {
   if (ObjectIsEmpty(profile)) {
-    addDefaultHome(source);
+    // addDefaultHome(source);
     return;
   }
 
@@ -83,7 +83,7 @@ export const addPOIs = async (source, profile) => {
 
   const json = (await res.json()) as object;
   Array.from(Object.values(json)).forEach((obj) => {
-    const point = new Point(fromLonLat([obj.Lat, obj.Lng], "EPSG:4326"));
+    const point = new Point(fromLonLat([obj.Lat, obj.Lng], PROJECTION));
     const feature = new Feature({
       geometry: point,
       name: obj.Name,
@@ -96,12 +96,12 @@ export const addPOIs = async (source, profile) => {
 export const createCustomLayer = (profile) => {
   console.log("creating custom layer");
 
-  const initialLowestSource = new VectorSource();
+  const source = new VectorSource();
 
-  addPOIs(initialLowestSource, profile);
+  addPOIs(source, profile);
 
   return new VectorLayer({
-    source: initialLowestSource,
+    source: source,
     style: (feature) => {
       customStyle
         .getText()
@@ -113,7 +113,7 @@ export const createCustomLayer = (profile) => {
 
 const addRoute = (source, waypoints) => {
   waypoints.forEach((coord) => {
-    const point = new Point(fromLonLat(coord, "EPSG:4326"));
+    const point = new Point(fromLonLat(coord, PROJECTION));
     const feature = new Feature({
       geometry: point,
     });

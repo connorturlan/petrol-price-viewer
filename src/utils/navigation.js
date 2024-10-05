@@ -45,7 +45,7 @@ export async function getRoutesBetweenPoints(start, finish) {
   const body = await res.json();
 
   // extract geometry
-  const geometries = body["routes"];
+  const geometries = body["routes"] || [];
 
   // convert to routes
   const routes = geometries.map((route) => {
