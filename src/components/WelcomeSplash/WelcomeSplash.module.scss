@@ -3,8 +3,10 @@
     margin: 120px 60px;
     padding: 12px;
 
-    display: grid;
-    grid-template-rows: auto 1fr;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 12px;
 
     width: 100vw;
     max-width: 400px;
