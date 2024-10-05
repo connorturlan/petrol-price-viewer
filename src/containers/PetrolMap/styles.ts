@@ -91,7 +91,7 @@ export const customStyle = new Style({
       color: "white",
     }),
     backgroundStroke: new Stroke({
-      color: "green",
+      color: "#ccc",
       width: 2,
       miterLimit: 2,
       lineCap: "butt",

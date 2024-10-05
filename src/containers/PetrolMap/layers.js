@@ -19,18 +19,22 @@ import {
   getWaypointsBetweenPoints,
 } from "../../utils/navigation";
 import Stroke from "ol/style/Stroke";
+import Icon from "ol/style/Icon";
+import Style from "ol/style/Style";
 
 export const createStationLayer = () => {
   const initialSource = new VectorSource();
 
   return new VectorLayer({
     source: initialSource,
+    // declutter: true,
     style: (feature) => {
       defaultStyle
         .getText()
         .setText([`${feature.get("price")}`, "italic 12pt sans-serif"]);
       return defaultStyle;
     },
+    zIndex: 0,
   });
 };
 
@@ -43,6 +47,7 @@ export const createLowestLayer = () => {
       lowestStyle.getText().setText([`${feature.get("price")}`, ""]);
       return lowestStyle;
     },
+    zIndex: 1,
   });
 };
 
@@ -55,6 +60,7 @@ export const createOnRouteLayer = () => {
       onRouteStyle.getText().setText([`${feature.get("price")}`, ""]);
       return onRouteStyle;
     },
+    zIndex: 1,
   });
 };
 
@@ -92,6 +98,20 @@ export const addPOIs = async (source, profile) => {
   });
 };
 
+const handleCustomLayer = (name, source) => {
+  const style = new Style({
+    text: customStyle.getText(),
+    image: new Icon({
+      anchor: [0.5, 1],
+      src: source,
+      height: 48,
+      rotateWithView: true,
+    }),
+  });
+  style.getText().setText([`${Capitalize(name || "POI")}`, ""]);
+  return style;
+};
+
 // createCustomLayer creates the POI layer
 export const createCustomLayer = (profile) => {
   console.log("creating custom layer");
@@ -103,10 +123,23 @@ export const createCustomLayer = (profile) => {
   return new VectorLayer({
     source: initialLowestSource,
     style: (feature) => {
-      customStyle
-        .getText()
-        .setText([`${Capitalize(feature.get("name") || "POI")}`, ""]);
-      return customStyle;
+      switch (feature.get("name")) {
+        case "home":
+          return handleCustomLayer(
+            "home",
+            "home_pin_24dp_FILL0_wght400_GRAD0_opsz24_dkgreen.svg"
+          );
+        case "work":
+          return handleCustomLayer(
+            "work",
+            "person_pin_circle_24dp_255290_FILL0_wght400_GRAD0_opsz24.svg"
+          );
+        default:
+          return handleCustomLayer(
+            feature.get("name"),
+            "location_on_24dp_8C1A10_FILL0_wght400_GRAD0_opsz24.svg"
+          );
+      }
     },
   });
 };
@@ -139,8 +172,6 @@ export const addRoutes = async (source, start, finish) => {
   const routes = await getRoutesBetweenPoints(start, finish);
   console.log(`${routes.length} routes found`);
   routes.forEach((waypoints) => {
-    console.log(waypoints);
-    console.log(`${waypoints.length} waypoints found`);
     addRoute(source, waypoints);
   });
 };
@@ -166,7 +197,6 @@ export const createWaypointLayer = (start, finish) => {
         const pointResolution =
           getPointResolution(PROJECTION, resolution, extent) * 180_000;
 
-        console.log(pointResolution);
         const stroke = waypointStyle.getStroke();
         stroke.setWidth(500 / pointResolution);
         waypointStyle.setStroke(stroke);

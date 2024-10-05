@@ -105,6 +105,7 @@ export const updateOnRoute = (layer, route, stations) => {
   console.log(`${features.length}/${stations.length} features on route.`);
 
   // get the single lowest price.
+  if (features.length <= 0) return;
   const lowestPrice = features.reduce(
     (lowest, feature) =>
       lowest.get("price") < feature.get("price") ? lowest : feature,
