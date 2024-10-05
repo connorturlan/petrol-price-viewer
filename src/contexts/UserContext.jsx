@@ -63,7 +63,12 @@ export const UserProvider = ({ children }) => {
       setPOI({});
       return;
     }
-    setPOI(await res.json());
+    const pois = await res.json();
+    if (!pois) {
+      setPOI({});
+      return;
+    }
+    setPOI(pois);
   };
 
   useEffect(() => {

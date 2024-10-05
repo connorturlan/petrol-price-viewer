@@ -81,7 +81,7 @@ export const addPOIs = async (source, profile) => {
     return;
   }
 
-  const json = (await res.json()) as object;
+  const json = (await res.json()) || {};
   Array.from(Object.values(json)).forEach((obj) => {
     const point = new Point(fromLonLat([obj.Lat, obj.Lng], PROJECTION));
     const feature = new Feature({
@@ -96,12 +96,12 @@ export const addPOIs = async (source, profile) => {
 export const createCustomLayer = (profile) => {
   console.log("creating custom layer");
 
-  const source = new VectorSource();
+  const initialLowestSource = new VectorSource();
 
-  addPOIs(source, profile);
+  addPOIs(initialLowestSource, profile);
 
   return new VectorLayer({
-    source: source,
+    source: initialLowestSource,
     style: (feature) => {
       customStyle
         .getText()
