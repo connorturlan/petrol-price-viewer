@@ -117,3 +117,36 @@ export const updateOnRoute = (layer, route, stations) => {
   // const lowestPrices = features.sort((a, b) => a.get("price") - b.get("price"));
   // source.addFeatures(lowestPrices.slice(0, 4));
 };
+
+export const setStationsOnRoute = (layer, onRoute) => {
+  const source = layer.getSource();
+
+  const features = onRoute.map((site) => {
+    const point = new Point(fromLonLat([site.Lng, site.Lat], PROJECTION));
+
+    let price = ((site.Price || 0) / 10).toFixed(1);
+
+    return new Feature({
+      geometry: point,
+      siteid: site.SiteId,
+      name: site.Name,
+      price: price || "loading...",
+      placeid: site.GPI,
+    });
+  });
+
+  console.log(`${features.length}/${onRoute.length} features on route.`);
+
+  // get the single lowest price.
+  // if (features.length <= 0) return;
+  // const lowestPrice = features.reduce(
+  //   (lowest, feature) =>
+  //     lowest.get("price") < feature.get("price") ? lowest : feature,
+  //   features[0]
+  // );
+  // source.addFeature(lowestPrice);
+
+  // show some of the lowest prices.
+  const lowestPrices = features.sort((a, b) => a.get("price") - b.get("price"));
+  source.addFeatures(lowestPrices.slice(0, 3));
+};

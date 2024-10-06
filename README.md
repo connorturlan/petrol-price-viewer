@@ -9,7 +9,8 @@
 - [x] add price list for current map view
 - [x] custom icon for work
 - [x] add welcome splash
-- [ ] make auth and registration flow nicer
+- [x] make auth flow nicer
+- [ ] make registration flow nicer
 - [ ] add donation and registration
 - [ ] add custom icons for different fuel brands
 - [ ] address search for home and work

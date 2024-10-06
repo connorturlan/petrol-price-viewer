@@ -2,7 +2,7 @@ import { createContext, useEffect, useRef, useState } from "react";
 import { ENDPOINT } from "../utils/defaults";
 import { ObjectIsEmpty } from "../utils/utils";
 import { getCookie, setCookie } from "../utils/cookies";
-import { getPointsOfInterest } from "../utils/api";
+import { getPointsOfInterest, setPointsOfInterest } from "../utils/api";
 
 export const UserContext = createContext();
 
@@ -20,26 +20,15 @@ export const UserProvider = ({ children }) => {
   );
   const [POI, setPOI] = useState({});
 
-  const postPOIs = async (body) => {
-    // send the site update.
-    const res = await fetch(`${ENDPOINT}/poi?userid=${profile.id}`, {
-      method: "POST",
-      body,
-    });
-
-    // log the result.
-    console.log(res.status, res.statusText);
-  };
-
   const setHome = (profile, coord) => {
-    setPoi(profile, "home", coord);
+    updateRemotePOIs(profile, "home", coord);
   };
 
   const setWork = (profile, coord) => {
-    setPoi(profile, "work", coord);
+    updateRemotePOIs(profile, "work", coord);
   };
 
-  const setPoi = (profile, poiName, coord) => {
+  const updateRemotePOIs = (profile, poiName, coord) => {
     // auth the user.
     if (ObjectIsEmpty(profile)) {
       window.alert("you are not logged in.");
@@ -47,7 +36,6 @@ export const UserProvider = ({ children }) => {
     }
 
     // construct the site.
-
     const sites = { ...POI };
 
     sites[poiName] = {
@@ -55,14 +43,12 @@ export const UserProvider = ({ children }) => {
       Lat: coord[0],
       Lng: coord[1],
     };
-    console.log(POI, sites);
 
-    const body = JSON.stringify(sites);
     setPOI(sites);
-    postPOIs(body);
+    setPointsOfInterest(profile.id, token, sites);
   };
 
-  const updatePOIs = async () => {
+  const updateLocalPOIs = async () => {
     const res = await getPointsOfInterest(profile.id, token);
     if (res.status != 200) {
       setPOI({});
@@ -81,13 +67,8 @@ export const UserProvider = ({ children }) => {
     if (ObjectIsEmpty(profile)) {
       return;
     }
-    updatePOIs();
+    updateLocalPOIs();
   }, [profile]);
-
-  useEffect(() => {
-    setCookie("usertoken", token);
-    console.log(`token set to ${token}`);
-  }, [token]);
 
   const context = {
     token,

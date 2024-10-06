@@ -19,6 +19,7 @@ import {
 import {
   getFeaturesOnRoute,
   getSites,
+  setStationsOnRoute,
   updateLowestPrices,
   updateOnRoute,
 } from "./utils";
@@ -50,6 +51,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const [lowestLayer, setLowestLayer] = useState(new VectorLayer());
   const [onRouteLayer, setOnRouteLayer] = useState(new VectorLayer());
+  const [routes, setRoutes] = useState([]);
 
   const [customLayer, setCustomLayer] = useState(new VectorLayer());
 
@@ -68,24 +70,40 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setStationsLayer(createStationLayer());
     setLowestLayer(createLowestLayer());
     setOnRouteLayer(createOnRouteLayer());
-    setCustomLayer(createCustomLayer(profile, token));
+    setCustomLayer(createCustomLayer(POI));
     setWaypointLayer(createWaypointLayer(POI.home, POI.work));
     getSites(setStationsState, setAllStations);
   }, []);
 
   useEffect(() => {
-    console.log(`reloading state: ${reload}`);
     if (!reload) return;
     setTimeout(() => {
       triggerReload(false);
-    }, 0);
+    }, 100);
   }, [reload]);
 
   useEffect(() => {
     triggerReload(true);
-    setCustomLayer(createCustomLayer(profile, token));
-    setWaypointLayer(createWaypointLayer(POI.home, POI.work));
-  }, [profile, POI]);
+    setCustomLayer(createCustomLayer(POI));
+  }, [profile, POI, routes]);
+
+  useEffect(() => {
+    triggerReload(true);
+
+    const getRoutes = async () => {
+      const newRoutes = await getRoutesBetweenPoints(POI.home, POI.work);
+      setRoutes(newRoutes || []);
+      setRoutingState(false);
+    };
+
+    setRoutingState(true);
+    getRoutes();
+  }, [POI]);
+
+  useEffect(() => {
+    triggerReload(true);
+    setWaypointLayer(createWaypointLayer(routes));
+  }, [routes]);
 
   useEffect(() => {
     // may be null on first render
@@ -142,10 +160,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       return;
     }
 
-    const routes = await getRoutesBetweenPoints(POI.home, POI.work);
-    routes.forEach((route) => {
-      updateOnRoute(onRouteLayer, route, stations);
+    const stationsOnRoute = routes.flatMap((route) => {
+      return getFeaturesOnRoute(route, stations);
     });
+    setStationsOnRoute(onRouteLayer, stationsOnRoute);
     setRoutingState(false);
   };
 

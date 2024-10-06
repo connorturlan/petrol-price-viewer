@@ -51,9 +51,8 @@ const LoginControl = () => {
     setCookie("userprofile", JSON.stringify(profileData));
 
     // get the usertoken
-    if ((await checkToken(userData.UserID, token)) == false) {
-      setToken(await getToken(userData.UserID));
-    }
+    const newToken = await getToken(userData.UserID);
+    setToken(newToken);
   };
 
   const register = async (profileData, userData) => {
@@ -76,7 +75,8 @@ const LoginControl = () => {
     googleLogout();
     setProfile({});
     setCookie("userprofile", "");
-    setToken("");
+    setCookie("usertoken", "");
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -106,12 +106,6 @@ const LoginControl = () => {
   useEffect(() => {
     handleLogin(profile);
   }, [profile]);
-
-  // useEffect(() => {
-  //   if (!authenticate()) {
-  //     return;
-  //   }
-  // }, []);
 
   return (
     <>

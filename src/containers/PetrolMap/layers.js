@@ -75,20 +75,8 @@ const addDefaultHome = (source) => {
 };
 
 // addPOIs will add all user defined POIs.
-export const addPOIs = async (source, profile, token) => {
-  if (ObjectIsEmpty(profile)) {
-    // addDefaultHome(source);
-    return;
-  }
-
-  // get the user's POIS.
-  const res = await getPointsOfInterest(profile.id, token);
-  if (res.status != 200) {
-    return;
-  }
-
-  const json = (await res.json()) || {};
-  Array.from(Object.values(json)).forEach((obj) => {
+export const addPOIs = async (source, POI) => {
+  Array.from(Object.values(POI)).forEach((obj) => {
     const point = new Point(fromLonLat([obj.Lat, obj.Lng], PROJECTION));
     const feature = new Feature({
       geometry: point,
@@ -112,12 +100,12 @@ const handleCustomLayerStyles = (name, source) => {
 };
 
 // createCustomLayer creates the POI layer
-export const createCustomLayer = (profile, token) => {
+export const createCustomLayer = (POI) => {
   console.log("creating custom layer");
 
   const source = new VectorSource();
 
-  addPOIs(source, profile, token);
+  addPOIs(source, POI);
 
   return new VectorLayer({
     source: source,
@@ -167,8 +155,7 @@ export const addWaypoints = async (source, start, finish) => {
 };
 
 // addPOIs will add all user defined POIs.
-export const addRoutes = async (source, start, finish) => {
-  const routes = await getRoutesBetweenPoints(start, finish);
+export const addRoutes = async (source, routes) => {
   console.log(`${routes.length} routes found`);
   routes.forEach((waypoints) => {
     addRoute(source, waypoints);
@@ -176,15 +163,13 @@ export const addRoutes = async (source, start, finish) => {
 };
 
 // createWaypointLayer creates the POI layer
-export const createWaypointLayer = (start, finish) => {
+export const createWaypointLayer = (routes) => {
   console.log("creating waypoint layer");
 
   const source = new VectorSource();
 
   // addWaypoints(source, start, finish);
-  addRoutes(source, start, finish);
-
-  const test = new VectorLayer();
+  addRoutes(source, routes);
 
   return new VectorLayer({
     source: source,
