@@ -1,15 +1,20 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { ENDPOINT } from "../utils/defaults";
 import { ObjectIsEmpty } from "../utils/utils";
-import { getCookie } from "../utils/cookies";
+import { getCookie, setCookie } from "../utils/cookies";
+import { getPointsOfInterest } from "../utils/api";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   // const maybeUser = JSON.parse(getCookie("userdata"));
-  const maybeProfile = JSON.parse(getCookie("userprofile") || "{}");
+
+  const cookieToken = getCookie("usertoken");
+  const [token, setToken] = useState(cookieToken);
 
   const [user, setUser] = useState({});
+
+  const maybeProfile = JSON.parse(getCookie("userprofile") || "{}");
   const [profile, setProfile] = useState(
     !ObjectIsEmpty(maybeProfile) ? maybeProfile : {}
   );
@@ -58,7 +63,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const updatePOIs = async () => {
-    const res = await fetch(`${ENDPOINT}/poi?userid=${profile.id}`);
+    const res = await getPointsOfInterest(profile.id, token);
     if (res.status != 200) {
       setPOI({});
       return;
@@ -79,7 +84,14 @@ export const UserProvider = ({ children }) => {
     updatePOIs();
   }, [profile]);
 
+  useEffect(() => {
+    setCookie("usertoken", token);
+    console.log(`token set to ${token}`);
+  }, [token]);
+
   const context = {
+    token,
+    setToken,
     user,
     setUser,
     profile,

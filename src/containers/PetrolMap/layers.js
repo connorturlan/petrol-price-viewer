@@ -21,6 +21,7 @@ import {
 import Stroke from "ol/style/Stroke";
 import Icon from "ol/style/Icon";
 import Style from "ol/style/Style";
+import { getPointsOfInterest } from "../../utils/api";
 
 export const createStationLayer = () => {
   const initialSource = new VectorSource();
@@ -74,16 +75,15 @@ const addDefaultHome = (source) => {
 };
 
 // addPOIs will add all user defined POIs.
-export const addPOIs = async (source, profile) => {
+export const addPOIs = async (source, profile, token) => {
   if (ObjectIsEmpty(profile)) {
     // addDefaultHome(source);
     return;
   }
 
   // get the user's POIS.
-  const res = await fetch(`${ENDPOINT}/poi?userid=${profile.id}`);
+  const res = await getPointsOfInterest(profile.id, token);
   if (res.status != 200) {
-    addDefaultHome(source);
     return;
   }
 
@@ -112,15 +112,15 @@ const handleCustomLayerStyles = (name, source) => {
 };
 
 // createCustomLayer creates the POI layer
-export const createCustomLayer = (profile) => {
+export const createCustomLayer = (profile, token) => {
   console.log("creating custom layer");
 
-  const initialLowestSource = new VectorSource();
+  const source = new VectorSource();
 
-  addPOIs(initialLowestSource, profile);
+  addPOIs(source, profile, token);
 
   return new VectorLayer({
-    source: initialLowestSource,
+    source: source,
     style: (feature) => {
       switch (feature.get("name")) {
         case "home":

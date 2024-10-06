@@ -38,7 +38,7 @@ const MAP_CENTER = [138.599503, -34.92123];
 
 const PetrolMap = ({ fuelType, updateStations }) => {
   const { setClickMode, selectSite } = useContext(AppContext);
-  const { setHome, setWork, profile, POI } = useContext(UserContext);
+  const { setHome, setWork, profile, POI, token } = useContext(UserContext);
 
   const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
@@ -68,7 +68,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setStationsLayer(createStationLayer());
     setLowestLayer(createLowestLayer());
     setOnRouteLayer(createOnRouteLayer());
-    setCustomLayer(createCustomLayer(profile));
+    setCustomLayer(createCustomLayer(profile, token));
     setWaypointLayer(createWaypointLayer(POI.home, POI.work));
     getSites(setStationsState, setAllStations);
   }, []);
@@ -83,7 +83,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   useEffect(() => {
     triggerReload(true);
-    setCustomLayer(createCustomLayer(profile));
+    setCustomLayer(createCustomLayer(profile, token));
     setWaypointLayer(createWaypointLayer(POI.home, POI.work));
   }, [profile, POI]);
 

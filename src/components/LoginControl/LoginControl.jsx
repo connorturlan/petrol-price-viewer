@@ -5,9 +5,11 @@ import { getCookie, setCookie } from "../../utils/cookies";
 import { ENDPOINT } from "../../utils/defaults";
 import { UserContext } from "../../contexts/UserContext";
 import { ObjectIsEmpty } from "../../utils/utils";
+import { checkToken, getLogin, getToken } from "../../utils/api";
 
 const LoginControl = () => {
-  const { user, setUser, profile, setProfile } = useContext(UserContext);
+  const { user, setUser, profile, setProfile, token, setToken } =
+    useContext(UserContext);
 
   const login = useGoogleLogin({
     onSuccess: (res) => setUser(res),
@@ -25,7 +27,7 @@ const LoginControl = () => {
       GoogleID: profileData.id,
     };
 
-    const res = await fetch(ENDPOINT + "/login" + `?userid=${userData.UserID}`);
+    const res = await getLogin(userData.UserID);
     if (res.status != 202) {
       console.error("user failed to login.");
       if (res.status != 403) {
@@ -47,6 +49,11 @@ const LoginControl = () => {
     }
 
     setCookie("userprofile", JSON.stringify(profileData));
+
+    // get the usertoken
+    if ((await checkToken(userData.UserID, token)) == false) {
+      setToken(await getToken(userData.UserID));
+    }
   };
 
   const register = async (profileData, userData) => {
@@ -69,6 +76,7 @@ const LoginControl = () => {
     googleLogout();
     setProfile({});
     setCookie("userprofile", "");
+    setToken("");
   };
 
   useEffect(() => {

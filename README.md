@@ -12,10 +12,10 @@
 - [ ] make auth and registration flow nicer
 - [ ] add donation and registration
 - [ ] add custom icons for different fuel brands
+- [ ] address search for home and work
 - [ ] allow for users to find petrol on their way to a custom temporary destination
 - [ ] allow filter for all, lowest, and route stations
 - [ ] add routed stations section to the price list
 - [ ] show when price was last updated
 - [ ] add rate limiting for requesting prices
 - [ ] add licence plate search - https://docs.autograb.com.au/guide/auth/ - https://docs.autograb.com.au/guide/vehicle/
-- [ ] address search for home and work
