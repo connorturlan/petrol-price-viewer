@@ -8,6 +8,7 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [clickMode, setClickMode] = useState(0);
   const [siteId, setSelectedSite] = useState(0);
+  const [darkMode, setDarkMode] = useState(false);
 
   const selectSite = (id) => {
     setSelectedSite(id);
@@ -29,6 +30,8 @@ export const AppProvider = ({ children }) => {
     unselectSite,
     fuelType,
     setFuelType,
+    darkMode,
+    setDarkMode,
   };
 
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;

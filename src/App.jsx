@@ -20,8 +20,14 @@ function App() {
   // set intial state
   const [mapFeatures, setMapFeatures] = useState([]);
   const [warningVisible, setWarning] = useState(false);
-  const { clickMode, setClickMode, selectSite, fuelType, setFuelType } =
-    useContext(AppContext);
+  const {
+    clickMode,
+    setClickMode,
+    selectSite,
+    fuelType,
+    setFuelType,
+    darkMode,
+  } = useContext(AppContext);
 
   const handleFuelChange = (event) => {
     setFuelType(event.target.value);

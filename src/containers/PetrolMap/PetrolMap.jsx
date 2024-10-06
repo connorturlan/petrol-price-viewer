@@ -38,7 +38,7 @@ export const MODES = Object.freeze({
 const MAP_CENTER = [138.599503, -34.92123];
 
 const PetrolMap = ({ fuelType, updateStations }) => {
-  const { setClickMode, selectSite } = useContext(AppContext);
+  const { setClickMode, selectSite, darkMode } = useContext(AppContext);
   const { setHome, setWork, profile, POI, token } = useContext(UserContext);
 
   const [reload, triggerReload] = useState(false);
@@ -81,6 +81,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       triggerReload(false);
     }, 100);
   }, [reload]);
+
+  useEffect(() => {
+    triggerReload(true);
+  }, [darkMode]);
 
   useEffect(() => {
     triggerReload(true);
@@ -347,6 +351,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         onInit={onInit}
         onClick={onClick}
         onMove={onMove}
+        darkMode={darkMode}
       />
     </>
   );

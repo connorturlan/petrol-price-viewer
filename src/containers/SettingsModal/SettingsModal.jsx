@@ -8,7 +8,8 @@ import { ObjectIsEmpty } from "../../utils/utils";
 const SettingsModal = () => {
   // validate that the user is logged in before showing.
   const { profile, POI } = useContext(UserContext);
-  const { clickMode, setClickMode } = useContext(AppContext);
+  const { clickMode, setClickMode, darkMode, setDarkMode } =
+    useContext(AppContext);
   const [visible, setVisible] = useState(false);
 
   if (ObjectIsEmpty(profile)) return <></>;
@@ -59,6 +60,15 @@ const SettingsModal = () => {
                   className={styles.SetHome_Image}
                 ></img>
                 <p>Set Work</p>
+              </button>
+              <h3>Preferences</h3>
+              <button
+                // className={styles.SetHome}
+                onClick={() => {
+                  setDarkMode(!darkMode);
+                }}
+              >
+                <p>DarkMode</p>
               </button>
               <h3>Details</h3>
               <div>

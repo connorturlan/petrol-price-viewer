@@ -8,7 +8,14 @@ import TileLayer from "ol/layer/Tile";
 import XYZ from "ol/source/XYZ";
 import { PROJECTION } from "../../utils/defaults";
 
-const MapContainer = ({ layers, onInit, onClick, onMove, mapCenter }) => {
+const MapContainer = ({
+  layers,
+  onInit,
+  onClick,
+  onMove,
+  mapCenter,
+  darkMode,
+}) => {
   const [map, setMap] = useState();
 
   const renderCount = useRef(0);
@@ -33,7 +40,9 @@ const MapContainer = ({ layers, onInit, onClick, onMove, mapCenter }) => {
         // Google Maps Terrain
         new TileLayer({
           source: new XYZ({
-            url: "https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}",
+            url: !darkMode
+              ? "https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}"
+              : "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
           }),
         }),
         ...(layers || []),
