@@ -9,6 +9,7 @@ export async function getToken(userId) {
   const currentToken = getCookie("usertoken");
   if (currentToken && checkToken(userId, currentToken)) {
     console.log(`current token is still valid! token:'${currentToken}'`);
+    setCookie("usertoken", currentToken, 30);
     return getCookie("usertoken");
   }
 
@@ -23,7 +24,7 @@ export async function getToken(userId) {
 
   const token = await res.text();
 
-  setCookie("usertoken", token);
+  setCookie("usertoken", token, 30);
 
   window.location.reload();
 }
