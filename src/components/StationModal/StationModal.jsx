@@ -59,6 +59,9 @@ function StationModal() {
   // if anything has a falsey value, return to prevent errors.
   if (!siteId) return <></>;
 
+  const date = new Date(siteDetails.LastUpdated);
+  const datestring = `${date.toLocaleString()}`;
+
   return ObjectIsEmpty(siteDetails) ? (
     <LoadingSplash />
   ) : (
@@ -89,6 +92,7 @@ function StationModal() {
             />
             <p>Open Maps</p>
           </a>
+          <p>Last updated: {datestring || "Date Error"}</p>
         </div>
       </div>
     </div>
