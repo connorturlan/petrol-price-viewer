@@ -15,6 +15,7 @@ import { ENDPOINT } from "./utils/defaults";
 import UserProvider, { UserContext } from "./contexts/UserContext";
 import { AppContext } from "./contexts/AppContext";
 import WelcomeSplash from "./components/WelcomeSplash/WelcomeSplash";
+import RoutePlanner from "./components/RoutePlanner/RoutePlanner";
 
 function App() {
   // set intial state
@@ -106,6 +107,7 @@ function App() {
         </PriceList>
         <GraphModal />
         <LoginControl />
+        <RoutePlanner />
         <SettingsModal />
       </ToolBar>
       {clickMode != 0 && (

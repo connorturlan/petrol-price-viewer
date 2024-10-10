@@ -353,7 +353,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     <>
       <LoadingSplash
         fadeIn={loadingStations || loadingPrices || loadingRouting}
-      />{" "}
+      />
       <MapContainer
         layer={stationLayer}
         layers={[
