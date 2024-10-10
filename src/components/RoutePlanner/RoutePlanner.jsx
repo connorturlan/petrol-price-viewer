@@ -71,48 +71,55 @@ const RoutePlanner = (props) => {
                 );
               })}
             </div>
-            <button className={styles.RoutePlanner_Button} onClick={swapPoints}>
-              <img
-                src="swap_horiz_24dp_434343_FILL0_wght400_GRAD0_opsz24.svg"
-                className={styles.RoutePlanner_Image}
-                alt="Show"
-                srcSet=""
-                title="Show route planner"
-              />
-              <p>Swap</p>
-            </button>
+            <div className={styles.RoutePlanner_Swap}>
+              <button
+                className={styles.RoutePlanner_Button}
+                onClick={swapPoints}
+              >
+                <img
+                  src="swap_horiz_24dp_434343_FILL0_wght400_GRAD0_opsz24.svg"
+                  className={styles.RoutePlanner_Image}
+                  alt="Show"
+                  srcSet=""
+                  title="Show route planner"
+                />
+                <p>Swap</p>
+              </button>
+            </div>
             <div className={styles.RoutePlanner_List}>
               <div className={styles.RoutePlanner_ColumnHeading}>
                 <h3>Destination</h3>
                 <p>{dest.Name || ""}</p>
               </div>
               {!ObjectIsEmpty(origin) ? (
-                Object.keys(POI)
-                  .filter((poi) => origin.Name != poi)
-                  .map((poi, index) => {
-                    return (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          if (isPointSelected(poi, dest)) {
-                            setDest({});
-                          } else {
-                            setDest(POI[poi]);
-                          }
-                        }}
-                        className={
-                          styles.RoutePlanner_Button +
-                          " " +
-                          (isPointSelected(poi, dest)
-                            ? styles.RoutePlanner_Point__Selected
-                            : "")
+                Object.keys(POI).map((poi, index) => {
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        if (isPointSelected(poi, dest)) {
+                          setDest({});
+                        } else {
+                          setDest(POI[poi]);
                         }
-                        style={{ gridRowStart: index + 1 }}
-                      >
-                        {poi}
-                      </button>
-                    );
-                  })
+                      }}
+                      className={
+                        styles.RoutePlanner_Button +
+                        " " +
+                        (isPointSelected(poi, dest)
+                          ? styles.RoutePlanner_Point__Selected
+                          : "") +
+                        " " +
+                        (origin.Name == poi
+                          ? styles.RoutePlanner_Point__InUse
+                          : "")
+                      }
+                      style={{ gridRowStart: index + 1 }}
+                    >
+                      {poi}
+                    </button>
+                  );
+                })
               ) : (
                 <p>Select Origin</p>
               )}
@@ -128,7 +135,7 @@ const RoutePlanner = (props) => {
         }}
       >
         <img
-          src="list_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+          src="route_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
           className={styles.RoutePlanner_Image}
           alt="Show"
           srcSet=""
