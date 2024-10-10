@@ -45,7 +45,7 @@ const RoutePlanner = (props) => {
             <div className={styles.RoutePlanner_List}>
               <div className={styles.RoutePlanner_ColumnHeading}>
                 <h3>Origin</h3>
-                <p>{origin.Name || ""}</p>
+                <p>{ObjectIsEmpty(origin) ? "" : origin.Name}</p>
               </div>
               {Object.keys(POI).map((poi) => {
                 return (
@@ -89,7 +89,7 @@ const RoutePlanner = (props) => {
             <div className={styles.RoutePlanner_List}>
               <div className={styles.RoutePlanner_ColumnHeading}>
                 <h3>Destination</h3>
-                <p>{dest.Name || ""}</p>
+                <p>{ObjectIsEmpty(dest) ? "" : dest.Name}</p>
               </div>
               {!ObjectIsEmpty(origin) ? (
                 Object.keys(POI).map((poi, index) => {
