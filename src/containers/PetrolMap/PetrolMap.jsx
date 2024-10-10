@@ -4,7 +4,7 @@ import styles from "./PetrolMap.module.scss";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { fromLonLat } from "ol/proj";
-import { Point } from "ol/geom";
+import { Point, Polygon } from "ol/geom";
 import { Feature } from "ol";
 import StationModal from "../../components/StationModal/StationModal";
 import { containsCoordinate } from "ol/extent";
@@ -17,6 +17,8 @@ import {
   createWaypointLayer,
 } from "./layers";
 import {
+  getCorners,
+  getFeaturesAvailableOnRoute,
   getFeaturesOnRoute,
   getSites,
   setStationsOnRoute,
@@ -28,6 +30,7 @@ import { AppContext } from "../../contexts/AppContext";
 import { UserContext } from "../../contexts/UserContext";
 import { ObjectIsEmpty } from "../../utils/utils";
 import { getRoutesBetweenPoints } from "../../utils/navigation";
+import { fromExtent } from "ol/geom/Polygon";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -164,9 +167,24 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       return;
     }
 
+    // debug for on route features.
+    // const corners = routes.flatMap((route) => {
+    //   return getCorners(route, stations);
+    // });
+    // onRouteLayer.getSource().addFeatures(
+    //   corners.map((extent) => {
+    //     return new Feature({
+    //       geometry: extent,
+    //     });
+    //   })
+    // );
     const stationsOnRoute = routes.flatMap((route) => {
-      return getFeaturesOnRoute(route, stations);
+      return getFeaturesAvailableOnRoute(route, stations);
+      // return getFeaturesOnRoute(route, stations);
     });
+    console.log(
+      `${stationsOnRoute.length} points added of ${routes.length} routes`
+    );
     setStationsOnRoute(onRouteLayer, stationsOnRoute);
     setRoutingState(false);
   };

@@ -1,9 +1,9 @@
 import { Feature } from "ol";
-import { Circle, Point } from "ol/geom";
-import { fromLonLat, get, transform } from "ol/proj";
+import { Circle, Geometry, Point, Polygon } from "ol/geom";
+import { fromLonLat, get, getPointResolution, transform } from "ol/proj";
 import VectorSource from "ol/source/Vector";
 import { ENDPOINT, PROJECTION } from "../../utils/defaults";
-import { containsExtent } from "ol/extent";
+import { boundingExtent, containsCoordinate, containsExtent } from "ol/extent";
 import { distance } from "ol/coordinate";
 import { getDistance } from "ol/sphere";
 
@@ -81,6 +81,77 @@ export function getFeaturesOnRoute(route, stations) {
       return getDistance(start, coord) < 200;
     });
   });
+}
+
+const MAX_DISTANCE = 200; //m
+const MAX_ITERATION = 500; //m
+const LERP_STEP = 100; //m
+const EARTH_RADIUS = 6_371_008.8;
+
+function pointAtDistanceAndBearing(start, bearing, distance) {
+  const point = new Point(start);
+  const res = getPointResolution(PROJECTION, 1, start, "m");
+  const dx = (distance * Math.cos(bearing)) / res;
+  const dy = (distance * Math.sin(bearing)) / res;
+  point.translate(dx, dy);
+  return point.getCoordinates();
+}
+
+function getExtentCorners(start, end) {
+  const y = Math.sin(end[0] - start[0]) * Math.cos(end[1]);
+  const x =
+    Math.cos(start[1]) * Math.sin(end[1]) -
+    Math.sin(start[1]) * Math.cos(end[1]) * Math.cos(end[0] - start[0]);
+  const bearing = Math.atan2(y, x);
+
+  const a = pointAtDistanceAndBearing(start, bearing + Math.PI, MAX_DISTANCE);
+  const b = pointAtDistanceAndBearing(end, bearing + Math.PI, MAX_DISTANCE);
+  return [start, end, b, a];
+}
+
+function getExtent(start, end) {
+  return new boundingExtent(getExtentCorners(start, end));
+}
+
+function getBounds(start, end) {
+  const poly = new Polygon([getExtentCorners(start, end)], "XY");
+  return poly;
+}
+
+function isFeatureOnRoute(start, end, coord) {
+  return getBounds(start, end).intersectsCoordinate(coord);
+}
+
+export function getCorners(route, stations) {
+  let points = route.slice(0, -1).map((waypoint, index) => {
+    const start = waypoint;
+    const end = index < route.length - 1 && route[index + 1];
+    return getBounds(start, end);
+  });
+  return points;
+}
+
+export function getFeaturesAvailableOnRoute(route, stations) {
+  const points = stations.filter((site) => {
+    const coord = [site.Lng, site.Lat];
+
+    return route.slice(0, -1).some((waypoint, index) => {
+      const start = waypoint;
+      const end = index < route.length - 1 && route[index + 1];
+      return isFeatureOnRoute(start, end, coord);
+    });
+  });
+  return points;
+
+  // return stations.filter((site) => {
+  //   const coord = [site.Lng, site.Lat];
+
+  //   return route.slice(0, -1).some((waypoint, index) => {
+  //     const start = waypoint;
+  //     const end = index < route.length - 1 && route[index + 1];
+  //     return isFeatureOnRoute(start, end, coord);
+  //   });
+  // });
 }
 
 export const updateOnRoute = (layer, route, stations) => {

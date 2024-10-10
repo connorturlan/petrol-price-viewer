@@ -1,3 +1,4 @@
+import { Geometry } from "ol/geom";
 import Fill from "ol/style/Fill";
 import Icon from "ol/style/Icon";
 import Stroke from "ol/style/Stroke";
@@ -57,6 +58,13 @@ export const onRouteStyle = new Style({
     anchor: [0.5, 1],
     src: "red-pin.svg",
     height: 40,
+  }),
+  stroke: new Stroke({
+    color: "black",
+    width: 1,
+  }),
+  fill: new Fill({
+    color: "#555",
   }),
   text: new Text({
     offsetY: 12,
