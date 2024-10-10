@@ -31,6 +31,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { ObjectIsEmpty } from "../../utils/utils";
 import { getRoutesBetweenPoints } from "../../utils/navigation";
 import { fromExtent } from "ol/geom/Polygon";
+import { RouteContext } from "../../contexts/RouteContext";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -43,6 +44,7 @@ const MAP_CENTER = [138.599503, -34.92123];
 const PetrolMap = ({ fuelType, updateStations }) => {
   const { setClickMode, selectSite, darkMode } = useContext(AppContext);
   const { setHome, setWork, profile, POI, token } = useContext(UserContext);
+  const { origin, dest } = useContext(RouteContext);
 
   const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
@@ -98,14 +100,14 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     triggerReload(true);
 
     const getRoutes = async () => {
-      const newRoutes = await getRoutesBetweenPoints(POI.home, POI.work);
+      const newRoutes = await getRoutesBetweenPoints(origin, dest);
       setRoutes(newRoutes || []);
       setRoutingState(false);
     };
 
     setRoutingState(true);
     getRoutes();
-  }, [POI]);
+  }, [POI, origin, dest]);
 
   useEffect(() => {
     triggerReload(true);

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./RoutePlanner.module.scss";
 import { UserContext } from "../../contexts/UserContext";
 import { RouteContext } from "../../contexts/RouteContext";
@@ -7,12 +7,24 @@ import { ObjectIsEmpty } from "../../utils/utils";
 const RoutePlanner = (props) => {
   const [visible, setVisible] = useState(false);
 
-  const { POI } = useContext(UserContext);
+  const { profile, POI } = useContext(UserContext);
   const { origin, setOrigin, dest, setDest } = useContext(RouteContext);
 
   function isPointSelected(poi, parent) {
     return !ObjectIsEmpty(parent) && parent.Name == poi;
   }
+
+  function swapPoints() {
+    setOrigin(dest);
+    setDest(origin);
+  }
+
+  useEffect(() => {
+    setOrigin(POI.home);
+    setDest(POI.work);
+  }, []);
+
+  if (ObjectIsEmpty(profile)) return <></>;
 
   return (
     <>
@@ -31,43 +43,71 @@ const RoutePlanner = (props) => {
           >
             <h2 className={styles.RoutePlanner_Title}>Route Planner</h2>
             <div className={styles.RoutePlanner_List}>
-              <h3>Origin</h3>
+              <div className={styles.RoutePlanner_ColumnHeading}>
+                <h3>Origin</h3>
+                <p>{origin.Name || ""}</p>
+              </div>
               {Object.keys(POI).map((poi) => {
                 return (
                   <button
                     key={poi}
                     onClick={() => {
-                      setOrigin(POI[poi]);
+                      if (isPointSelected(poi, origin)) {
+                        setOrigin({});
+                      } else {
+                        setOrigin(POI[poi]);
+                      }
                     }}
                     className={
-                      isPointSelected(poi, origin)
+                      styles.RoutePlanner_Button +
+                      " " +
+                      (isPointSelected(poi, origin)
                         ? styles.RoutePlanner_Point__Selected
-                        : ""
+                        : "")
                     }
                   >
-                    {poi}:
+                    {poi}
                   </button>
                 );
               })}
             </div>
-            <button>swap</button>
+            <button className={styles.RoutePlanner_Button} onClick={swapPoints}>
+              <img
+                src="swap_horiz_24dp_434343_FILL0_wght400_GRAD0_opsz24.svg"
+                className={styles.RoutePlanner_Image}
+                alt="Show"
+                srcSet=""
+                title="Show route planner"
+              />
+              <p>Swap</p>
+            </button>
             <div className={styles.RoutePlanner_List}>
-              <h3>Destination</h3>
+              <div className={styles.RoutePlanner_ColumnHeading}>
+                <h3>Destination</h3>
+                <p>{dest.Name || ""}</p>
+              </div>
               {!ObjectIsEmpty(origin) ? (
                 Object.keys(POI)
                   .filter((poi) => origin.Name != poi)
-                  .map((poi) => {
+                  .map((poi, index) => {
                     return (
                       <button
-                        key={poi}
+                        key={index}
                         onClick={() => {
-                          setDest(POI[poi]);
+                          if (isPointSelected(poi, dest)) {
+                            setDest({});
+                          } else {
+                            setDest(POI[poi]);
+                          }
                         }}
                         className={
-                          isPointSelected(poi, dest)
+                          styles.RoutePlanner_Button +
+                          " " +
+                          (isPointSelected(poi, dest)
                             ? styles.RoutePlanner_Point__Selected
-                            : ""
+                            : "")
                         }
+                        style={{ gridRowStart: index + 1 }}
                       >
                         {poi}
                       </button>
