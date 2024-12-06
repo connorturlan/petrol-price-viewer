@@ -1,7 +1,6 @@
 import { createContext, useEffect, useRef, useState } from "react";
-import { ENDPOINT } from "../utils/defaults";
 import { ObjectIsEmpty } from "../utils/utils";
-import { getCookie, setCookie } from "../utils/cookies";
+import { getCookie } from "../utils/cookies";
 import { getPointsOfInterest, setPointsOfInterest } from "../utils/api";
 
 export const UserContext = createContext();

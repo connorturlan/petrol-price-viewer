@@ -48,7 +48,7 @@ const LoginControl = () => {
       return;
     }
 
-    setCookie("userprofile", JSON.stringify(profileData));
+    setCookie("userprofile", JSON.stringify(profileData), 30);
 
     // get the usertoken
     const newToken = await getToken(userData.UserID);

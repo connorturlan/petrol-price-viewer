@@ -25,13 +25,14 @@ import {
   updateLowestPrices,
   updateOnRoute,
 } from "./utils";
-import { ENDPOINT, PROJECTION } from "../../utils/defaults";
+import { PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
 import { UserContext } from "../../contexts/UserContext";
 import { ObjectIsEmpty } from "../../utils/utils";
 import { getRoutesBetweenPoints } from "../../utils/navigation";
 import { fromExtent } from "ol/geom/Polygon";
 import { RouteContext } from "../../contexts/RouteContext";
+import { getFuelPrices } from "../../services/service";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -219,39 +220,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     if (body.length <= 0) {
       console.log("no new data to fetch.");
     } else {
-      // console.log(`requesting data for ${body.length} sites`);
-      const req = fetch(ENDPOINT + `/prices?fuelType=${fuelType}`, {
-        method: "POST",
-        body: JSON.stringify(body),
-      });
-      const request = new Promise((accept, reject) => {
-        let accepted = false;
-
-        setTimeout(() => {
-          if (accepted) return;
-
-          window.alert("Prices request timed out, try again later.");
-          setPricesState(false);
-          reject();
-          return;
-        }, 5_000);
-
-        req.then((data) => {
-          accepted = true;
-          accept(data);
-        });
-      });
-
-      const res = await request;
-      if (res.status != 200) {
-        window.alert(
-          "error while handling site prices. please try again later"
-        );
-        setPricesState(false);
-        return;
-      }
-
-      const json = await res.json();
+      const json = await getFuelPrices(fuelType, body);
+      setPricesState(false);
 
       Object.entries(json).forEach((site) => {
         const [siteId, sitePrice] = site;

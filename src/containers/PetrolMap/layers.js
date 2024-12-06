@@ -12,7 +12,7 @@ import { LineString, Point } from "ol/geom";
 import { fromLonLat, getPointResolution } from "ol/proj";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import { ENDPOINT, PROJECTION } from "../../utils/defaults";
+import { PROJECTION } from "../../utils/defaults";
 import { Capitalize, ObjectIsEmpty } from "../../utils/utils";
 import {
   getRoutesBetweenPoints,

@@ -3,7 +3,7 @@ import styles from "./GraphModal.module.scss";
 import { LineChart } from "@mui/x-charts";
 // import dataset from "./dataset.json";
 import { getFuelTypeColor, getFuelTypeName } from "../../utils/fueltypes";
-import { ENDPOINT } from "../../utils/defaults";
+import { getHistoricPrices } from "../../services/service";
 
 const FUELTYPES = [2, 8, 3, 12];
 
@@ -34,20 +34,12 @@ const GraphModal = () => {
   };
 
   useEffect(() => {
-    setTimeout(() => {}, 1_000);
-
-    const getHistoricPrices = async () => {
-      const res = await fetch(ENDPOINT + "/history");
-      if (res.status != 200) {
-        console.warn("unable to reach server.");
-        return;
-      }
-      const json = await res.json();
+    const getHistory = async () => {
+      const json = await getHistoricPrices();
       processPriceHistoryData(json);
     };
-    console.log("got history data.");
 
-    getHistoricPrices();
+    getHistory();
   }, []);
 
   return (
