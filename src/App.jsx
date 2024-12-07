@@ -49,7 +49,7 @@ function App() {
   }, [fuelType]);
 
   useEffect(() => {
-    console.debug("setting mode", clickMode);
+    console.debug("[MODE] setting mode", clickMode);
     localStorage.setItem("clickMode", clickMode);
   }, [clickMode]);
 

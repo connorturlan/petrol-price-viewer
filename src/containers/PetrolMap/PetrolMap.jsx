@@ -174,7 +174,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     });
 
     console.debug(
-      `${stationsOnRoute.length} points added of ${routes.length} routes`
+      `[ROUTING] ${stationsOnRoute.length} points added of ${routes.length} routes`
     );
     setStationsOnRoute(onRouteLayer, stationsOnRoute);
     setRoutingState(false);
