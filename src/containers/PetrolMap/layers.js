@@ -162,14 +162,15 @@ export const addRoutes = async (source, routes) => {
   });
 };
 
-// createWaypointLayer creates the POI layer
+// createWaypointLayer creates the routing layer between the two selected POIs
 export const createWaypointLayer = (routes) => {
   console.log("creating waypoint layer");
 
   const source = new VectorSource();
 
-  // addWaypoints(source, start, finish);
-  addRoutes(source, routes);
+  if (routes) {
+    addRoutes(source, routes);
+  }
 
   return new VectorLayer({
     source: source,

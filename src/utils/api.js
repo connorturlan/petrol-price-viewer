@@ -37,7 +37,7 @@ export async function checkToken(userId, token) {
 }
 
 export function getPointsOfInterest(userId, token) {
-  console.log(`sending poi request ${userId} ${token}`);
+  console.debug(`sending poi request ${userId} ${token}`);
   return fetch(`${ENDPOINT}/poi?userid=${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });

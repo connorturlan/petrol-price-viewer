@@ -163,29 +163,18 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   }, [fuelType]);
 
   const updateOnRouteStations = async () => {
-    setRoutingState(true);
-    onRouteLayer.getSource().clear();
     if (!onRouteLayer || !onRouteLayer.getSource()) {
       setTimeout(updateOnRouteStations, 1_000);
       return;
     }
+    setRoutingState(true);
 
-    // debug for on route features.
-    // const corners = routes.flatMap((route) => {
-    //   return getCorners(route, stations);
-    // });
-    // onRouteLayer.getSource().addFeatures(
-    //   corners.map((extent) => {
-    //     return new Feature({
-    //       geometry: extent,
-    //     });
-    //   })
-    // );
+    onRouteLayer.getSource().clear();
     const stationsOnRoute = routes.flatMap((route) => {
       return getFeaturesAvailableOnRoute(route, stations);
-      // return getFeaturesOnRoute(route, stations);
     });
-    console.log(
+
+    console.debug(
       `${stationsOnRoute.length} points added of ${routes.length} routes`
     );
     setStationsOnRoute(onRouteLayer, stationsOnRoute);
@@ -193,7 +182,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   };
 
   const getSitePrices = async ({ reload } = {}) => {
-    // setWarning(false);
     if (!allStations || allStations.length <= 0) {
       return;
     }
