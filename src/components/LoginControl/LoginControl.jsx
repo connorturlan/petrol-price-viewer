@@ -97,7 +97,7 @@ const LoginControl = () => {
         const json = await res.json();
         setProfile(json);
         console.log(`login complete! welcome ${json.given_name}`);
-        console.debug(`profile data: ${json}`);
+        console.debug(`[LOGIN] profile data: ${json}`);
       })
       .catch((err) => {
         console.error("Error while getting profile:", err);
