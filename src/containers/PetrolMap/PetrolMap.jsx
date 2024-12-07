@@ -47,7 +47,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     useContext(AppContext);
   const { setHome, setWork, setCustomLocation, profile, POI, token } =
     useContext(UserContext);
-  const { origin, dest } = useContext(RouteContext);
+  const { origin, dest, setDest } = useContext(RouteContext);
 
   const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
@@ -268,12 +268,15 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     if (clickMode == MODES.DEFAULT) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
-        if (feature.get("siteid") != "") {
+        if (feature.get("siteid") !== undefined) {
           selectSite(feature.get("siteid"));
           return;
         }
 
-        window.alert();
+        console.log(feature);
+        if (origin) {
+          setDest(POI[feature.get("name")]);
+        }
       });
     } else if (clickMode == MODES.ADD_HOME) {
       // post the new home.
