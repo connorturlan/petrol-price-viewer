@@ -22,6 +22,7 @@ function App() {
   const {
     clickMode,
     setClickMode,
+    clickModeOptions,
     selectSite,
     fuelType,
     setFuelType,
@@ -36,11 +37,13 @@ function App() {
     switch (clickMode) {
       default:
       case 0:
-        return "Nothing";
+        return "Nothing... you shouldn't be seeing this";
       case 1:
         return "Setting Home...";
       case 2:
         return "Placing Work...";
+      case 3:
+        return `Placing ${clickModeOptions.poi_name}`;
     }
   };
 
