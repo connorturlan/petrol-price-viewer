@@ -4,6 +4,7 @@ import App from "./App.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import UserProvider from "./contexts/UserContext.jsx";
 import AppProvider from "./contexts/AppContext.jsx";
+import RouteProvider from "./contexts/RouteContext.jsx";
 
 let clientId =
   import.meta.env.VITE_LOCAL == "TRUE" ||
@@ -14,11 +15,13 @@ let clientId =
 ReactDOM.createRoot(document.getElementById("root")).render(
   <AppProvider>
     <UserProvider>
-      <GoogleOAuthProvider clientId={clientId}>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
-      </GoogleOAuthProvider>
+      <RouteProvider>
+        <GoogleOAuthProvider clientId={clientId}>
+          <React.StrictMode>
+            <App />
+          </React.StrictMode>
+        </GoogleOAuthProvider>
+      </RouteProvider>
     </UserProvider>
   </AppProvider>
 );

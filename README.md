@@ -21,3 +21,5 @@
 - [ ] add routed stations section to the price list
 - [ ] add rate limiting for requesting prices
 - [ ] add licence plate search - https://docs.autograb.com.au/guide/auth/ - https://docs.autograb.com.au/guide/vehicle/
+- [x] show only stations on the right side
+- [x] allow for better route planning

@@ -4,7 +4,7 @@ import styles from "./PetrolMap.module.scss";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { fromLonLat } from "ol/proj";
-import { Point } from "ol/geom";
+import { Point, Polygon } from "ol/geom";
 import { Feature } from "ol";
 import StationModal from "../../components/StationModal/StationModal";
 import { containsCoordinate } from "ol/extent";
@@ -17,17 +17,22 @@ import {
   createWaypointLayer,
 } from "./layers";
 import {
+  getCorners,
+  getFeaturesAvailableOnRoute,
   getFeaturesOnRoute,
   getSites,
   setStationsOnRoute,
   updateLowestPrices,
   updateOnRoute,
 } from "./utils";
-import { ENDPOINT, PROJECTION } from "../../utils/defaults";
+import { PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
 import { UserContext } from "../../contexts/UserContext";
 import { ObjectIsEmpty } from "../../utils/utils";
 import { getRoutesBetweenPoints } from "../../utils/navigation";
+import { fromExtent } from "ol/geom/Polygon";
+import { RouteContext } from "../../contexts/RouteContext";
+import { getFuelPrices } from "../../services/service";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -40,6 +45,7 @@ const MAP_CENTER = [138.599503, -34.92123];
 const PetrolMap = ({ fuelType, updateStations }) => {
   const { setClickMode, selectSite, darkMode } = useContext(AppContext);
   const { setHome, setWork, profile, POI, token } = useContext(UserContext);
+  const { origin, dest } = useContext(RouteContext);
 
   const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
@@ -95,14 +101,14 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     triggerReload(true);
 
     const getRoutes = async () => {
-      const newRoutes = await getRoutesBetweenPoints(POI.home, POI.work);
+      const newRoutes = await getRoutesBetweenPoints(origin, dest);
       setRoutes(newRoutes || []);
       setRoutingState(false);
     };
 
     setRoutingState(true);
     getRoutes();
-  }, [POI]);
+  }, [POI, origin, dest]);
 
   useEffect(() => {
     triggerReload(true);
@@ -164,9 +170,24 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       return;
     }
 
+    // debug for on route features.
+    // const corners = routes.flatMap((route) => {
+    //   return getCorners(route, stations);
+    // });
+    // onRouteLayer.getSource().addFeatures(
+    //   corners.map((extent) => {
+    //     return new Feature({
+    //       geometry: extent,
+    //     });
+    //   })
+    // );
     const stationsOnRoute = routes.flatMap((route) => {
-      return getFeaturesOnRoute(route, stations);
+      return getFeaturesAvailableOnRoute(route, stations);
+      // return getFeaturesOnRoute(route, stations);
     });
+    console.log(
+      `${stationsOnRoute.length} points added of ${routes.length} routes`
+    );
     setStationsOnRoute(onRouteLayer, stationsOnRoute);
     setRoutingState(false);
   };
@@ -199,39 +220,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     if (body.length <= 0) {
       console.log("no new data to fetch.");
     } else {
-      // console.log(`requesting data for ${body.length} sites`);
-      const req = fetch(ENDPOINT + `/prices?fuelType=${fuelType}`, {
-        method: "POST",
-        body: JSON.stringify(body),
-      });
-      const request = new Promise((accept, reject) => {
-        let accepted = false;
-
-        setTimeout(() => {
-          if (accepted) return;
-
-          window.alert("Prices request timed out, try again later.");
-          setPricesState(false);
-          reject();
-          return;
-        }, 5_000);
-
-        req.then((data) => {
-          accepted = true;
-          accept(data);
-        });
-      });
-
-      const res = await request;
-      if (res.status != 200) {
-        window.alert(
-          "error while handling site prices. please try again later"
-        );
-        setPricesState(false);
-        return;
-      }
-
-      const json = await res.json();
+      const json = await getFuelPrices(fuelType, body);
+      setPricesState(false);
 
       Object.entries(json).forEach((site) => {
         const [siteId, sitePrice] = site;
@@ -335,7 +325,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     <>
       <LoadingSplash
         fadeIn={loadingStations || loadingPrices || loadingRouting}
-      />{" "}
+      />
       <MapContainer
         layer={stationLayer}
         layers={[

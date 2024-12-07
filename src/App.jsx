@@ -5,16 +5,15 @@ import "./App.css";
 import PriceList from "./components/PriceList/PriceList";
 import StationModal from "./components/StationModal/StationModal";
 import PriceListItem from "./components/PriceList/PriceListItem/PriceListItem";
-import { getCookie, setCookie } from "./utils/cookies";
+import { setCookie } from "./utils/cookies";
 import GraphModal from "./components/GraphModal/GraphModal";
 import ToolBar from "./containers/ToolBar/ToolBar";
 import LoginControl from "./components/LoginControl/LoginControl";
 import PetrolMap, { MODES } from "./containers/PetrolMap/PetrolMap";
 import SettingsModal from "./containers/SettingsModal/SettingsModal";
-import { ENDPOINT } from "./utils/defaults";
-import UserProvider, { UserContext } from "./contexts/UserContext";
 import { AppContext } from "./contexts/AppContext";
 import WelcomeSplash from "./components/WelcomeSplash/WelcomeSplash";
+import RoutePlanner from "./components/RoutePlanner/RoutePlanner";
 
 function App() {
   // set intial state
@@ -106,6 +105,7 @@ function App() {
         </PriceList>
         <GraphModal />
         <LoginControl />
+        <RoutePlanner />
         <SettingsModal />
       </ToolBar>
       {clickMode != 0 && (
