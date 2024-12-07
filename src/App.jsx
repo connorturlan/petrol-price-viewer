@@ -56,6 +56,11 @@ function App() {
     localStorage.setItem("clickMode", clickMode);
   }, [clickMode]);
 
+  useEffect(() => {
+    console.debug("[MODE] setting mode options", clickModeOptions);
+    localStorage.setItem("clickModeOptions", JSON.stringify(clickModeOptions));
+  }, [clickModeOptions]);
+
   return (
     <div className={styles.App}>
       <WelcomeSplash />

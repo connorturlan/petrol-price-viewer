@@ -263,6 +263,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const onClick = (event, map) => {
     const clickMode = localStorage.getItem("clickMode") || 0;
+    const clickModeOptions =
+      JSON.parse(localStorage.getItem("clickModeOptions")) || {};
 
     if (clickMode == MODES.DEFAULT) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
