@@ -8,12 +8,14 @@ export function getLogin(userId) {
 export async function getToken(userId) {
   const currentToken = getCookie("usertoken");
   if (currentToken && checkToken(userId, currentToken)) {
-    console.log(`current token is still valid! token:'${currentToken}'`);
+    console.debug(
+      `[LOGIN] current token is still valid! token:'${currentToken}'`
+    );
     setCookie("usertoken", currentToken, 30);
     return getCookie("usertoken");
   }
 
-  console.log("getting new token...");
+  console.debug("[LOGIN] getting new token...");
 
   const res = await fetch(ENDPOINT + "/token" + `?userid=${userId}`, {
     headers: {
@@ -37,7 +39,7 @@ export async function checkToken(userId, token) {
 }
 
 export function getPointsOfInterest(userId, token) {
-  console.log(`sending poi request ${userId} ${token}`);
+  console.debug(`[POI] sending poi request ${userId} ${token}`);
   return fetch(`${ENDPOINT}/poi?userid=${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -52,7 +54,4 @@ export async function setPointsOfInterest(userId, token, poi) {
     method: "POST",
     body,
   });
-
-  // log the result.
-  console.log(res.status, res.statusText);
 }

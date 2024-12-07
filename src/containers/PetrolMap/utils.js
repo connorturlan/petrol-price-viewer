@@ -7,6 +7,8 @@ import { boundingExtent, containsCoordinate, containsExtent } from "ol/extent";
 import { distance } from "ol/coordinate";
 import { getDistance } from "ol/sphere";
 
+const ROUTING_STATION_COUNT = 3;
+
 export const getSites = async (setLoading, setStations) => {
   setLoading(true);
 
@@ -142,52 +144,7 @@ export function getFeaturesAvailableOnRoute(route, stations) {
     });
   });
   return points;
-
-  // return stations.filter((site) => {
-  //   const coord = [site.Lng, site.Lat];
-
-  //   return route.slice(0, -1).some((waypoint, index) => {
-  //     const start = waypoint;
-  //     const end = index < route.length - 1 && route[index + 1];
-  //     return isFeatureOnRoute(start, end, coord);
-  //   });
-  // });
 }
-
-export const updateOnRoute = (layer, route, stations) => {
-  const source = layer.getSource();
-
-  const onRoute = getFeaturesOnRoute(route, stations);
-
-  const features = onRoute.map((site) => {
-    const point = new Point(fromLonLat([site.Lng, site.Lat], PROJECTION));
-
-    let price = ((site.Price || 0) / 10).toFixed(1);
-
-    return new Feature({
-      geometry: point,
-      siteid: site.SiteId,
-      name: site.Name,
-      price: price || "loading...",
-      placeid: site.GPI,
-    });
-  });
-
-  console.log(`${features.length}/${stations.length} features on route.`);
-
-  // get the single lowest price.
-  if (features.length <= 0) return;
-  const lowestPrice = features.reduce(
-    (lowest, feature) =>
-      lowest.get("price") < feature.get("price") ? lowest : feature,
-    features[0]
-  );
-  source.addFeature(lowestPrice);
-
-  // get the 10 lowest prices.
-  // const lowestPrices = features.sort((a, b) => a.get("price") - b.get("price"));
-  // source.addFeatures(lowestPrices.slice(0, 4));
-};
 
 export const setStationsOnRoute = (layer, onRoute) => {
   const source = layer.getSource();
@@ -206,18 +163,11 @@ export const setStationsOnRoute = (layer, onRoute) => {
     });
   });
 
-  console.log(`${features.length}/${onRoute.length} features on route.`);
-
-  // get the single lowest price.
-  // if (features.length <= 0) return;
-  // const lowestPrice = features.reduce(
-  //   (lowest, feature) =>
-  //     lowest.get("price") < feature.get("price") ? lowest : feature,
-  //   features[0]
-  // );
-  // source.addFeature(lowestPrice);
+  console.debug(
+    `[ROUTING] ${features.length}/${onRoute.length} features on route.`
+  );
 
   // show some of the lowest prices.
   const lowestPrices = features.sort((a, b) => a.get("price") - b.get("price"));
-  source.addFeatures(lowestPrices.slice(0, 3));
+  source.addFeatures(lowestPrices.slice(0, ROUTING_STATION_COUNT));
 };

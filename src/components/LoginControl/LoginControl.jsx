@@ -18,7 +18,7 @@ const LoginControl = () => {
 
   const handleLogin = async (profileData) => {
     if (ObjectIsEmpty(profileData)) {
-      console.log("profileData is empty");
+      console.warn("profileData is empty");
       return;
     }
 
@@ -96,7 +96,8 @@ const LoginControl = () => {
       .then(async (res) => {
         const json = await res.json();
         setProfile(json);
-        console.log("login complete:", json);
+        console.log(`login complete! welcome ${json.given_name}`);
+        console.debug(`[LOGIN] profile data: ${json}`);
       })
       .catch((err) => {
         console.error("Error while getting profile:", err);

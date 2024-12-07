@@ -23,7 +23,6 @@ import {
   getSites,
   setStationsOnRoute,
   updateLowestPrices,
-  updateOnRoute,
 } from "./utils";
 import { PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
@@ -142,7 +141,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     });
     source.addFeatures(features);
 
-    // console.log(`added ${filteredstations.length} stations.`);
+    console.debug(`[STATIONS] added ${filteredstations.length} stations.`);
   }, [stations, allStations]);
 
   useEffect(() => {
@@ -163,37 +162,25 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   }, [fuelType]);
 
   const updateOnRouteStations = async () => {
-    setRoutingState(true);
-    onRouteLayer.getSource().clear();
     if (!onRouteLayer || !onRouteLayer.getSource()) {
       setTimeout(updateOnRouteStations, 1_000);
       return;
     }
+    setRoutingState(true);
 
-    // debug for on route features.
-    // const corners = routes.flatMap((route) => {
-    //   return getCorners(route, stations);
-    // });
-    // onRouteLayer.getSource().addFeatures(
-    //   corners.map((extent) => {
-    //     return new Feature({
-    //       geometry: extent,
-    //     });
-    //   })
-    // );
+    onRouteLayer.getSource().clear();
     const stationsOnRoute = routes.flatMap((route) => {
       return getFeaturesAvailableOnRoute(route, stations);
-      // return getFeaturesOnRoute(route, stations);
     });
-    console.log(
-      `${stationsOnRoute.length} points added of ${routes.length} routes`
+
+    console.debug(
+      `[ROUTING] ${stationsOnRoute.length} points added of ${routes.length} routes`
     );
     setStationsOnRoute(onRouteLayer, stationsOnRoute);
     setRoutingState(false);
   };
 
   const getSitePrices = async ({ reload } = {}) => {
-    // setWarning(false);
     if (!allStations || allStations.length <= 0) {
       return;
     }
@@ -218,7 +205,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     const newStations = allStations;
     if (body.length <= 0) {
-      console.log("no new data to fetch.");
+      console.debug("[STATIONS] no new data to fetch.");
     } else {
       const json = await getFuelPrices(fuelType, body);
       setPricesState(false);
@@ -248,8 +235,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         return containsCoordinate(visibleBounds, [station.Lng, station.Lat]);
       });
 
-    console.log(
-      `${filteredStations.length} prices found for ${allStations.length} sites`
+    console.debug(
+      `[PRICES] ${filteredStations.length} prices found for ${allStations.length} sites`
     );
 
     // if (filteredStations.length <= 0) {

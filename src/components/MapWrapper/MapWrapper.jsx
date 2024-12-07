@@ -220,7 +220,7 @@ function MapWrapper({
       source.addFeature(marker);
       return marker;
     });
-    console.log(`added ${filteredFeatures.length} features.`);
+    console.debug(`[STATIONS] added ${filteredFeatures.length} features.`);
 
     const lowestSource = new VectorSource();
     lowestRef.current.setSource(lowestSource);
@@ -250,7 +250,7 @@ function MapWrapper({
         placeid: feature.GPI,
       });
 
-      console.log("lowest site found:", feature);
+      console.debug("[PRICES] lowest site found:", feature);
       lowestSource.addFeature(marker);
     });
   };
@@ -263,7 +263,6 @@ function MapWrapper({
   const handleMapClick = (event) => {
     mapRef.current.forEachFeatureAtPixel(event.pixel, (feature) => {
       updateModalDetails(feature.get("siteid"));
-      console.log(feature);
       showModal();
 
       viewRef.current.setCenter(feature.get("geometry").getCoordinates());
