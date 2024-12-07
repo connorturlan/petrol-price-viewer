@@ -3,7 +3,7 @@ import styles from "./SettingsModal.module.scss";
 import { MODES } from "../PetrolMap/PetrolMap";
 import { UserContext } from "../../contexts/UserContext";
 import { AppContext } from "../../contexts/AppContext";
-import { ObjectIsEmpty } from "../../utils/utils";
+import { capitalize, ObjectIsEmpty } from "../../utils/utils";
 
 const SettingsModal = () => {
   // validate that the user is logged in before showing.
@@ -82,7 +82,7 @@ const SettingsModal = () => {
                       src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
                       className={styles.SetHome_Image}
                     ></img>
-                    <p>Remove {poi}</p>
+                    <p>Remove {capitalize(poi)}</p>
                   </button>
                 );
               })}

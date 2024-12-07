@@ -14,6 +14,7 @@ import SettingsModal from "./containers/SettingsModal/SettingsModal";
 import { AppContext } from "./contexts/AppContext";
 import WelcomeSplash from "./components/WelcomeSplash/WelcomeSplash";
 import RoutePlanner from "./components/RoutePlanner/RoutePlanner";
+import { capitalize } from "./utils/utils";
 
 function App() {
   // set intial state
@@ -43,7 +44,7 @@ function App() {
       case 2:
         return "Placing Work...";
       case 3:
-        return `Placing ${clickModeOptions.poi_name}`;
+        return `Placing ${capitalize(clickModeOptions.poi_name)}`;
     }
   };
 

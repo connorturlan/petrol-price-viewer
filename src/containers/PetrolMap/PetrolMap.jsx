@@ -268,12 +268,12 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     if (clickMode == MODES.DEFAULT) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
-        const details = allStations.find((station) => {
-          if (station.SiteId == feature.get("siteid")) {
-            return station;
-          }
-        });
-        selectSite(details.SiteId);
+        if (feature.get("siteid") != "") {
+          selectSite(feature.get("siteid"));
+          return;
+        }
+
+        window.alert();
       });
     } else if (clickMode == MODES.ADD_HOME) {
       // post the new home.
@@ -283,11 +283,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       // reset the map.
       triggerReload(true);
     } else if (clickMode == MODES.ADD_WORK) {
-      // post the new home.
       setWork(profile, event.coordinate);
-      // reset the mode.
       setClickMode(MODES.DEFAULT);
-      // reset the map.
       triggerReload(true);
     } else if (clickMode == MODES.ADD_POI) {
       setCustomLocation(profile, clickModeOptions.poi_name, event.coordinate);
