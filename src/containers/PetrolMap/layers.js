@@ -101,7 +101,7 @@ const handleCustomLayerStyles = (name, source) => {
 
 // createCustomLayer creates the POI layer
 export const createCustomLayer = (POI) => {
-  console.log("creating custom layer");
+  console.debug("[POI] creating custom layer");
 
   const source = new VectorSource();
 
@@ -150,13 +150,13 @@ const addRoute = (source, waypoints) => {
 // addPOIs will add all user defined POIs.
 export const addWaypoints = async (source, start, finish) => {
   const waypoints = await getWaypointsBetweenPoints(start, finish);
-  console.log(`${waypoints.length} waypoints found`);
+  console.debug(`[ROUTING] ${waypoints.length} waypoints found`);
   addRoute(source, waypoints);
 };
 
 // addPOIs will add all user defined POIs.
 export const addRoutes = async (source, routes) => {
-  console.log(`${routes.length} routes found`);
+  console.debug(`[ROUTING] ${routes.length} routes found`);
   routes.forEach((waypoints) => {
     addRoute(source, waypoints);
   });
@@ -164,7 +164,7 @@ export const addRoutes = async (source, routes) => {
 
 // createWaypointLayer creates the routing layer between the two selected POIs
 export const createWaypointLayer = (routes) => {
-  console.log("creating waypoint layer");
+  console.debug("[ROUTING] creating waypoint layer");
 
   const source = new VectorSource();
 

@@ -23,7 +23,6 @@ import {
   getSites,
   setStationsOnRoute,
   updateLowestPrices,
-  updateOnRoute,
 } from "./utils";
 import { PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
@@ -142,7 +141,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     });
     source.addFeatures(features);
 
-    // console.log(`added ${filteredstations.length} stations.`);
+    console.debug(`[STATIONS] added ${filteredstations.length} stations.`);
   }, [stations, allStations]);
 
   useEffect(() => {
@@ -206,7 +205,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     const newStations = allStations;
     if (body.length <= 0) {
-      console.log("no new data to fetch.");
+      console.debug("[STATIONS] no new data to fetch.");
     } else {
       const json = await getFuelPrices(fuelType, body);
       setPricesState(false);
@@ -236,8 +235,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         return containsCoordinate(visibleBounds, [station.Lng, station.Lat]);
       });
 
-    console.log(
-      `${filteredStations.length} prices found for ${allStations.length} sites`
+    console.debug(
+      `[PRICES] ${filteredStations.length} prices found for ${allStations.length} sites`
     );
 
     // if (filteredStations.length <= 0) {

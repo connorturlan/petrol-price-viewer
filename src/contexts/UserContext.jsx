@@ -62,7 +62,6 @@ export const UserProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log("profile has been set:", profile);
     if (ObjectIsEmpty(profile)) {
       return;
     }

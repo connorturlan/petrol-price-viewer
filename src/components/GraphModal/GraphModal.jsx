@@ -13,7 +13,6 @@ const GraphModal = () => {
 
   const processPriceHistoryData = (dataset) => {
     if (!dataset.datasets) {
-      console.log(dataset);
       return;
     }
     const datasets = dataset.datasets
