@@ -157,6 +157,12 @@ export const addWaypoints = async (source, start, finish) => {
 // addPOIs will add all user defined POIs.
 export const addRoutes = async (source, routes) => {
   console.debug(`[ROUTING] ${routes.length} routes found`);
+  if (!routes) {
+    console.warn(
+      `[ROUTING] routes weren't provided as an array, got: ${routes}`
+    );
+    return;
+  }
   routes.forEach((waypoints) => {
     addRoute(source, waypoints);
   });
