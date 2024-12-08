@@ -81,6 +81,7 @@ export const addPOIs = async (source, POI) => {
     const feature = new Feature({
       geometry: point,
       name: obj.Name,
+      type: "poi",
     });
     source.addFeature(feature);
   });

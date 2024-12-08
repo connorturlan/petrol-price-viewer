@@ -275,12 +275,16 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
         if (ObjectIsEmpty(profile)) return;
 
-        if (!origin) {
-          setOrigin(POI[feature.get("name")]);
-        }
+        switch (feature.get("type")) {
+          case "poi":
+            if (!origin) {
+              setOrigin(POI[feature.get("name")]);
+            }
 
-        if (origin) {
-          setDest(POI[feature.get("name")]);
+            if (origin) {
+              setDest(POI[feature.get("name")]);
+            }
+            break;
         }
       });
     } else if (clickMode == MODES.ADD_HOME) {
