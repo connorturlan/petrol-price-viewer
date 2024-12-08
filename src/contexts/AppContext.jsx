@@ -7,6 +7,7 @@ export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [clickMode, setClickMode] = useState(0);
+  const [clickModeOptions, setClickModeOptions] = useState({});
   const [siteId, setSelectedSite] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -25,6 +26,8 @@ export const AppProvider = ({ children }) => {
   const context = {
     clickMode,
     setClickMode,
+    clickModeOptions,
+    setClickModeOptions,
     siteId,
     selectSite,
     unselectSite,

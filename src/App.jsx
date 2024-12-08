@@ -14,6 +14,7 @@ import SettingsModal from "./containers/SettingsModal/SettingsModal";
 import { AppContext } from "./contexts/AppContext";
 import WelcomeSplash from "./components/WelcomeSplash/WelcomeSplash";
 import RoutePlanner from "./components/RoutePlanner/RoutePlanner";
+import { capitalize } from "./utils/utils";
 
 function App() {
   // set intial state
@@ -22,6 +23,7 @@ function App() {
   const {
     clickMode,
     setClickMode,
+    clickModeOptions,
     selectSite,
     fuelType,
     setFuelType,
@@ -36,11 +38,13 @@ function App() {
     switch (clickMode) {
       default:
       case 0:
-        return "Nothing";
+        return "Nothing... you shouldn't be seeing this";
       case 1:
         return "Setting Home...";
       case 2:
         return "Placing Work...";
+      case 3:
+        return `Placing ${capitalize(clickModeOptions.poi_name)}`;
     }
   };
 
@@ -52,6 +56,11 @@ function App() {
     console.debug("[MODE] setting mode", clickMode);
     localStorage.setItem("clickMode", clickMode);
   }, [clickMode]);
+
+  useEffect(() => {
+    console.debug("[MODE] setting mode options", clickModeOptions);
+    localStorage.setItem("clickModeOptions", JSON.stringify(clickModeOptions));
+  }, [clickModeOptions]);
 
   return (
     <div className={styles.App}>

@@ -3,13 +3,18 @@ import styles from "./SettingsModal.module.scss";
 import { MODES } from "../PetrolMap/PetrolMap";
 import { UserContext } from "../../contexts/UserContext";
 import { AppContext } from "../../contexts/AppContext";
-import { ObjectIsEmpty } from "../../utils/utils";
+import { capitalize, ObjectIsEmpty } from "../../utils/utils";
 
 const SettingsModal = () => {
   // validate that the user is logged in before showing.
-  const { profile, POI } = useContext(UserContext);
-  const { clickMode, setClickMode, darkMode, setDarkMode } =
-    useContext(AppContext);
+  const { profile, POI, removeLocation } = useContext(UserContext);
+  const {
+    clickMode,
+    setClickMode,
+    setClickModeOptions,
+    darkMode,
+    setDarkMode,
+  } = useContext(AppContext);
   const [visible, setVisible] = useState(false);
 
   if (ObjectIsEmpty(profile)) return <></>;
@@ -47,6 +52,7 @@ const SettingsModal = () => {
                 ></img>
                 <p>Set Home</p>
               </button>
+
               <button
                 className={styles.SetHome}
                 onClick={() => {
@@ -60,6 +66,43 @@ const SettingsModal = () => {
                   className={styles.SetHome_Image}
                 ></img>
                 <p>Set Work</p>
+              </button>
+
+              {Object.keys(POI).map((poi) => {
+                if (["home", "work"].includes(poi)) return;
+                return (
+                  <button
+                    key={poi}
+                    className={styles.SetHome}
+                    onClick={() => {
+                      removeLocation(poi);
+                    }}
+                  >
+                    <img
+                      src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                      className={styles.SetHome_Image}
+                    ></img>
+                    <p>Remove {capitalize(poi)}</p>
+                  </button>
+                );
+              })}
+
+              <button
+                className={styles.SetHome}
+                onClick={() => {
+                  let name = window.prompt("Location name");
+                  if (!name) window.alert(`"${name} is not valid."`);
+
+                  setVisible(false);
+                  setClickMode(MODES.ADD_POI);
+                  setClickModeOptions({ poi_name: name });
+                }}
+              >
+                <img
+                  src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                  className={styles.SetHome_Image}
+                ></img>
+                <p>Add Custom Destination</p>
               </button>
               <h3>Preferences</h3>
               <button

@@ -13,7 +13,7 @@ import { fromLonLat, getPointResolution } from "ol/proj";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { PROJECTION } from "../../utils/defaults";
-import { Capitalize, ObjectIsEmpty } from "../../utils/utils";
+import { capitalize, ObjectIsEmpty } from "../../utils/utils";
 import {
   getRoutesBetweenPoints,
   getWaypointsBetweenPoints,
@@ -95,7 +95,7 @@ const handleCustomLayerStyles = (name, source) => {
       height: 48,
     }),
   });
-  style.getText().setText([`${Capitalize(name || "POI")}`, ""]);
+  style.getText().setText([`${capitalize(name || "POI")}`, ""]);
   return style;
 };
 

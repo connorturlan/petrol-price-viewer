@@ -37,14 +37,17 @@ export const MODES = Object.freeze({
   DEFAULT: 0,
   ADD_HOME: 1,
   ADD_WORK: 2,
+  ADD_POI: 3,
 });
 
 const MAP_CENTER = [138.599503, -34.92123];
 
 const PetrolMap = ({ fuelType, updateStations }) => {
-  const { setClickMode, selectSite, darkMode } = useContext(AppContext);
-  const { setHome, setWork, profile, POI, token } = useContext(UserContext);
-  const { origin, dest } = useContext(RouteContext);
+  const { setClickMode, clickModeOptions, selectSite, darkMode } =
+    useContext(AppContext);
+  const { setHome, setWork, setCustomLocation, profile, POI, token } =
+    useContext(UserContext);
+  const { origin, setOrigin, dest, setDest } = useContext(RouteContext);
 
   const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
@@ -260,15 +263,25 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const onClick = (event, map) => {
     const clickMode = localStorage.getItem("clickMode") || 0;
+    const clickModeOptions =
+      JSON.parse(localStorage.getItem("clickModeOptions")) || {};
 
     if (clickMode == MODES.DEFAULT) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
-        const details = allStations.find((station) => {
-          if (station.SiteId == feature.get("siteid")) {
-            return station;
-          }
-        });
-        selectSite(details.SiteId);
+        if (feature.get("siteid") !== undefined) {
+          selectSite(feature.get("siteid"));
+          return;
+        }
+
+        if (ObjectIsEmpty(profile)) return;
+
+        if (!origin) {
+          setOrigin(POI[feature.get("name")]);
+        }
+
+        if (origin) {
+          setDest(POI[feature.get("name")]);
+        }
       });
     } else if (clickMode == MODES.ADD_HOME) {
       // post the new home.
@@ -278,11 +291,12 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       // reset the map.
       triggerReload(true);
     } else if (clickMode == MODES.ADD_WORK) {
-      // post the new home.
       setWork(profile, event.coordinate);
-      // reset the mode.
       setClickMode(MODES.DEFAULT);
-      // reset the map.
+      triggerReload(true);
+    } else if (clickMode == MODES.ADD_POI) {
+      setCustomLocation(profile, clickModeOptions.poi_name, event.coordinate);
+      setClickMode(MODES.DEFAULT);
       triggerReload(true);
     }
   };

@@ -27,7 +27,15 @@ export const UserProvider = ({ children }) => {
     updateRemotePOIs(profile, "work", coord);
   };
 
-  const updateRemotePOIs = (profile, poiName, coord) => {
+  const setCustomLocation = (profile, poi_name, coord) => {
+    updateRemotePOIs(profile, poi_name, coord);
+  };
+
+  const removeLocation = (poiName) => {
+    updateRemotePOIs(profile, poiName, [], true);
+  };
+
+  const updateRemotePOIs = (profile, poiName, coord, isRemoval = false) => {
     // auth the user.
     if (ObjectIsEmpty(profile)) {
       window.alert("you are not logged in.");
@@ -37,11 +45,15 @@ export const UserProvider = ({ children }) => {
     // construct the site.
     const sites = { ...POI };
 
-    sites[poiName] = {
-      Name: poiName,
-      Lat: coord[0],
-      Lng: coord[1],
-    };
+    if (!isRemoval) {
+      sites[poiName] = {
+        Name: poiName,
+        Lat: coord[0],
+        Lng: coord[1],
+      };
+    } else {
+      delete sites[poiName];
+    }
 
     setPOI(sites);
     setPointsOfInterest(profile.id, token, sites);
@@ -77,6 +89,8 @@ export const UserProvider = ({ children }) => {
     setProfile,
     setHome,
     setWork,
+    setCustomLocation,
+    removeLocation,
     POI,
   };
 
