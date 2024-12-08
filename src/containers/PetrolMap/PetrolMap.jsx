@@ -273,6 +273,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
           return;
         }
 
+        if (ObjectIsEmpty(profile)) return;
+
         if (!origin) {
           setOrigin(POI[feature.get("name")]);
         }
