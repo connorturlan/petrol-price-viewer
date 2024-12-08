@@ -273,7 +273,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
           return;
         }
 
-        console.log(feature);
         if (origin) {
           setDest(POI[feature.get("name")]);
         }
