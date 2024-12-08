@@ -47,7 +47,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     useContext(AppContext);
   const { setHome, setWork, setCustomLocation, profile, POI, token } =
     useContext(UserContext);
-  const { origin, dest, setDest } = useContext(RouteContext);
+  const { origin, setOrigin, dest, setDest } = useContext(RouteContext);
 
   const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
@@ -271,6 +271,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         if (feature.get("siteid") !== undefined) {
           selectSite(feature.get("siteid"));
           return;
+        }
+
+        if (!origin) {
+          setOrigin(POI[feature.get("name")]);
         }
 
         if (origin) {
