@@ -1,14 +1,58 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./WelcomeSplash.module.scss";
 import { getCookie } from "../../utils/cookies";
+import { AdvertisingProvider, AdvertisingSlot } from "react-advertising";
+
+// const config = {
+//   slots: [
+//     {
+//       path: "/19968336/header-bid-tag-0",
+//       id: "banner-ad",
+//       sizes: [
+//         [600, 200],
+//         [600, 300],
+//       ],
+//       bids: [
+//         {
+//           bidder: "appnexus",
+//           params: {
+//             placementId: "10433394",
+//           },
+//         },
+//       ],
+//     },
+//   ],
+// };
+
+const COUNTDOWN_TIME = 5;
 
 const WelcomeSplash = (props) => {
   const [visible, setVisible] = useState(getCookie("userprofile") == "");
+  const [countdown, setCountdown] = useState(COUNTDOWN_TIME);
+
+  const mount = useRef(0);
+
+  useEffect(() => {
+    if (mount.current > 0) return;
+    mount.current++;
+    setCountdown(COUNTDOWN_TIME);
+  }, []);
+
+  useEffect(() => {
+    if (countdown <= 0) return;
+
+    setTimeout(() => {
+      setCountdown(countdown - 1);
+    }, 1_000);
+  }, [countdown]);
+
   return (
     visible && (
+      // <AdvertisingProvider config={config}>
       <div
         className={styles.WelcomeSplash_Container}
         onClick={() => {
+          if (countdown > 0) return;
           setVisible(false);
         }}
       >
@@ -39,9 +83,13 @@ const WelcomeSplash = (props) => {
             payment.
           </p>
           <p>Thank you for using Fuel Tool!</p>
-          <b>Touch anywhere to hide</b>
+          {/* <AdvertisingSlot id="banner-ad" /> */}
+          <b>
+            Touch anywhere to hide{countdown > 0 ? ` in ${countdown}` : ""}.
+          </b>
         </div>
       </div>
+      // </AdvertisingProvider>
     )
   );
 };
