@@ -15,6 +15,7 @@ const SettingsModal = () => {
     darkMode,
     setDarkMode,
   } = useContext(AppContext);
+  const [visible, setVisible] = useState(false);
 
   if (ObjectIsEmpty(profile)) return <></>;
 
