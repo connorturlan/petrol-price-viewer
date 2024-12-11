@@ -9,7 +9,6 @@ import Modal from "../../containers/Modal/Modal";
 const FUELTYPES = [2, 8, 3, 12];
 
 const GraphModal = () => {
-  const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
 
   const processPriceHistoryData = (dataset) => {

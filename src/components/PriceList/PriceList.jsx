@@ -3,8 +3,6 @@ import styles from "./PriceList.module.scss";
 import Modal from "../../containers/Modal/Modal";
 
 function PriceList({ children }) {
-  const [visible, setVisible] = useState(false);
-
   return (
     <Modal
       summary={
