@@ -3,33 +3,8 @@ import { ObjectIsEmpty } from "./utils";
 
 const ALTERNATIVES = true;
 
-export async function getWaypointsBetweenPoints(start, finish) {
-  if (ObjectIsEmpty(start) || ObjectIsEmpty(finish)) return [];
-
-  // submit to OSRM
-  const res = await fetch(
-    `https://router.project-osrm.org/route/v1/driving/${start.Lat},${start.Lng};${finish.Lat},${finish.Lng}`
-  );
-  if (res.status != 200) {
-    console.warn(`unable to get data from OSRM, code:${res.status}`);
-    return [];
-  }
-  const body = await res.json();
-
-  // extract geometry
-  const geometry = body["routes"][0]["geometry"];
-
-  // convert to points
-  const points = polyline.decode(geometry).map(([lat, lng]) => {
-    return [lng, lat];
-  });
-
-  // return points
-  return points;
-}
-
-export async function getRoutesBetweenPoints(start, finish) {
-  if (ObjectIsEmpty(start) || ObjectIsEmpty(finish)) return [];
+async function getRoutes(start, finish) {
+  if (ObjectIsEmpty(start) || ObjectIsEmpty(finish)) return {};
 
   console.debug("[ROUTING] getting routes.");
 
@@ -38,10 +13,18 @@ export async function getRoutesBetweenPoints(start, finish) {
     `https://router.project-osrm.org/route/v1/driving/${start.Lat},${start.Lng};${finish.Lat},${finish.Lng}?alternatives=${ALTERNATIVES}`
   );
   if (res.status != 200) {
-    console.warn(`unable to get data from OSRM, code:${res.status}`);
-    return [];
+    console.warn(`[ROUTING] unable to get data from OSRM, code:${res.status}`);
+    return {};
   }
-  const body = await res.json();
+  return res.json();
+}
+
+export async function getRoutesBetweenPoints(start, finish) {
+  if (ObjectIsEmpty(start) || ObjectIsEmpty(finish)) return [];
+
+  const body = await getRoutes(start, finish);
+
+  if (ObjectIsEmpty(body)) return [];
 
   // extract geometry
   const geometries = body["routes"] || [];
