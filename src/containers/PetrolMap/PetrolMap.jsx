@@ -47,7 +47,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     useContext(AppContext);
   const { setHome, setWork, setCustomLocation, profile, POI, getPOIs, token } =
     useContext(UserContext);
-  const { origin, setOrigin, dest, setDest } = useContext(RouteContext);
+  const { origin, setOrigin, getOrigin, dest, setDest, getDest } =
+    useContext(RouteContext);
 
   const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
@@ -291,18 +292,12 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         switch (feature.get("type")) {
           case "poi":
             const poi = getPOIs();
-            console.debug("[MAP,POI] selecting poi.", origin, dest);
-            if (!origin) {
-              console.debug(
-                poi.home,
-                `[MAP,POI] setting poi as origin. name:${feature.get(
-                  "name"
-                )} object:${poi[feature.get("name")]}`
-              );
+            if (!getOrigin()) {
+              console.debug(`[MAP,POI] setting poi as origin`);
               setOrigin(poi[feature.get("name")]);
             }
 
-            if (origin) {
+            if (getOrigin()) {
               console.debug("[MAP,POI] setting poi as destination.");
               setDest(poi[feature.get("name")]);
             }
