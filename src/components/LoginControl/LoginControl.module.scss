@@ -1,12 +1,13 @@
 .LoginControl {
   padding: 8px;
   z-index: 2;
-  background: var(--background);
   border: none;
   border-radius: 8px;
 
   user-select: none;
   cursor: pointer;
+  background-color: var(--background);
+  color: var(--text);
 
   &:hover {
     background: rgb(216, 216, 216);
