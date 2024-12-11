@@ -22,6 +22,7 @@ export const UserProvider = ({ children }) => {
     !ObjectIsEmpty(maybeProfile) ? maybeProfile : {}
   );
   const [POI, setPOI] = useState({});
+  const poiRef = useRef({});
 
   const setHome = (profile, coord) => {
     updateRemotePOIs(profile, "home", coord);
@@ -64,6 +65,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const updateLocalPOIs = async () => {
+    console.log("[POI] updating local locations.");
     const res = await getPointsOfInterest(profile.id, getCookie("usertoken"));
     if (res.status != 200) {
       setPOI({});
@@ -75,6 +77,11 @@ export const UserProvider = ({ children }) => {
       return;
     }
     setPOI(pois);
+    console.log(`[POI] success, ${Object.keys(pois).length} POIs found.`);
+  };
+
+  const getPOIs = () => {
+    return poiRef.current;
   };
 
   const processLogin = async () => {
@@ -87,6 +94,11 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     processLogin();
   }, [profile]);
+
+  useEffect(() => {
+    console.log(`[POI] updated, ${Object.keys(POI).length} POIs found.`);
+    poiRef.current = POI;
+  }, [POI]);
 
   useEffect(() => {
     const onLoginTokenCheck = async () => {
@@ -117,6 +129,7 @@ export const UserProvider = ({ children }) => {
     setCustomLocation,
     removeLocation,
     POI,
+    getPOIs,
     processLogin,
   };
 
