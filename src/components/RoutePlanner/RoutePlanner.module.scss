@@ -11,7 +11,8 @@
     max-width: 400px;
     height: 80vh;
     max-height: 400px;
-    background-color: #eee;
+    background-color: var(--background);
+    color: var(--text);
 
     border-radius: 4px;
     outline: 2px solid rgb(122, 24, 24);
@@ -72,12 +73,13 @@
 
     padding: 8px;
     z-index: 2;
-    background-color: #eee;
+    background-color: var(--background);
     border: none;
     border-radius: 8px;
 
     user-select: none;
     cursor: pointer;
+    color: var(--text);
 
     &:hover {
       background: rgb(216, 216, 216);
@@ -85,7 +87,7 @@
   }
 
   &_Show {
-    background-color: white;
+    background-color: var(--background);
   }
 
   &_Image {

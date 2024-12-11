@@ -10,7 +10,7 @@
     max-width: 400px;
     height: 80vh;
     max-height: 400px;
-    background-color: #eee;
+    background-color: var(--background);
 
     border-radius: 4px;
     outline: 2px solid rgb(122, 24, 24);
@@ -50,7 +50,7 @@
     left: 0;
     background-color: rgba(0, 0, 0, 0.4);
 
-    z-index: 9;
+    z-index: 100;
   }
 
   &_Title {
@@ -61,7 +61,7 @@
   &_Show {
     padding: 8px;
     z-index: 2;
-    background: white;
+    background: var(--background);
     border: none;
     border-radius: 8px;
 

@@ -1,3 +1,5 @@
+@use "./styles/palette";
+
 #root {
   margin: 0;
   padding: 0;
@@ -13,10 +15,30 @@ p {
 }
 
 .App {
+  &__Light {
+    --background: #{palette.$background};
+    --highlight: #{palette.$highlight};
+    --accent: #{palette.$accent};
+    --alt: #{palette.$alt};
+    --text: #{palette.$text};
+  }
+
+  &__Dark {
+    --background: #{palette.$background-dark};
+    --highlight: #{palette.$highlight-dark};
+    --accent: #{palette.$accent-dark};
+    --alt: #{palette.$alt-dark};
+    --text: #{palette.$text-dark};
+  }
+
+  background-color: var(--background);
+  color: var(--text);
+}
+
+.App {
   text-align: center;
   height: 100vh;
   width: 100vw;
-  background-color: #ddd;
 
   &__Active {
     height: 100%;
@@ -47,7 +69,7 @@ p {
     left: 0;
     right: 0;
     z-index: 2;
-    background: white;
+    background: var(--background);
     // pointer-events: none;
 
     border-radius: 0 0 8px 8px;
@@ -64,7 +86,7 @@ p {
 
     padding: 8px 16px;
     z-index: 2;
-    background: white;
+    background: var(--background);
 
     border-radius: 0 8px 0 0;
     outline: 4px solid green;
@@ -133,7 +155,7 @@ p {
 .SetHome {
   padding: 8px;
   z-index: 2;
-  background: white;
+  background: var(--background);
   border: none;
   border-radius: 8px;
 
@@ -141,7 +163,7 @@ p {
   cursor: pointer;
 
   &:hover {
-    background: rgb(216, 216, 216);
+    background: var(--highlight);
   }
 
   &_Image {

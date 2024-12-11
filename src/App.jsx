@@ -63,7 +63,11 @@ function App() {
   }, [clickModeOptions]);
 
   return (
-    <div className={styles.App}>
+    <div
+      className={`${styles.App} ${
+        darkMode ? styles.App__Dark : styles.App__Light
+      }`}
+    >
       <WelcomeSplash />
 
       <div className={styles.App_Label + " " + styles.App_FuelSelector}>
