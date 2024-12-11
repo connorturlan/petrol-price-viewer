@@ -31,6 +31,7 @@ const MapContainer = ({
   darkMode,
 }) => {
   const [map, setMap] = useState();
+  // const [mapLayers, setMapLayers] = useState();
 
   const renderCount = useRef(0);
   const mapElement = useRef();
@@ -38,7 +39,8 @@ const MapContainer = ({
   const mapRef = useRef();
   mapRef.current = map;
 
-  const mapLayers = [mapLayer, ...layers];
+  const mapLayers = useRef([]);
+  mapLayers.current = [darkMode ? darkMapLayer : mapLayer, ...layers];
 
   useEffect(() => {
     if (renderCount.current > 0) return;
@@ -52,7 +54,7 @@ const MapContainer = ({
 
     const initialMap = new Map({
       target: mapElement.current,
-      layers: mapLayers,
+      layers: mapLayers.current,
       view,
       controls: [],
     });
@@ -79,7 +81,7 @@ const MapContainer = ({
   useEffect(() => {
     console.debug("[MAP] updating layers");
     if (!map) return;
-    map.setLayers(mapLayers);
+    map.setLayers(mapLayers.current);
   }, [layers]);
 
   useEffect(() => {
@@ -87,6 +89,13 @@ const MapContainer = ({
     if (!map) return;
     map.getView().setCenter(mapCenter);
   }, [mapCenter]);
+
+  useEffect(() => {
+    console.debug("[MAP] updating dark mode");
+    if (!map) return;
+    mapLayers.current = [darkMode ? darkMapLayer : mapLayer, ...layers];
+    map.setLayers(mapLayers.current);
+  }, [darkMode]);
 
   return <div ref={mapElement} className={styles.MapContainer}></div>;
 };
