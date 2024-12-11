@@ -8,6 +8,20 @@ import TileLayer from "ol/layer/Tile";
 import XYZ from "ol/source/XYZ";
 import { PROJECTION } from "../../utils/defaults";
 
+const mapLayer = new TileLayer({
+  source: new XYZ({
+    url: "https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}",
+    transition: 0,
+  }),
+});
+
+const darkMapLayer = new TileLayer({
+  source: new XYZ({
+    url: "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    transition: 0,
+  }),
+});
+
 const MapContainer = ({
   layers,
   onInit,
@@ -24,6 +38,8 @@ const MapContainer = ({
   const mapRef = useRef();
   mapRef.current = map;
 
+  const mapLayers = [mapLayer, ...layers];
+
   useEffect(() => {
     if (renderCount.current > 0) return;
     renderCount.current = 1;
@@ -36,18 +52,7 @@ const MapContainer = ({
 
     const initialMap = new Map({
       target: mapElement.current,
-      layers: [
-        // Google Maps Terrain
-        new TileLayer({
-          source: new XYZ({
-            url: !darkMode
-              ? "https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}"
-              : "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-            transition: 0,
-          }),
-        }),
-        ...(layers || []),
-      ],
+      layers: mapLayers,
       view,
       controls: [],
     });
@@ -67,8 +72,21 @@ const MapContainer = ({
     });
 
     setMap(initialMap);
+    mapRef.current = initialMap;
     onInit && onInit(initialMap);
   }, []);
+
+  useEffect(() => {
+    console.debug("[MAP] updating layers");
+    if (!map) return;
+    map.setLayers(mapLayers);
+  }, [layers]);
+
+  useEffect(() => {
+    console.debug("[MAP] updating center");
+    if (!map) return;
+    map.getView().setCenter(mapCenter);
+  }, [mapCenter]);
 
   return <div ref={mapElement} className={styles.MapContainer}></div>;
 };

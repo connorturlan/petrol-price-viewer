@@ -65,14 +65,17 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const [waypointLayer, setWaypointLayer] = useState(new VectorLayer());
 
+  const [layers, setLayers] = useState([]);
+
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
   const [loadingRouting, setRoutingState] = useState(false);
 
-  const center =
+  const newCenter =
     !ObjectIsEmpty(profile) && !ObjectIsEmpty(POI) && !ObjectIsEmpty(POI.home)
       ? [POI.home.Lat, POI.home.Lng]
       : MAP_CENTER;
+  const [center, setCenter] = useState(newCenter);
 
   useEffect(() => {
     setStationsLayer(createStationLayer());
@@ -82,6 +85,16 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setWaypointLayer(createWaypointLayer(POI.home, POI.work));
     getSites(setStationsState, setAllStations);
   }, []);
+
+  useEffect(() => {
+    setLayers([
+      stationLayer,
+      waypointLayer,
+      onRouteLayer,
+      lowestLayer,
+      customLayer,
+    ]);
+  }, [stationLayer, waypointLayer, onRouteLayer, lowestLayer, customLayer]);
 
   useEffect(() => {
     if (!reload) return;
@@ -317,13 +330,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setVisibleBounds(extent);
   };
 
-  if (
-    reload ||
-    !stationLayer ||
-    !lowestLayer ||
-    !allStations ||
-    allStations.length <= 0
-  )
+  if (!stationLayer || !lowestLayer || !allStations || allStations.length <= 0)
     return;
 
   return (
@@ -333,15 +340,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       />
       <MapContainer
         layer={stationLayer}
-        layers={[
-          stationLayer,
-          waypointLayer,
-
-          onRouteLayer,
-          lowestLayer,
-
-          customLayer,
-        ]}
+        layers={layers}
         mapCenter={center}
         onInit={onInit}
         onClick={onClick}
