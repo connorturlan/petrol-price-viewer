@@ -23,3 +23,4 @@
 - [ ] add licence plate search - https://docs.autograb.com.au/guide/auth/ - https://docs.autograb.com.au/guide/vehicle/
 - [x] show only stations on the right side
 - [x] allow for better route planning
+- [ ] investigate using https://geocode.maps.co/ for address to coord convertion
