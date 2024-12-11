@@ -8,7 +8,7 @@ const Modal = ({ children, summary }) => {
     <>
       {visible && (
         <div
-          className={styles.RoutePlanner_Container}
+          className={styles.Modal_Container}
           onClick={() => {
             setVisible(false);
           }}
@@ -17,7 +17,7 @@ const Modal = ({ children, summary }) => {
         </div>
       )}
       <button
-        className={styles.RoutePlanner_Show}
+        className={styles.Modal_Show}
         onClick={() => {
           setVisible(true);
         }}

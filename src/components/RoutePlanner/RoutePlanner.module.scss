@@ -12,6 +12,7 @@
     height: 80vh;
     max-height: 400px;
     background-color: var(--background);
+    color: var(--text);
 
     border-radius: 4px;
     outline: 2px solid rgb(122, 24, 24);
@@ -78,6 +79,7 @@
 
     user-select: none;
     cursor: pointer;
+    color: var(--text);
 
     &:hover {
       background: rgb(216, 216, 216);
