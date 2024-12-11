@@ -1,7 +1,11 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { ObjectIsEmpty } from "../utils/utils";
-import { getCookie } from "../utils/cookies";
-import { getPointsOfInterest, setPointsOfInterest } from "../utils/api";
+import { getCookie, setCookie } from "../utils/cookies";
+import {
+  checkToken,
+  getPointsOfInterest,
+  setPointsOfInterest,
+} from "../utils/api";
 
 export const UserContext = createContext();
 
@@ -60,7 +64,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const updateLocalPOIs = async () => {
-    const res = await getPointsOfInterest(profile.id, token);
+    const res = await getPointsOfInterest(profile.id, getCookie("usertoken"));
     if (res.status != 200) {
       setPOI({});
       return;
@@ -73,12 +77,33 @@ export const UserProvider = ({ children }) => {
     setPOI(pois);
   };
 
-  useEffect(() => {
+  const processLogin = async () => {
     if (ObjectIsEmpty(profile)) {
       return;
     }
     updateLocalPOIs();
+  };
+
+  useEffect(() => {
+    processLogin();
   }, [profile]);
+
+  useEffect(() => {
+    const onLoginTokenCheck = async () => {
+      if (!profile.id) return;
+
+      const currentToken = getCookie("usertoken");
+      const isTokenValid = await checkToken(profile.id || -1, currentToken);
+      if (!isTokenValid) {
+        console.log("[LOGIN] token is invalid, resetting login.");
+        setProfile({});
+        setCookie("userprofile", "", 0);
+        setCookie("usertoken", "", 0);
+        window.location.reload();
+      }
+    };
+    onLoginTokenCheck();
+  }, []);
 
   const context = {
     token,
@@ -92,6 +117,7 @@ export const UserProvider = ({ children }) => {
     setCustomLocation,
     removeLocation,
     POI,
+    processLogin,
   };
 
   return (

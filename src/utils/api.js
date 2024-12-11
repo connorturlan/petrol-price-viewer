@@ -7,14 +7,18 @@ export function getLogin(userId) {
 
 export async function getToken(userId) {
   const currentToken = getCookie("usertoken");
-  if (currentToken && checkToken(userId, currentToken)) {
+  if (currentToken && (await checkToken(userId, currentToken))) {
     console.debug(
       `[LOGIN] current token is still valid! token:'${currentToken}'`
     );
     setCookie("usertoken", currentToken, 30);
-    return getCookie("usertoken");
+    return currentToken;
   }
 
+  return newToken(userId);
+}
+
+export async function newToken(userId) {
   console.debug("[LOGIN] getting new token...");
 
   const res = await fetch(ENDPOINT + "/token" + `?userid=${userId}`, {
@@ -27,15 +31,23 @@ export async function getToken(userId) {
   const token = await res.text();
 
   setCookie("usertoken", token, 30);
-
-  window.location.reload();
 }
 
 export async function checkToken(userId, token) {
+  console.debug("[LOGIN] checking current token...");
+  if (!token) {
+    console.warn(`[LOGIN] current token is falsey! had: '${token}'`);
+    return false;
+  }
+
+  console.debug(`[LOGIN] checking current token status...`);
   const res = await fetch(ENDPOINT + "/validate" + `?userid=${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  return res.status === 200;
+  console.debug(
+    `[LOGIN] current token status: ${res.status} - ${res.statusText}`
+  );
+  return res.status === 202;
 }
 
 export function getPointsOfInterest(userId, token) {

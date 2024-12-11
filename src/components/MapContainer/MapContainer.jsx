@@ -43,6 +43,7 @@ const MapContainer = ({
             url: !darkMode
               ? "https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}"
               : "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+            transition: 0,
           }),
         }),
         ...(layers || []),
