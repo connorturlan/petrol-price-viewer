@@ -4,6 +4,7 @@ import { MODES } from "../PetrolMap/PetrolMap";
 import { UserContext } from "../../contexts/UserContext";
 import { AppContext } from "../../contexts/AppContext";
 import { capitalize, ObjectIsEmpty } from "../../utils/utils";
+import Modal from "../Modal/Modal";
 
 const SettingsModal = () => {
   // validate that the user is logged in before showing.
@@ -19,131 +20,119 @@ const SettingsModal = () => {
 
   if (ObjectIsEmpty(profile)) return <></>;
 
-  //
   return (
-    <>
-      {visible && (
-        <div
-          className={styles.SettingsModal_Container}
-          onClick={() => {
-            setVisible(false);
-          }}
-        >
-          <div
-            className={styles.SettingsModal_Body}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <h2 className={styles.SettingsModal_Title}>Settings</h2>
-            <div className={styles.SettingsModal_List}>
-              <h3>Points of Interest</h3>
-              <button
-                className={styles.SetHome}
-                onClick={() => {
-                  setVisible(false);
-                  setClickMode(MODES.ADD_HOME);
-                }}
-                disabled={clickMode == MODES.ADD_HOME}
-              >
-                <img
-                  src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-                  className={styles.SetHome_Image}
-                ></img>
-                <p>Set Home</p>
-              </button>
-
-              <button
-                className={styles.SetHome}
-                onClick={() => {
-                  setVisible(false);
-                  setClickMode(MODES.ADD_WORK);
-                }}
-                disabled={clickMode == MODES.ADD_WORK}
-              >
-                <img
-                  src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-                  className={styles.SetHome_Image}
-                ></img>
-                <p>Set Work</p>
-              </button>
-
-              {Object.keys(POI).map((poi) => {
-                if (["home", "work"].includes(poi)) return;
-                return (
-                  <button
-                    key={poi}
-                    className={styles.SetHome}
-                    onClick={() => {
-                      removeLocation(poi);
-                    }}
-                  >
-                    <img
-                      src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-                      className={styles.SetHome_Image}
-                    ></img>
-                    <p>Remove {capitalize(poi)}</p>
-                  </button>
-                );
-              })}
-
-              <button
-                className={styles.SetHome}
-                onClick={() => {
-                  let name = window.prompt("Location name");
-                  if (!name) window.alert(`"${name} is not valid."`);
-
-                  setVisible(false);
-                  setClickMode(MODES.ADD_POI);
-                  setClickModeOptions({ poi_name: name });
-                }}
-              >
-                <img
-                  src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-                  className={styles.SetHome_Image}
-                ></img>
-                <p>Add Custom Destination</p>
-              </button>
-              <h3>Preferences</h3>
-              <button
-                // className={styles.SetHome}
-                onClick={() => {
-                  setDarkMode(!darkMode);
-                }}
-              >
-                <p>DarkMode</p>
-              </button>
-              <h3>Details</h3>
-              <div>
-                {Object.keys(POI).map((poi) => {
-                  return (
-                    <p key={poi}>
-                      {poi}: {POI[poi].Lat}, {POI[poi].Lng}
-                    </p>
-                  );
-                })}
-              </div>
-            </div>
-            <p>Touch anywhere to hide</p>
-          </div>
-        </div>
-      )}
-      <button
-        className={styles.SettingsModal_Show}
-        onClick={() => {
-          setVisible(true);
+    <Modal
+      summary={
+        <>
+          <img
+            src="settings_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+            className={styles.SettingsModal_Image}
+            alt="Show"
+            srcSet=""
+            title="Show price chart"
+          />
+          <p>Settings</p>
+        </>
+      }
+    >
+      <div
+        className={styles.SettingsModal_Body}
+        onClick={(e) => {
+          e.stopPropagation();
         }}
       >
-        <img
-          src="settings_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-          className={styles.SettingsModal_Image}
-          alt="Show"
-          srcSet=""
-          title="Show price chart"
-        />
-        <p>Settings</p>
-      </button>
-    </>
+        <h2 className={styles.SettingsModal_Title}>Settings</h2>
+        <div className={styles.SettingsModal_List}>
+          <h3>Points of Interest</h3>
+          <button
+            className={styles.SetHome}
+            onClick={() => {
+              setVisible(false);
+              setClickMode(MODES.ADD_HOME);
+            }}
+            disabled={clickMode == MODES.ADD_HOME}
+          >
+            <img
+              src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+              className={styles.SetHome_Image}
+            ></img>
+            <p>Set Home</p>
+          </button>
+
+          <button
+            className={styles.SetHome}
+            onClick={() => {
+              setVisible(false);
+              setClickMode(MODES.ADD_WORK);
+            }}
+            disabled={clickMode == MODES.ADD_WORK}
+          >
+            <img
+              src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+              className={styles.SetHome_Image}
+            ></img>
+            <p>Set Work</p>
+          </button>
+
+          {Object.keys(POI).map((poi) => {
+            if (["home", "work"].includes(poi)) return;
+            return (
+              <button
+                key={poi}
+                className={styles.SetHome}
+                onClick={() => {
+                  removeLocation(poi);
+                }}
+              >
+                <img
+                  src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                  className={styles.SetHome_Image}
+                ></img>
+                <p>Remove {capitalize(poi)}</p>
+              </button>
+            );
+          })}
+
+          <button
+            className={styles.SetHome}
+            onClick={() => {
+              let name = window.prompt("Location name");
+              if (!name) window.alert(`"${name} is not valid."`);
+
+              setVisible(false);
+              setClickMode(MODES.ADD_POI);
+              setClickModeOptions({ poi_name: name });
+            }}
+          >
+            <img
+              src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+              className={styles.SetHome_Image}
+            ></img>
+            <p>Add Custom Destination</p>
+          </button>
+          <h3>Preferences</h3>
+          <button
+            // className={styles.SetHome}
+            onClick={() => {
+              setDarkMode(!darkMode);
+            }}
+          >
+            <p>DarkMode</p>
+          </button>
+          <h3>Details</h3>
+          <div>
+            {Object.keys(POI).map((poi) => {
+              return (
+                <p key={poi}>
+                  {poi}: {POI[poi].Lat}, {POI[poi].Lng}
+                </p>
+              );
+            })}
+          </div>
+        </div>
+        <p>Touch anywhere to hide</p>
+      </div>
+    </Modal>
   );
 };
 
