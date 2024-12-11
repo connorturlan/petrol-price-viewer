@@ -114,6 +114,20 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   }, [profile, POI, routes]);
 
   useEffect(() => {
+    let newCenter = MAP_CENTER;
+    if (!ObjectIsEmpty(profile)) {
+      if (!ObjectIsEmpty(POI) && !ObjectIsEmpty(POI.home))
+        newCenter = [POI.home.Lat, POI.home.Lng];
+
+      if (!ObjectIsEmpty(origin)) newCenter = [origin.Lat, origin.Lng];
+      if (!ObjectIsEmpty(origin) && !ObjectIsEmpty(dest))
+        newCenter = [(origin.Lat + dest.Lat) / 2, (origin.Lng + dest.Lng) / 2];
+    }
+
+    setCenter(newCenter);
+  }, [POI, origin, dest]);
+
+  useEffect(() => {
     triggerReload(true);
 
     const getRoutes = async () => {
@@ -171,7 +185,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     updateLowestPrices(lowestLayer, stations);
     updateStations && updateStations(stations);
     updateOnRouteStations();
-  }, [stations, visibleBounds]);
+  }, [stations, routes, visibleBounds]);
 
   useEffect(() => {
     resetFuelPrices();
