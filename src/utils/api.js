@@ -31,6 +31,8 @@ export async function newToken(userId) {
   const token = await res.text();
 
   setCookie("usertoken", token, 30);
+
+  return token;
 }
 
 export async function checkToken(userId, token) {

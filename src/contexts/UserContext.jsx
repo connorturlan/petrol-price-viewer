@@ -14,6 +14,8 @@ export const UserProvider = ({ children }) => {
 
   const cookieToken = getCookie("usertoken");
   const [token, setToken] = useState(cookieToken);
+  const tokenRef = useRef();
+  tokenRef.current = cookieToken;
 
   const [user, setUser] = useState({});
 
@@ -24,23 +26,23 @@ export const UserProvider = ({ children }) => {
   const [POI, setPOI] = useState({});
   const poiRef = useRef({});
 
-  const setHome = (profile, coord) => {
-    updateRemotePOIs(profile, "home", coord);
+  const setHome = (coord) => {
+    updateRemotePOIs("home", coord);
   };
 
-  const setWork = (profile, coord) => {
-    updateRemotePOIs(profile, "work", coord);
+  const setWork = (coord) => {
+    updateRemotePOIs("work", coord);
   };
 
-  const setCustomLocation = (profile, poi_name, coord) => {
-    updateRemotePOIs(profile, poi_name, coord);
+  const setCustomLocation = (poi_name, coord) => {
+    updateRemotePOIs(poi_name, coord);
   };
 
   const removeLocation = (poiName) => {
-    updateRemotePOIs(profile, poiName, [], true);
+    updateRemotePOIs(poiName, [], true);
   };
 
-  const updateRemotePOIs = (profile, poiName, coord, isRemoval = false) => {
+  const updateRemotePOIs = (poiName, coord, isRemoval = false) => {
     // auth the user.
     if (ObjectIsEmpty(profile)) {
       window.alert("you are not logged in.");
@@ -61,12 +63,12 @@ export const UserProvider = ({ children }) => {
     }
 
     setPOI(sites);
-    setPointsOfInterest(profile.id, token, sites);
+    setPointsOfInterest(profile.id, getToken(), sites);
   };
 
   const updateLocalPOIs = async () => {
     console.log("[POI] updating local locations.");
-    const res = await getPointsOfInterest(profile.id, getCookie("usertoken"));
+    const res = await getPointsOfInterest(profile.id, getToken());
     if (res.status != 200) {
       setPOI({});
       return;
@@ -80,6 +82,11 @@ export const UserProvider = ({ children }) => {
     console.log(`[POI] success, ${Object.keys(pois).length} POIs found.`);
   };
 
+  const getToken = () => {
+    console.log(`[LOGIN] current token: ${tokenRef.current}`);
+    return tokenRef.current;
+  };
+
   const getPOIs = () => {
     return poiRef.current;
   };
@@ -90,6 +97,11 @@ export const UserProvider = ({ children }) => {
     }
     updateLocalPOIs();
   };
+
+  useEffect(() => {
+    console.log(`[LOGIN] setting current token to: ${token}`);
+    tokenRef.current = token;
+  }, [token]);
 
   useEffect(() => {
     processLogin();

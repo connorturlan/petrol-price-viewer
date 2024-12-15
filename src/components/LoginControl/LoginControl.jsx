@@ -52,6 +52,7 @@ const LoginControl = () => {
 
     // get the usertoken
     const freshToken = await newToken(userData.UserID);
+    console.debug(`[LOGIN] setting new token: ${freshToken}`);
     setToken(freshToken);
 
     processLogin();

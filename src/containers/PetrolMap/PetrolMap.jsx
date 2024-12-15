@@ -320,17 +320,17 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       });
     } else if (clickMode == MODES.ADD_HOME) {
       // post the new home.
-      setHome(profile, event.coordinate);
+      setHome(event.coordinate);
       // reset the mode.
       setClickMode(MODES.DEFAULT);
       // reset the map.
       triggerReload(true);
     } else if (clickMode == MODES.ADD_WORK) {
-      setWork(profile, event.coordinate);
+      setWork(event.coordinate);
       setClickMode(MODES.DEFAULT);
       triggerReload(true);
     } else if (clickMode == MODES.ADD_POI) {
-      setCustomLocation(profile, clickModeOptions.poi_name, event.coordinate);
+      setCustomLocation(clickModeOptions.poi_name, event.coordinate);
       setClickMode(MODES.DEFAULT);
       triggerReload(true);
     }
