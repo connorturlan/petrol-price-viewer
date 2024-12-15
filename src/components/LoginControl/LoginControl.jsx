@@ -5,10 +5,10 @@ import { getCookie, setCookie } from "../../utils/cookies";
 import { ENDPOINT } from "../../utils/defaults";
 import { UserContext } from "../../contexts/UserContext";
 import { ObjectIsEmpty } from "../../utils/utils";
-import { checkToken, getLogin, getToken } from "../../utils/api";
+import { checkToken, getLogin, getToken, newToken } from "../../utils/api";
 
 const LoginControl = () => {
-  const { user, setUser, profile, setProfile, token, setToken } =
+  const { user, setUser, profile, setProfile, token, setToken, processLogin } =
     useContext(UserContext);
 
   const login = useGoogleLogin({
@@ -51,8 +51,10 @@ const LoginControl = () => {
     setCookie("userprofile", JSON.stringify(profileData), 30);
 
     // get the usertoken
-    const newToken = await getToken(userData.UserID);
-    setToken(newToken);
+    const freshToken = await newToken(userData.UserID);
+    setToken(freshToken);
+
+    processLogin();
   };
 
   const register = async (profileData, userData) => {

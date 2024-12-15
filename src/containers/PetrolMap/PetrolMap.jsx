@@ -45,9 +45,10 @@ const MAP_CENTER = [138.599503, -34.92123];
 const PetrolMap = ({ fuelType, updateStations }) => {
   const { setClickMode, clickModeOptions, selectSite, darkMode } =
     useContext(AppContext);
-  const { setHome, setWork, setCustomLocation, profile, POI, token } =
+  const { setHome, setWork, setCustomLocation, profile, POI, getPOIs, token } =
     useContext(UserContext);
-  const { origin, setOrigin, dest, setDest } = useContext(RouteContext);
+  const { origin, setOrigin, getOrigin, dest, setDest, getDest } =
+    useContext(RouteContext);
 
   const [reload, triggerReload] = useState(false);
   const [allStations, setAllStations] = useState([]);
@@ -65,14 +66,17 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const [waypointLayer, setWaypointLayer] = useState(new VectorLayer());
 
+  const [layers, setLayers] = useState([]);
+
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
   const [loadingRouting, setRoutingState] = useState(false);
 
-  const center =
+  const newCenter =
     !ObjectIsEmpty(profile) && !ObjectIsEmpty(POI) && !ObjectIsEmpty(POI.home)
       ? [POI.home.Lat, POI.home.Lng]
       : MAP_CENTER;
+  const [center, setCenter] = useState(newCenter);
 
   useEffect(() => {
     setStationsLayer(createStationLayer());
@@ -82,6 +86,16 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setWaypointLayer(createWaypointLayer(POI.home, POI.work));
     getSites(setStationsState, setAllStations);
   }, []);
+
+  useEffect(() => {
+    setLayers([
+      stationLayer,
+      waypointLayer,
+      onRouteLayer,
+      lowestLayer,
+      customLayer,
+    ]);
+  }, [stationLayer, waypointLayer, onRouteLayer, lowestLayer, customLayer]);
 
   useEffect(() => {
     if (!reload) return;
@@ -98,6 +112,20 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     triggerReload(true);
     setCustomLayer(createCustomLayer(POI));
   }, [profile, POI, routes]);
+
+  useEffect(() => {
+    let newCenter = MAP_CENTER;
+    if (!ObjectIsEmpty(profile)) {
+      if (!ObjectIsEmpty(POI) && !ObjectIsEmpty(POI.home))
+        newCenter = [POI.home.Lat, POI.home.Lng];
+
+      if (!ObjectIsEmpty(origin)) newCenter = [origin.Lat, origin.Lng];
+      if (!ObjectIsEmpty(origin) && !ObjectIsEmpty(dest))
+        newCenter = [(origin.Lat + dest.Lat) / 2, (origin.Lng + dest.Lng) / 2];
+    }
+
+    setCenter(newCenter);
+  }, [POI, origin, dest]);
 
   useEffect(() => {
     triggerReload(true);
@@ -157,7 +185,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     updateLowestPrices(lowestLayer, stations);
     updateStations && updateStations(stations);
     updateOnRouteStations();
-  }, [stations, visibleBounds]);
+  }, [stations, routes, visibleBounds]);
 
   useEffect(() => {
     resetFuelPrices();
@@ -277,12 +305,15 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
         switch (feature.get("type")) {
           case "poi":
-            if (!origin) {
-              setOrigin(POI[feature.get("name")]);
+            const poi = getPOIs();
+            if (!getOrigin()) {
+              console.debug(`[MAP,POI] setting poi as origin`);
+              setOrigin(poi[feature.get("name")]);
             }
 
-            if (origin) {
-              setDest(POI[feature.get("name")]);
+            if (getOrigin()) {
+              console.debug("[MAP,POI] setting poi as destination.");
+              setDest(poi[feature.get("name")]);
             }
             break;
         }
@@ -317,13 +348,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setVisibleBounds(extent);
   };
 
-  if (
-    reload ||
-    !stationLayer ||
-    !lowestLayer ||
-    !allStations ||
-    allStations.length <= 0
-  )
+  if (!stationLayer || !lowestLayer || !allStations || allStations.length <= 0)
     return;
 
   return (
@@ -333,15 +358,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       />
       <MapContainer
         layer={stationLayer}
-        layers={[
-          stationLayer,
-          waypointLayer,
-
-          onRouteLayer,
-          lowestLayer,
-
-          customLayer,
-        ]}
+        layers={layers}
         mapCenter={center}
         onInit={onInit}
         onClick={onClick}

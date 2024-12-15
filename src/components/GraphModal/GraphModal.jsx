@@ -4,11 +4,11 @@ import { LineChart } from "@mui/x-charts";
 // import dataset from "./dataset.json";
 import { getFuelTypeColor, getFuelTypeName } from "../../utils/fueltypes";
 import { getHistoricPrices } from "../../services/service";
+import Modal from "../../containers/Modal/Modal";
 
 const FUELTYPES = [2, 8, 3, 12];
 
 const GraphModal = () => {
-  const [visible, setVisible] = useState(false);
   const [data, setData] = useState([]);
 
   const processPriceHistoryData = (dataset) => {
@@ -42,83 +42,72 @@ const GraphModal = () => {
   }, []);
 
   return (
-    <>
-      {visible && (
+    <Modal
+      summary={
+        <>
+          <img
+            src="monitoring_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+            className={styles.GraphModal_Image}
+            alt="Show"
+            srcSet=""
+            title="Show price chart"
+          />
+          <p>Graph</p>
+        </>
+      }
+    >
+      <div
+        className={styles.GraphModal_Body}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <h2 className={styles.GraphModal_Title}>Historical Prices</h2>
         <div
-          className={styles.GraphModal_Container}
+          className={styles.GraphModal_List}
           onClick={() => {
             setVisible(false);
           }}
         >
-          <div
-            className={styles.GraphModal_Body}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <h2 className={styles.GraphModal_Title}>Historical Prices</h2>
-            <div
-              className={styles.GraphModal_List}
-              onClick={() => {
-                setVisible(false);
+          <p>Cents per Litre</p>
+          {data && data.datasets && (
+            <LineChart
+              xAxis={[
+                {
+                  label: "Date",
+                  data: data.dateindexes,
+                  valueFormatter: (v) => data.datelabels.at(v),
+                },
+              ]}
+              yAxis={[
+                {
+                  label: "Price",
+                  valueFormatter: (s) => s.cents,
+                },
+              ]}
+              series={data.datasets.map((s) => {
+                return {
+                  type: "line",
+                  data: s.cents || 0,
+                  label: s.label,
+                  color: getFuelTypeColor(s.fuelId),
+                  showMark: false,
+                };
+              })}
+              slotProps={{
+                // Custom loading message
+                loadingOverlay: { message: "Waiting for data..." },
+                // Custom message for empty chart
+                noDataOverlay: { message: "Waiting for data..." },
               }}
-            >
-              <p>Cents per Litre</p>
-              {data && data.datasets && (
-                <LineChart
-                  xAxis={[
-                    {
-                      label: "Date",
-                      data: data.dateindexes,
-                      valueFormatter: (v) => data.datelabels.at(v),
-                    },
-                  ]}
-                  yAxis={[
-                    {
-                      label: "Price",
-                      valueFormatter: (s) => s.cents,
-                    },
-                  ]}
-                  series={data.datasets.map((s) => {
-                    return {
-                      type: "line",
-                      data: s.cents || 0,
-                      label: s.label,
-                      color: getFuelTypeColor(s.fuelId),
-                      showMark: false,
-                    };
-                  })}
-                  slotProps={{
-                    // Custom loading message
-                    loadingOverlay: { message: "Waiting for data..." },
-                    // Custom message for empty chart
-                    noDataOverlay: { message: "Waiting for data..." },
-                  }}
-                  grid={{ vertical: true, horizontal: true }}
-                  margin={{ top: 10 }}
-                />
-              )}
-            </div>
-            <p>Touch anywhere to hide</p>
-          </div>
+              grid={{ vertical: true, horizontal: true }}
+              margin={{ top: 10 }}
+            />
+          )}
         </div>
-      )}
-      <button
-        className={styles.GraphModal_Show}
-        onClick={() => {
-          setVisible(true);
-        }}
-      >
-        <img
-          src="monitoring_24dp_FILL0_wght400_GRAD0_opsz24.svg"
-          className={styles.GraphModal_Image}
-          alt="Show"
-          srcSet=""
-          title="Show price chart"
-        />
-        <p>Graph</p>
-      </button>
-    </>
+        <p>Touch anywhere to hide</p>
+      </div>
+    </Modal>
   );
 };
 

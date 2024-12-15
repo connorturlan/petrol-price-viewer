@@ -14,10 +14,7 @@ import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { PROJECTION } from "../../utils/defaults";
 import { capitalize, ObjectIsEmpty } from "../../utils/utils";
-import {
-  getRoutesBetweenPoints,
-  getWaypointsBetweenPoints,
-} from "../../utils/navigation";
+import { getRoutesBetweenPoints } from "../../utils/navigation";
 import Stroke from "ol/style/Stroke";
 import Icon from "ol/style/Icon";
 import Style from "ol/style/Style";
@@ -146,13 +143,6 @@ const addRoute = (source, waypoints) => {
   });
 
   source.addFeature(feature);
-};
-
-// addPOIs will add all user defined POIs.
-export const addWaypoints = async (source, start, finish) => {
-  const waypoints = await getWaypointsBetweenPoints(start, finish);
-  console.debug(`[ROUTING] ${waypoints.length} waypoints found`);
-  addRoute(source, waypoints);
 };
 
 // addPOIs will add all user defined POIs.
