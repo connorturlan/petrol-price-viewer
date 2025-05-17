@@ -5,13 +5,12 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: flex-start;
     gap: 12px;
 
     width: 100vw;
     max-width: 400px;
-    height: 80vh;
-    max-height: 400px;
+    height: fit-content;
     background-color: var(--background);
 
     border-radius: 4px;
@@ -78,8 +77,23 @@
   }
 
   &_Image {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    display: block;
+    width: fit-content;
+    margin: 24px auto;
+    padding: 0;
+    height: 36px;
+
+    & > * {
+      height: 100%;
+      object-fit: contain;
+    }
+
+    border-radius: 8px;
+    background: #f0f0f0;
+    box-shadow: 15px 15px 30px #b4b4b4, -15px -15px 30px #ffffff;
+
+    &:hover {
+      box-shadow: 15px 15px 30px #cecece, -15px -15px 30px #ffffff;
+    }
   }
 }
