@@ -12,8 +12,7 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   // const maybeUser = JSON.parse(getCookie("userdata"));
 
-  const cookieToken = getCookie("usertoken");
-  const [token, setToken] = useState(cookieToken);
+  const [token, setToken] = useState("not-a-token");
 
   const [user, setUser] = useState({});
 
@@ -48,7 +47,14 @@ export const UserProvider = ({ children }) => {
     }
 
     // construct the site.
-    const sites = { ...POI };
+    const sites = { ...poiRef.current };
+
+    console.debug(
+      `[POI] adding site: ${poiName} ${JSON.stringify(
+        sites
+      )}... ${JSON.stringify(POI)}`
+    );
+    console.debug(`[POI] all sites:  ${JSON.stringify(POI)}`);
 
     if (!isRemoval) {
       sites[poiName] = {
@@ -66,8 +72,9 @@ export const UserProvider = ({ children }) => {
 
   const updateLocalPOIs = async () => {
     console.log("[POI] updating local locations.");
-    const res = await getPointsOfInterest(profile.id, getCookie("usertoken"));
+    const res = await getPointsOfInterest(profile.id);
     if (res.status != 200) {
+      console.error("[POI] unable to update local locations.");
       setPOI({});
       return;
     }
@@ -86,6 +93,7 @@ export const UserProvider = ({ children }) => {
 
   const processLogin = async () => {
     if (ObjectIsEmpty(profile)) {
+      console.warn("profile was empty during process login");
       return;
     }
     updateLocalPOIs();
@@ -98,6 +106,9 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     console.log(`[POI] updated, ${Object.keys(POI).length} POIs found.`);
     poiRef.current = POI;
+    console.debug(
+      `[POI] ${JSON.stringify(poiRef.current)} & ${JSON.stringify(POI)}`
+    );
   }, [POI]);
 
   useEffect(() => {
@@ -119,7 +130,6 @@ export const UserProvider = ({ children }) => {
 
   const context = {
     token,
-    setToken,
     user,
     setUser,
     profile,
