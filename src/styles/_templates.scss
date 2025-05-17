@@ -1,0 +1,17 @@
+$background: #f6f6f6;
+$highlight: #eee;
+$accent: yellow;
+$alt: red;
+$text: black;
+
+$background-dark: #333;
+$highlight-dark: #eee;
+$accent-dark: yellow;
+$alt-dark: red;
+$text-dark: white;
+
+@mixin modal_border {
+  padding: 16px;
+  border-radius: 32px;
+  box-shadow: 0px 4px 8px #00000060;
+}

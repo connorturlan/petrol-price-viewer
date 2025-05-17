@@ -1,3 +1,5 @@
+@use "../../styles/templates";
+
 .StationModal {
   display: flex;
   justify-content: flex-start;
@@ -9,10 +11,7 @@
 
   z-index: 10;
 
-  background-color: var(--background);
-  outline: 2px solid rgb(122, 24, 24);
-
-  border-radius: 8px;
+  @include templates.modal_border;
 
   cursor: default;
 

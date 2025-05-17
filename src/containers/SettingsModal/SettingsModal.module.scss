@@ -1,3 +1,5 @@
+@use "../../styles/templates";
+
 .SettingsModal {
   &_Body {
     margin: 120px 60px;
@@ -12,9 +14,7 @@
     max-height: 400px;
     background-color: var(--background);
 
-    border-radius: 4px;
-    outline: 2px solid rgb(122, 24, 24);
-    box-shadow: 0px 4px 8px #00000060;
+    @include templates.modal_border;
 
     z-index: 10;
 
