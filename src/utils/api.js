@@ -1,12 +1,14 @@
 import { getCookie, setCookie } from "./cookies";
 import { ENDPOINT } from "./defaults";
 
+let USER_TOKEN = getCookie("usertoken");
+
 export function getLogin(userId) {
   return fetch(ENDPOINT + "/login" + `?userid=${userId}`);
 }
 
 export async function getToken(userId) {
-  const currentToken = getCookie("usertoken");
+  const currentToken = USER_TOKEN;
   if (currentToken && (await checkToken(userId, currentToken))) {
     console.debug(
       `[LOGIN] current token is still valid! token:'${currentToken}'`
@@ -31,6 +33,9 @@ export async function newToken(userId) {
   const token = await res.text();
 
   setCookie("usertoken", token, 30);
+  USER_TOKEN = token;
+
+  return token;
 }
 
 export async function checkToken(userId, token) {
@@ -51,6 +56,7 @@ export async function checkToken(userId, token) {
 }
 
 export function getPointsOfInterest(userId, token) {
+  token = USER_TOKEN;
   console.debug(`[POI] sending poi request ${userId} ${token}`);
   return fetch(`${ENDPOINT}/poi?userid=${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -58,9 +64,11 @@ export function getPointsOfInterest(userId, token) {
 }
 
 export async function setPointsOfInterest(userId, token, poi) {
+  token = USER_TOKEN;
   const body = JSON.stringify(poi);
 
   // send the site update.
+  console.debug(`[POI] updating poi request ${userId} ${token} --- ${body}`);
   const res = await fetch(`${ENDPOINT}/poi?userid=${userId}`, {
     headers: { Authorization: `Bearer ${token}` },
     method: "POST",

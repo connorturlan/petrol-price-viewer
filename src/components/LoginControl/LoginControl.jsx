@@ -5,10 +5,10 @@ import { getCookie, setCookie } from "../../utils/cookies";
 import { ENDPOINT } from "../../utils/defaults";
 import { UserContext } from "../../contexts/UserContext";
 import { ObjectIsEmpty } from "../../utils/utils";
-import { checkToken, getLogin, getToken, newToken } from "../../utils/api";
+import { getLogin, newToken } from "../../utils/api";
 
 const LoginControl = () => {
-  const { user, setUser, profile, setProfile, token, setToken, processLogin } =
+  const { user, setUser, profile, setProfile, setToken, processLogin } =
     useContext(UserContext);
 
   const login = useGoogleLogin({
