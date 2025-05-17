@@ -52,7 +52,7 @@ const LoginControl = () => {
 
     // get the usertoken
     const freshToken = await newToken(userData.UserID);
-    setToken(freshToken);
+    // setToken(freshToken);
 
     processLogin();
   };

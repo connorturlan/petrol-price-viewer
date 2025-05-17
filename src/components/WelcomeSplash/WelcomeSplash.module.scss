@@ -1,7 +1,7 @@
 .WelcomeSplash {
   &_Body {
     margin: 120px 60px;
-    padding: 12px;
+    padding: 32px;
 
     display: flex;
     flex-direction: column;
@@ -13,9 +13,18 @@
     height: fit-content;
     background-color: var(--background);
 
-    border-radius: 4px;
-    outline: 2px solid rgb(122, 24, 24);
+    border-radius: 32px;
+    // outline: 2px solid rgb(122, 24, 24);
     box-shadow: 0px 4px 8px #00000060;
+
+    & > p {
+      font-size: 0.8em;
+      text-align: justify;
+    }
+
+    & > b {
+      text-align: center;
+    }
 
     z-index: 10;
   }
@@ -90,10 +99,11 @@
 
     border-radius: 8px;
     background: #f0f0f0;
-    box-shadow: 15px 15px 30px #b4b4b4, -15px -15px 30px #ffffff;
+    // box-shadow: 15px 15px 30px #b4b4b4, -15px -15px 30px #ffffff;
 
     &:hover {
-      box-shadow: 15px 15px 30px #cecece, -15px -15px 30px #ffffff;
+      // box-shadow: 15px 15px 30px #cecece, -15px -15px 30px #ffffff;
+      box-shadow: 4px 4px 4px #cecece;
     }
   }
 }

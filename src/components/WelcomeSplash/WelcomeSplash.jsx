@@ -24,11 +24,13 @@ import { AdvertisingProvider, AdvertisingSlot } from "react-advertising";
 //   ],
 // };
 
-const COUNTDOWN_TIME = 5;
+const COUNTDOWN_TIME = 4;
 
 const WelcomeSplash = (props) => {
-  const [visible, setVisible] = useState(getCookie("userprofile") == "");
-  const [countdown, setCountdown] = useState(COUNTDOWN_TIME);
+  const [visible, setVisible] = useState(true);
+  const [countdown, setCountdown] = useState(
+    getCookie("userprofile") === "" ? COUNTDOWN_TIME : 0
+  );
 
   const mount = useRef(0);
 
@@ -88,9 +90,10 @@ const WelcomeSplash = (props) => {
             </a>
             .
           </b>
-          <b>
+          {/* <b>
             Touch anywhere to hide{countdown > 0 ? ` in ${countdown}` : ""}.
-          </b>
+          </b> */}
+          <b>{countdown > 0 ? `Loading...` : "Touch anywhere to hide"}.</b>
         </div>
       </div>
       // </AdvertisingProvider>

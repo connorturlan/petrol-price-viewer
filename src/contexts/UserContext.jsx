@@ -20,6 +20,7 @@ export const UserProvider = ({ children }) => {
   const [profile, setProfile] = useState(
     !ObjectIsEmpty(maybeProfile) ? maybeProfile : {}
   );
+  const profileRef = useRef({});
   const [POI, setPOI] = useState({});
   const poiRef = useRef({});
 
@@ -72,7 +73,7 @@ export const UserProvider = ({ children }) => {
 
   const updateLocalPOIs = async () => {
     console.log("[POI] updating local locations.");
-    const res = await getPointsOfInterest(profile.id);
+    const res = await getPointsOfInterest(profileRef.current.id);
     if (res.status != 200) {
       console.error("[POI] unable to update local locations.");
       setPOI({});
@@ -100,6 +101,7 @@ export const UserProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    profileRef.current = profile;
     processLogin();
   }, [profile]);
 
