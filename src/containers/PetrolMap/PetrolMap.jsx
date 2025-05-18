@@ -3,7 +3,13 @@ import MapContainer from "../../components/MapContainer/MapContainer";
 import styles from "./PetrolMap.module.scss";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
-import { fromLonLat } from "ol/proj";
+import {
+  fromLonLat,
+  getTransform,
+  Projection,
+  transform,
+  transformWithProjections,
+} from "ol/proj";
 import { Point, Polygon } from "ol/geom";
 import { Feature } from "ol";
 import StationModal from "../../components/StationModal/StationModal";
@@ -27,7 +33,7 @@ import {
 import { PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
 import { UserContext } from "../../contexts/UserContext";
-import { ObjectIsEmpty } from "../../utils/utils";
+import { convertCoord, ObjectIsEmpty } from "../../utils/utils";
 import { getRoutesBetweenPoints } from "../../utils/navigation";
 import { fromExtent } from "ol/geom/Polygon";
 import { RouteContext } from "../../contexts/RouteContext";
@@ -156,9 +162,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     );
 
     const features = filteredstations.map((feature) => {
-      const point = new Point(
-        fromLonLat([feature.Lng, feature.Lat], PROJECTION)
-      );
+      const point = new Point([feature.Lng, feature.Lat]);
 
       let price = ((feature.Price || 0) / 10).toFixed(1);
 
@@ -293,6 +297,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const clickMode = localStorage.getItem("clickMode") || 0;
     const clickModeOptions =
       JSON.parse(localStorage.getItem("clickModeOptions")) || {};
+    const clickedCoord = transform(event.coordinate, PROJECTION, "EPSG:4326");
 
     if (clickMode == MODES.DEFAULT) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
@@ -320,17 +325,17 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       });
     } else if (clickMode == MODES.ADD_HOME) {
       // post the new home.
-      setHome(profile, event.coordinate);
+      setHome(profile, clickedCoord);
       // reset the mode.
       setClickMode(MODES.DEFAULT);
       // reset the map.
       triggerReload(true);
     } else if (clickMode == MODES.ADD_WORK) {
-      setWork(profile, event.coordinate);
+      setWork(profile, clickedCoord);
       setClickMode(MODES.DEFAULT);
       triggerReload(true);
     } else if (clickMode == MODES.ADD_POI) {
-      setCustomLocation(profile, clickModeOptions.poi_name, event.coordinate);
+      setCustomLocation(profile, clickModeOptions.poi_name, clickedCoord);
       setClickMode(MODES.DEFAULT);
       triggerReload(true);
     }

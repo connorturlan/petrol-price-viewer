@@ -1,5 +1,7 @@
 import polyline from "polyline";
-import { ObjectIsEmpty } from "./utils";
+import { convertCoordFromLatLon, ObjectIsEmpty } from "./utils";
+import { fromLonLat } from "ol/proj";
+import { PROJECTION } from "./defaults";
 
 const ALTERNATIVES = true;
 
@@ -31,9 +33,9 @@ export async function getRoutesBetweenPoints(start, finish) {
 
   // convert to routes
   const routes = geometries.map((route) => {
-    const points = polyline.decode(route["geometry"]).map(([lat, lng]) => {
-      return [lng, lat];
-    });
+    const points = polyline
+      .decode(route["geometry"])
+      .map(convertCoordFromLatLon);
     return points;
   });
 

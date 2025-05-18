@@ -7,6 +7,8 @@ import View from "ol/View";
 import TileLayer from "ol/layer/Tile";
 import XYZ from "ol/source/XYZ";
 import { PROJECTION } from "../../utils/defaults";
+import { fromLonLat, transform } from "ol/proj";
+import { convertCoord } from "../../utils/utils";
 
 const mapLayer = new TileLayer({
   source: new XYZ({
@@ -48,7 +50,7 @@ const MapContainer = ({
 
     const view = new View({
       projection: PROJECTION,
-      center: mapCenter,
+      center: transform(mapCenter, "EPSG:4326", PROJECTION),
       zoom: 13,
     });
 
@@ -87,7 +89,7 @@ const MapContainer = ({
   useEffect(() => {
     console.debug("[MAP] updating center");
     if (!map) return;
-    map.getView().setCenter(mapCenter);
+    map.getView().setCenter(convertCoord(mapCenter));
   }, [mapCenter]);
 
   useEffect(() => {

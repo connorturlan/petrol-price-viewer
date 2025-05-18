@@ -4,6 +4,11 @@ export const ENDPOINT =
     ? "http://localhost:3000"
     : "https://ad8rhw1x2h.execute-api.ap-southeast-2.amazonaws.com/Prod";
 
-export const PROJECTION = "EPSG:4326";
+// export const PROJECTION = "EPSG:4326";
+export const PROJECTION = "EPSG:3857";
 
 export const DEFAULT_FUEL_TYPE = 1;
+
+export const SHOW_WELCOME = !(
+  import.meta.env.VITE_LOCAL_SHOW_WELCOME == "FALSE"
+);

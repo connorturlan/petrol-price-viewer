@@ -6,6 +6,7 @@ import { ENDPOINT, PROJECTION } from "../../utils/defaults";
 import { boundingExtent, containsCoordinate, containsExtent } from "ol/extent";
 import { distance } from "ol/coordinate";
 import { getDistance } from "ol/sphere";
+import { convertCoord } from "../../utils/utils";
 
 const ROUTING_STATION_COUNT = 3;
 
@@ -18,7 +19,14 @@ export const getSites = async (setLoading, setStations) => {
     return;
   }
   const json = await res.json();
-  setStations(json);
+
+  const modifiedJson = json.map((station) => {
+    const coord = convertCoord([station.Lng, station.Lat]);
+
+    return { ...station, Lng: coord.at(0), Lat: coord.at(1) };
+  });
+
+  setStations(modifiedJson);
 
   setLoading(false);
 };
@@ -150,7 +158,7 @@ export const setStationsOnRoute = (layer, onRoute) => {
   const source = layer.getSource();
 
   const features = onRoute.map((site) => {
-    const point = new Point(fromLonLat([site.Lng, site.Lat], PROJECTION));
+    const point = new Point([site.Lng, site.Lat]);
 
     let price = ((site.Price || 0) / 10).toFixed(1);
 
