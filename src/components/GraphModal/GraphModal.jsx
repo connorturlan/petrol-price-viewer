@@ -26,7 +26,9 @@ const GraphModal = () => {
       });
     const datasetmappeds = {
       datasets,
-      datelabels: dataset.dates,
+      datelabels: dataset.dates.sort((a, b) => {
+        return new Date(b.date) - new Date(a.date);
+      }),
       dateindexes: [...Array(dataset.dates.length).keys()],
     };
     setData(datasetmappeds);
@@ -76,7 +78,8 @@ const GraphModal = () => {
                 {
                   label: "Date",
                   data: data.dateindexes,
-                  valueFormatter: (v) => data.datelabels.at(v),
+                  valueFormatter: (v) =>
+                    new Date(data.datelabels.at(v)).toLocaleDateString(),
                 },
               ]}
               yAxis={[
