@@ -45,7 +45,7 @@ export const updateLowestPrices = async (layer, stations) => {
   );
 
   const features = lowestStations.map((station) => {
-    const point = new Point(fromLonLat([station.Lng, station.Lat], PROJECTION));
+    const point = new Point([station.Lng, station.Lat]);
 
     let price = ((station.Price || 0) / 10).toFixed(1);
 

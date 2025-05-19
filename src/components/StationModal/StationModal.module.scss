@@ -11,6 +11,8 @@
 
   z-index: 10;
 
+  background-color: var(--background);
+  color: var(--text);
   @include templates.modal_border;
 
   cursor: default;
