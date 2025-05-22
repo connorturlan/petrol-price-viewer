@@ -20,6 +20,7 @@ import {
   createLowestLayer,
   createOnRouteLayer,
   createStationLayer,
+  createStationLayerDark,
   createWaypointLayer,
 } from "./layers";
 import {
@@ -38,6 +39,7 @@ import { getRoutesBetweenPoints } from "../../utils/navigation";
 import { fromExtent } from "ol/geom/Polygon";
 import { RouteContext } from "../../contexts/RouteContext";
 import { getFuelPrices } from "../../services/service";
+import { createDefaultStyle } from "ol/style/Style";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -112,6 +114,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   useEffect(() => {
     triggerReload(true);
+    setStationsLayer(
+      darkMode ? createStationLayerDark() : createStationLayer()
+    );
   }, [darkMode]);
 
   useEffect(() => {

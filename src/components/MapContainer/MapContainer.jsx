@@ -9,6 +9,7 @@ import XYZ from "ol/source/XYZ";
 import { PROJECTION } from "../../utils/defaults";
 import { fromLonLat, transform } from "ol/proj";
 import { convertCoord } from "../../utils/utils";
+import Style from "ol/style/Style";
 
 const mapLayer = new TileLayer({
   source: new XYZ({
@@ -19,7 +20,7 @@ const mapLayer = new TileLayer({
 
 const darkMapLayer = new TileLayer({
   source: new XYZ({
-    url: "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    url: "https://api.maptiler.com/maps/streets-v2-dark/256/{z}/{x}/{y}.png?key=xENXsVIdAZcfTT1E5DpW",
     transition: 0,
   }),
 });

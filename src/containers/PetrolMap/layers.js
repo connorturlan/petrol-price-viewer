@@ -3,6 +3,7 @@ import VectorSource from "ol/source/Vector";
 import {
   customStyle,
   defaultStyle,
+  defaultStyleDark,
   lowestStyle,
   onRouteStyle,
   waypointStyle,
@@ -34,6 +35,19 @@ export const createStationLayer = () => {
     },
     zIndex: 0,
   });
+};
+
+export const createStationLayerDark = () => {
+  const layer = createStationLayer();
+
+  layer.setStyle((feature) => {
+    defaultStyleDark
+      .getText()
+      .setText([`${feature.get("price")}`, "italic 12pt sans-serif"]);
+    return defaultStyleDark;
+  });
+
+  return layer;
 };
 
 export const createLowestLayer = () => {

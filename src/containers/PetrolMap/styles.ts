@@ -29,6 +29,30 @@ export const defaultStyle = new Style({
   }),
 });
 
+export const defaultStyleDark = new Style({
+  image: new Icon({
+    anchor: [0.5, 1],
+    src: "red-pin.svg",
+    height: 24,
+  }),
+  text: new Text({
+    offsetY: 9,
+    font: "bold 9pt sans-serif",
+    fill: new Fill({
+      color: "#eee",
+    }),
+    backgroundFill: new Fill({
+      color: "#333",
+    }),
+    backgroundStroke: new Stroke({
+      color: "#555",
+      width: 1,
+      lineCap: "butt",
+    }),
+    padding: [2, 4, 2, 4],
+  }),
+});
+
 export const lowestStyle = new Style({
   image: new Icon({
     anchor: [0.5, 1],
