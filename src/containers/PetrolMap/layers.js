@@ -199,12 +199,11 @@ export const createWaypointLayer = (routes) => {
           resolution,
           extent
         );
-
-        const stroke = waypointStyle.getStroke();
-        // stroke.setWidth(20 / pointResolution);
-        stroke.setWidth(8);
-        waypointStyle.setStroke(stroke);
+        // const stroke = waypointStyle.getStroke();
         // Resolution = number of meters for a pixel (at least for EPSG 3857)
+        // stroke.setWidth(20 / pointResolution);
+        // waypointStyle.setStroke(stroke);
+
         return waypointStyle;
       }
     },

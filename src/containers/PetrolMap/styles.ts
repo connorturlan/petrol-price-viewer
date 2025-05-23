@@ -133,7 +133,7 @@ export const customStyle = new Style({
 });
 
 export const waypointStyle = new Style({
-  stroke: new Stroke({ color: "#038cfcbb" }),
+  stroke: new Stroke({ color: "#038cfcbb", width: 8 }),
   fill: new Fill({
     color: "#a0ebff60",
   }),
