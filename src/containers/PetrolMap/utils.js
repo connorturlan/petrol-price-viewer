@@ -108,11 +108,14 @@ function pointAtDistanceAndBearing(start, bearing, distance) {
 }
 
 function getExtentCorners(start, end) {
-  const y = Math.sin(end[0] - start[0]) * Math.cos(end[1]);
-  const x =
-    Math.cos(start[1]) * Math.sin(end[1]) -
-    Math.sin(start[1]) * Math.cos(end[1]) * Math.cos(end[0] - start[0]);
-  const bearing = Math.atan2(y, x);
+  const [long1, lat1] = transform(start, PROJECTION, "EPSG:4326");
+  const [long2, lat2] = transform(end, PROJECTION, "EPSG:4326");
+
+  const ay = Math.sin(long2 - long1) * Math.cos(lat2);
+  const ax =
+    Math.cos(lat1) * Math.sin(lat2) -
+    Math.sin(lat1) * Math.cos(lat2) * Math.cos(long2 - long1);
+  const bearing = Math.atan2(ay, ax);
 
   const a = pointAtDistanceAndBearing(start, bearing + Math.PI, MAX_DISTANCE);
   const b = pointAtDistanceAndBearing(end, bearing + Math.PI, MAX_DISTANCE);
@@ -130,6 +133,16 @@ function getBounds(start, end) {
 
 function isFeatureOnRoute(start, end, coord) {
   return getBounds(start, end).intersectsCoordinate(coord);
+}
+
+// DEBUG - used for getting route bounding extent features.
+export function getDebugBoundingPath(route) {
+  let features = route.slice(0, -1).map((waypoint, index) => {
+    const start = waypoint;
+    const end = index < route.length - 1 && route[index + 1];
+    return new Feature({ geometry: getBounds(start, end) });
+  });
+  return features;
 }
 
 export function getCorners(route, stations) {
@@ -178,4 +191,23 @@ export const setStationsOnRoute = (layer, onRoute) => {
   // show some of the lowest prices.
   const lowestPrices = features.sort((a, b) => a.get("price") - b.get("price"));
   source.addFeatures(lowestPrices.slice(0, ROUTING_STATION_COUNT));
+};
+
+export const setDebugBoundsForRoute = (layer, route) => {
+  const source = layer.getSource();
+
+  const polygons = getDebugBoundingPath(route);
+
+  const features = polygons.map((poly) => {
+    return new Feature({
+      geometry: poly,
+    });
+  });
+
+  console.debug(
+    `[ROUTING] ${features.length}/${onRoute.length} features on route.`
+  );
+
+  // show some of the lowest prices.
+  source.addFeatures(features);
 };

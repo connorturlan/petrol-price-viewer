@@ -20,6 +20,7 @@ import Stroke from "ol/style/Stroke";
 import Icon from "ol/style/Icon";
 import Style from "ol/style/Style";
 import { getPointsOfInterest } from "../../utils/api";
+import { getDebugBoundingPath } from "./utils";
 
 export const createStationLayer = () => {
   const initialSource = new VectorSource();
@@ -155,8 +156,11 @@ const addRoute = (source, waypoints) => {
   const feature = new Feature({
     geometry: new LineString(waypoints),
   });
-
   source.addFeature(feature);
+
+  // DEBUG - show bounding paths.
+  // const bounds = getDebugBoundingPath(waypoints);
+  // source.addFeatures(bounds);
 };
 
 // addPOIs will add all user defined POIs.
@@ -187,14 +191,18 @@ export const createWaypointLayer = (routes) => {
     source: source,
     style: (feature, resolution) => {
       {
-        // if (feature === undefined) return waypointStyle;
+        if (feature === undefined) return waypointStyle;
         const extent = feature.getGeometry().getExtent();
 
-        const pointResolution =
-          getPointResolution(PROJECTION, resolution, extent) * 180_000;
+        const pointResolution = getPointResolution(
+          PROJECTION,
+          resolution,
+          extent
+        );
 
         const stroke = waypointStyle.getStroke();
-        stroke.setWidth(10);
+        // stroke.setWidth(20 / pointResolution);
+        stroke.setWidth(8);
         waypointStyle.setStroke(stroke);
         // Resolution = number of meters for a pixel (at least for EPSG 3857)
         return waypointStyle;
