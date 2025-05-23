@@ -13,6 +13,7 @@ export const UserProvider = ({ children }) => {
   // const maybeUser = JSON.parse(getCookie("userdata"));
 
   const [token, setToken] = useState("not-a-token");
+  const [loginState, setLoginState] = useState(false);
 
   const [user, setUser] = useState({});
 
@@ -103,6 +104,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     profileRef.current = profile;
     processLogin();
+    setLoginState(!ObjectIsEmpty(profile));
   }, [profile]);
 
   useEffect(() => {
@@ -135,6 +137,7 @@ export const UserProvider = ({ children }) => {
     user,
     setUser,
     profile,
+    loginState,
     setProfile,
     setHome,
     setWork,

@@ -14,8 +14,7 @@
     left: 0;
     bottom: 0;
     right: 0;
-
-    @include templates.modal_border;
+    background-color: rgba(0, 0, 0, 0.4);
 
     z-index: 100;
   }

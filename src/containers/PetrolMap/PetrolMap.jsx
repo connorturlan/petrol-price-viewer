@@ -135,18 +135,19 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         newCenter = [(origin.Lat + dest.Lat) / 2, (origin.Lng + dest.Lng) / 2];
     }
 
+    console.log(newCenter, origin, dest);
+
     setCenter(newCenter);
   }, [POI, origin, dest]);
 
   useEffect(() => {
-    triggerReload(true);
-
     const getRoutes = async () => {
       const newRoutes = await getRoutesBetweenPoints(origin, dest);
       setRoutes(newRoutes || []);
       setRoutingState(false);
     };
 
+    triggerReload(true);
     setRoutingState(true);
     getRoutes();
   }, [POI, origin, dest]);
@@ -193,8 +194,11 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     if (!stations || !visibleBounds) return;
     updateLowestPrices(lowestLayer, stations);
     updateStations && updateStations(stations);
+  }, [stations, visibleBounds]);
+
+  useEffect(() => {
     updateOnRouteStations();
-  }, [stations, routes, visibleBounds]);
+  }, [routes]);
 
   useEffect(() => {
     resetFuelPrices();
@@ -316,6 +320,13 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         switch (feature.get("type")) {
           case "poi":
             const poi = getPOIs();
+            if (!poi[feature.get("name")]) {
+              console.warn(
+                `[MAP,POI] poi ${feature.get("name")} doesn't exist in the POIs`
+              );
+              break;
+            }
+
             if (!getOrigin()) {
               console.debug(`[MAP,POI] setting poi as origin`);
               setOrigin(poi[feature.get("name")]);

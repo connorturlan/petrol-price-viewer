@@ -4,10 +4,12 @@ import { MODES } from "../PetrolMap/PetrolMap";
 import { UserContext } from "../../contexts/UserContext";
 import { AppContext } from "../../contexts/AppContext";
 import { capitalize, ObjectIsEmpty } from "../../utils/utils";
+import { getCoordinatesOfAddress } from "../../utils/navigation";
 
 const SettingsModal = () => {
   // validate that the user is logged in before showing.
-  const { profile, POI, removeLocation } = useContext(UserContext);
+  const { loginState, POI, removeLocation, setCustomLocation, profile } =
+    useContext(UserContext);
   const {
     clickMode,
     setClickMode,
@@ -17,7 +19,33 @@ const SettingsModal = () => {
   } = useContext(AppContext);
   const [visible, setVisible] = useState(false);
 
-  if (ObjectIsEmpty(profile)) return <></>;
+  const [lookupInProgess, setLookupProgress] = useState(false);
+
+  const lookup = async (address) => {
+    if (lookupInProgess) return;
+    if (!address) return;
+
+    setLookupProgress(true);
+    const addressData = await getCoordinatesOfAddress(address);
+    setTimeout(() => {
+      setLookupProgress(false);
+    }, 2_000);
+
+    if (ObjectIsEmpty(addressData) || addressData.length <= 0) {
+      window.alert(`no address found for ${address}`);
+      return;
+    }
+    if (addressData.length > 1) {
+      window.alert(`multiple addresses found for ${address}`);
+    }
+
+    return [
+      parseFloat(addressData.at(0).lon),
+      parseFloat(addressData.at(0).lat),
+    ];
+  };
+
+  if (!loginState) return <></>;
 
   //
   return (
@@ -89,13 +117,24 @@ const SettingsModal = () => {
 
               <button
                 className={styles.SetHome}
-                onClick={() => {
-                  let name = window.prompt("Location name");
-                  if (!name) window.alert(`"${name} is not valid."`);
+                onClick={async () => {
+                  const address = window.prompt("Address");
+                  if (!address) {
+                    window.alert(`"${name} is not valid."`);
+                    return;
+                  }
+                  const coord = await lookup(address);
+                  if (!coord) {
+                    return;
+                  }
 
-                  setVisible(false);
-                  setClickMode(MODES.ADD_POI);
-                  setClickModeOptions({ poi_name: name });
+                  const name = window.prompt("Location name");
+                  if (!name) {
+                    window.alert(`"${name} is not valid."`);
+                    return;
+                  }
+
+                  setCustomLocation(profile, name, coord);
                 }}
               >
                 <img
