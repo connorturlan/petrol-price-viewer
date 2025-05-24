@@ -10,7 +10,7 @@
 - [x] custom icon for work
 - [x] add welcome splash
 - [x] make auth flow nicer
-- [ ] add donation and registration
+- [x] add donation and registration
 - [x] show when price was last updated
 - [ ] include stations from other states
 - [ ] make registration flow nicer
@@ -23,4 +23,4 @@
 - [ ] add licence plate search - https://docs.autograb.com.au/guide/auth/ - https://docs.autograb.com.au/guide/vehicle/
 - [x] show only stations on the right side
 - [x] allow for better route planning
-- [ ] investigate using https://geocode.maps.co/ for address to coord convertion
+- [x] investigate using https://geocode.maps.co/ for address to coord convertion

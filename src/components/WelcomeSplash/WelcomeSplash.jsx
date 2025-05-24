@@ -35,6 +35,10 @@ const WelcomeSplash = (props) => {
     getCookie("userprofile") === "" ? COUNTDOWN_TIME : 0
   );
 
+  if (visible) {
+    setCookie("weekly_welcome", "show", 7);
+  }
+
   const mount = useRef(0);
 
   useEffect(() => {
@@ -50,10 +54,6 @@ const WelcomeSplash = (props) => {
       setCountdown(countdown - 1);
     }, 1_000);
   }, [countdown]);
-
-  useEffect(() => {
-    setCookie("weekly_welcome", "show", 7);
-  }, [visible]);
 
   return (
     visible && (
