@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./WelcomeSplash.module.scss";
-import { getCookie } from "../../utils/cookies";
+import { getCookie, setCookie } from "../../utils/cookies";
 import { AdvertisingProvider, AdvertisingSlot } from "react-advertising";
 import { SHOW_WELCOME } from "../../utils/defaults";
 
@@ -25,10 +25,12 @@ import { SHOW_WELCOME } from "../../utils/defaults";
 //   ],
 // };
 
-const COUNTDOWN_TIME = 4;
+const COUNTDOWN_TIME = 2;
 
 const WelcomeSplash = (props) => {
-  const [visible, setVisible] = useState(SHOW_WELCOME);
+  const [visible, setVisible] = useState(
+    SHOW_WELCOME && getCookie("weekly_welcome") != "show"
+  );
   const [countdown, setCountdown] = useState(
     getCookie("userprofile") === "" ? COUNTDOWN_TIME : 0
   );
@@ -48,6 +50,10 @@ const WelcomeSplash = (props) => {
       setCountdown(countdown - 1);
     }, 1_000);
   }, [countdown]);
+
+  useEffect(() => {
+    setCookie("weekly_welcome", "show", 7);
+  }, [visible]);
 
   return (
     visible && (
