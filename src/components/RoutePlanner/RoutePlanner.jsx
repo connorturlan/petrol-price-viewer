@@ -15,7 +15,9 @@ const RoutePlanner = (props) => {
   const [lookupInProgess, setLookupProgress] = useState(false);
 
   const [customOrigin, setCustomOrigin] = useState("");
+  const [customOriginInput, setCustomOriginInput] = useState("");
   const [customDest, setCustomDest] = useState("");
+  const [customDestInput, setCustomDestInput] = useState("");
 
   function isPointSelected(poi, parent) {
     return !ObjectIsEmpty(parent) && parent.Name == poi;
@@ -24,11 +26,15 @@ const RoutePlanner = (props) => {
   function swapPoints() {
     setOrigin(dest);
     setDest(origin);
+
+    const newDest = customOrigin;
+    setCustomOrigin(customDest);
+    setCustomOriginInput(customDest);
+    setCustomDest(newDest);
+    setCustomDestInput(newDest);
   }
 
-  const lookup = async (event, isOrigin) => {
-    const address = event.target.value;
-
+  const lookup = async (address, isOrigin) => {
     if (lookupInProgess) return;
     if (!address) return;
 
@@ -49,28 +55,33 @@ const RoutePlanner = (props) => {
     console.log(address, addressData);
 
     if (isOrigin) {
-      setCustomOrigin(address.at(0));
+      setCustomOrigin(address);
       setOrigin({
         Name: "start",
         Lat: parseFloat(addressData.at(0).lon),
         Lng: parseFloat(addressData.at(0).lat),
       });
     } else {
-      setCustomDest(address.at(0));
+      setCustomDest(address);
       setDest({
         Name: "end",
         Lat: parseFloat(addressData.at(0).lon),
         Lng: parseFloat(addressData.at(0).lat),
       });
     }
+    return true;
   };
 
-  const lookupOrigin = (event) => {
-    lookup(event, true);
+  const lookupOrigin = () => {
+    lookup(customOriginInput, true);
   };
 
-  const lookupDest = (event) => {
-    lookup(event, false);
+  const lookupDest = async () => {
+    lookup(customDestInput, false);
+  };
+
+  const updateState = (event, handler) => {
+    handler(event.target.value);
   };
 
   // const saveCustom = async (address) => {
@@ -116,6 +127,10 @@ const RoutePlanner = (props) => {
         <div className={styles.RoutePlanner_Lookup}>
           <h3>Origin</h3>
           <input
+            type="text"
+            id="custom-origin"
+            name="custom-origin"
+            autoComplete="on"
             className={`${
               lookupInProgess && styles.RoutePlanner_Lookup__Loading
             }`}
@@ -125,18 +140,21 @@ const RoutePlanner = (props) => {
             }}
             onBlur={lookupOrigin}
             placeholder="e.g. 52 Wallaby Way, Sydney NSW 2000"
-            value={customOrigin}
+            value={customOriginInput}
+            onChange={(e) => updateState(e, setCustomOriginInput)}
           ></input>
           {/* <button
             disabled={customOrigin === ""}
             onClick={() => {
               saveCustom(customOrigin);
-            }}
-          >
-            Save
-          </button> */}
+              }}
+              >
+              Save
+              </button> */}
           <h3>Destination</h3>
           <input
+            name="custom-destination"
+            autoComplete="true"
             className={`${
               lookupInProgess && styles.RoutePlanner_Lookup__Loading
             }`}
@@ -146,7 +164,8 @@ const RoutePlanner = (props) => {
             }}
             onBlur={lookupDest}
             placeholder="e.g. 52 Wallaby Way, Sydney NSW 2000"
-            value={customDest}
+            value={customDestInput}
+            onChange={(e) => updateState(e, setCustomDestInput)}
           ></input>
           {/* <button
             disabled={customDest === ""}
@@ -171,6 +190,7 @@ const RoutePlanner = (props) => {
                   <button
                     key={poi}
                     onClick={() => {
+                      setCustomOrigin("");
                       if (isPointSelected(poi, origin)) {
                         setOrigin({});
                       } else {
@@ -218,6 +238,7 @@ const RoutePlanner = (props) => {
                     <button
                       key={index}
                       onClick={() => {
+                        setCustomDest("");
                         if (isPointSelected(poi, dest)) {
                           setDest({});
                         } else {
