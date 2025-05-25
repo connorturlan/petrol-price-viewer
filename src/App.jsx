@@ -16,6 +16,7 @@ import WelcomeSplash from "./components/WelcomeSplash/WelcomeSplash";
 import RoutePlanner from "./components/RoutePlanner/RoutePlanner";
 import { capitalize } from "./utils/utils";
 import Toolbox from "./containers/Toolbox/Toolbox";
+import FuelSelector from "./components/FuelSelector/FuelSelector";
 
 function App() {
   // set intial state
@@ -71,7 +72,7 @@ function App() {
     >
       <WelcomeSplash />
 
-      <div className={styles.App_Label + " " + styles.App_FuelSelector}>
+      {/* <div className={styles.App_Label + " " + styles.App_FuelSelector}>
         <p>Select Fuel</p>
         <select onChange={handleFuelChange} value={fuelType}>
           {fueltypes["Fuels"].map((t) => {
@@ -82,13 +83,14 @@ function App() {
             );
           })}
         </select>
-      </div>
+      </div> */}
 
       <StationModal />
 
       <div className={styles.App_Layout}>
         <Toolbox>
           <LoginControl />
+          <FuelSelector />
           <PriceList>
             {mapFeatures
               .sort((a, b) => a.Price - b.Price)
