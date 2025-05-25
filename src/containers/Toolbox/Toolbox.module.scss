@@ -10,19 +10,19 @@ $ToolboxWidth: 60px;
   @include templates.modal_border;
   border-radius: 0;
   width: $ToolboxWidth;
+  padding: 0;
 
   overflow-x: hidden;
   overflow-y: auto;
   z-index: 20;
+  position: relative;
 
   &_Container__Show {
-    position: relative;
     animation-duration: 0.2s;
     animation-name: slide-in;
   }
 
   &_Container__Hide {
-    position: relative;
     animation-duration: 0.2s;
     animation-name: slide-out;
     left: -$ToolboxWidth;
@@ -86,11 +86,11 @@ $ToolboxWidth: 60px;
 }
 
 @keyframes slide-out {
-  0% {
+  from {
     left: 0;
     margin-right: 0px;
   }
-  100% {
+  to {
     left: -$ToolboxWidth;
     margin-right: -$ToolboxWidth;
   }
