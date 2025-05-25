@@ -38,8 +38,10 @@ import { convertCoord, ObjectIsEmpty } from "../../utils/utils";
 import { getRoutesBetweenPoints } from "../../utils/navigation";
 import { fromExtent } from "ol/geom/Polygon";
 import { RouteContext } from "../../contexts/RouteContext";
-import { getFuelPrices } from "../../services/service";
+// import { getFuelPrices } from "../../services/service";
+import { getFuelPrices } from "../../services/StationPriceManager/StationPriceManager.service";
 import { createDefaultStyle } from "ol/style/Style";
+import { updateAllStations } from "../../services/StationPriceManager/StationPriceManager.service";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -92,7 +94,14 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setOnRouteLayer(createOnRouteLayer());
     setCustomLayer(createCustomLayer(POI));
     setWaypointLayer(createWaypointLayer(POI.home, POI.work));
-    getSites(setStationsState, setAllStations);
+    // getSites(setStationsState, setAllStations);
+    const getAllSites = async () => {
+      setStationsState(true);
+      const stations = await updateAllStations();
+      setAllStations(stations);
+      setStationsState(false);
+    };
+    getAllSites();
   }, []);
 
   useEffect(() => {
@@ -251,6 +260,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     if (body.length <= 0) {
       console.debug("[STATIONS] no new data to fetch.");
     } else {
+      // const json = await getFuelPrices(fuelType, body);
       const json = await getFuelPrices(fuelType, body);
       setPricesState(false);
 
