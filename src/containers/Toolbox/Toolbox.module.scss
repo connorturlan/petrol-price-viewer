@@ -1,0 +1,97 @@
+@use "../../styles/templates";
+
+$ToolboxWidth: 60px;
+
+.Toolbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  @include templates.modal_border;
+  border-radius: 0;
+  width: $ToolboxWidth;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 20;
+
+  &_Container__Show {
+    position: relative;
+    animation-duration: 0.2s;
+    animation-name: slide-in;
+  }
+
+  &_Container__Hide {
+    position: relative;
+    animation-duration: 0.2s;
+    animation-name: slide-out;
+    left: -$ToolboxWidth;
+    margin-right: -$ToolboxWidth;
+  }
+
+  &_Hide {
+    width: 3rem;
+    height: 3rem;
+
+    padding: 8px;
+    z-index: 2;
+    background: var(--background);
+    border: none;
+    border-radius: 8px;
+
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+      background: rgb(216, 216, 216);
+    }
+  }
+
+  &_Show {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 3rem;
+    height: 3rem;
+
+    padding: 8px;
+    z-index: 2;
+    background: var(--background);
+    border: none;
+    border-radius: 0 0 8px 0;
+
+    user-select: none;
+    cursor: pointer;
+
+    opacity: 40%;
+
+    &:hover {
+      opacity: 100%;
+      background: rgb(216, 216, 216);
+      box-shadow: 0px 4px 8px #00000060;
+    }
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    left: -$ToolboxWidth;
+    margin-right: -$ToolboxWidth;
+  }
+  100% {
+    left: 0;
+    margin-right: 0px;
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    left: 0;
+    margin-right: 0px;
+  }
+  100% {
+    left: -$ToolboxWidth;
+    margin-right: -$ToolboxWidth;
+  }
+}
