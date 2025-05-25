@@ -3,17 +3,16 @@
 $ToolboxWidth: 60px;
 
 .Toolbox {
-  //   max-width: 10rem;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   @include templates.modal_border;
   border-radius: 0;
   width: $ToolboxWidth;
 
-  //   overflow-y: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   z-index: 20;
 
   &_Container__Show {
@@ -62,7 +61,7 @@ $ToolboxWidth: 60px;
     user-select: none;
     cursor: pointer;
 
-    opacity: 80%;
+    opacity: 40%;
 
     &:hover {
       opacity: 100%;
