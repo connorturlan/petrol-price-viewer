@@ -383,7 +383,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     return;
 
   return (
-    <>
+    <div className={styles.PetrolMap}>
       <LoadingSplash
         fadeIn={loadingStations || loadingPrices || loadingRouting}
       />
@@ -396,7 +396,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         onMove={onMove}
         darkMode={darkMode}
       />
-    </>
+    </div>
   );
 };
 

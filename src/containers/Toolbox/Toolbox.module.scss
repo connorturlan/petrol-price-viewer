@@ -1,28 +1,33 @@
 @use "../../styles/templates";
 
+$ToolboxWidth: 60px;
+
 .Toolbox {
   //   max-width: 10rem;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  //   justify-content: center;
+  justify-content: center;
   @include templates.modal_border;
   border-radius: 0;
+  width: $ToolboxWidth;
 
-  overflow-y: auto;
-  z-index: 1;
+  //   overflow-y: auto;
+  z-index: 20;
 
   &_Container__Show {
     position: relative;
-    animation-duration: 0.4s;
+    animation-duration: 0.2s;
     animation-name: slide-in;
   }
 
   &_Container__Hide {
     position: relative;
-    animation-duration: 0.4s;
+    animation-duration: 0.2s;
     animation-name: slide-out;
+    left: -$ToolboxWidth;
+    margin-right: -$ToolboxWidth;
   }
 
   &_Hide {
@@ -67,23 +72,23 @@
 }
 
 @keyframes slide-in {
-  from {
-    left: -100%;
+  0% {
+    left: -$ToolboxWidth;
+    margin-right: -$ToolboxWidth;
   }
-  to {
-    left: 0%;
+  100% {
+    left: 0;
+    margin-right: 0px;
   }
 }
 
 @keyframes slide-out {
-  from {
-    left: 0%;
-  }
-  to {
-    left: -100%;
-    margin-right: -100%;
+  0% {
+    left: 0;
+    margin-right: 0px;
   }
   100% {
-    width: 0;
+    left: -$ToolboxWidth;
+    margin-right: -$ToolboxWidth;
   }
 }
