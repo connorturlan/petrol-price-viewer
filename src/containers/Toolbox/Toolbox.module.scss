@@ -1,0 +1,52 @@
+@use "../../styles/templates";
+
+.Toolbox {
+  max-width: 30rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  //   justify-content: center;
+  @include templates.modal_border;
+  border-radius: 0;
+
+  overflow-y: auto;
+  z-index: 1;
+
+  &_Hide {
+    padding: 8px;
+    z-index: 2;
+    background: var(--background);
+    border: none;
+    border-radius: 8px;
+
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+      background: rgb(216, 216, 216);
+    }
+  }
+
+  &_Show {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 2rem;
+    height: 10rem;
+
+    padding: 8px;
+    z-index: 2;
+    background: var(--background);
+    border: none;
+    border-radius: 0 0 8px 0;
+
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+      background: rgb(216, 216, 216);
+    }
+  }
+}

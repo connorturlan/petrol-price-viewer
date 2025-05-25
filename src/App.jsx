@@ -15,6 +15,7 @@ import { AppContext } from "./contexts/AppContext";
 import WelcomeSplash from "./components/WelcomeSplash/WelcomeSplash";
 import RoutePlanner from "./components/RoutePlanner/RoutePlanner";
 import { capitalize } from "./utils/utils";
+import Toolbox from "./containers/Toolbox/Toolbox";
 
 function App() {
   // set intial state
@@ -85,10 +86,32 @@ function App() {
 
       <StationModal />
 
-      <PetrolMap
-        fuelType={fuelType}
-        updateStations={setMapFeatures}
-      ></PetrolMap>
+      <div className={styles.App_Layout}>
+        <Toolbox>
+          <LoginControl />
+          <PriceList>
+            {mapFeatures
+              .sort((a, b) => a.Price - b.Price)
+              .map((feature) => (
+                <PriceListItem
+                  key={feature.SiteId}
+                  name={feature.Name}
+                  price={((feature.Price || 0) / 10).toFixed(1)}
+                  showDetails={() => {
+                    selectSite(feature.SiteId);
+                  }}
+                />
+              ))}
+          </PriceList>
+          <GraphModal />
+          <RoutePlanner />
+          <SettingsModal />
+        </Toolbox>
+        <PetrolMap
+          fuelType={fuelType}
+          updateStations={setMapFeatures}
+        ></PetrolMap>
+      </div>
 
       {warningVisible && (
         <div className={styles.App_Warning}>
@@ -96,7 +119,7 @@ function App() {
         </div>
       )}
 
-      <ToolBar>
+      {/* <ToolBar>
         <PriceList>
           {mapFeatures
             .sort((a, b) => a.Price - b.Price)
@@ -115,7 +138,7 @@ function App() {
         <LoginControl />
         <RoutePlanner />
         <SettingsModal />
-      </ToolBar>
+      </ToolBar> */}
       {clickMode != 0 && (
         <>
           <div className={styles.App__Active}></div>
