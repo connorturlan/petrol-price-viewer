@@ -129,24 +129,33 @@ export async function getFuelPrices(
 
   petrolType = fuelType;
 
-  const allOldPrices = getPricesFromCache();
-  const oldPrices = allOldPrices.filter(
-    (price) => price.Type == petrolType && siteIds.includes(price.SiteId)
+  const allCachedPrices = getPricesFromCache();
+  const filteredCachedPrices = allCachedPrices.filter(
+    (price) =>
+      price.Type == petrolType &&
+      siteIds.some((siteId) => siteId == price.SiteId)
   );
-  console.debug(`[PRICES] ${oldPrices.length} sites found in cache`);
+  console.debug(`[PRICES] ${filteredCachedPrices.length} matching sites found in cache`);
 
-  const cachedPricesIds = oldPrices.map((price) => price.SiteId);
-  const newPriceIds = siteIds.filter(
-    (siteId) => !cachedPricesIds.includes(siteId)
+  const cachedPricesIds = filteredCachedPrices.map((price) => price.SiteId);
+  const missingPriceIds = siteIds.filter(
+    (siteId) => !cachedPricesIds.some((cachedSiteId) => cachedSiteId == siteId)
   );
-  const newApiPrices = await getPricesFromAPI(newPriceIds);
 
-  const newPrices = cachePrices(newApiPrices);
-  const allPrices = [...oldPrices, ...newPrices];
-  updatePricesCache([...allOldPrices, ...newPrices]);
+  if (missingPriceIds.length > 0) {
+    const newApiPrices = await getPricesFromAPI(missingPriceIds);
 
-  readInProgress = false;
-  return uncachePrices(allPrices);
+    const newPrices = cachePrices(newApiPrices);
+    updatePricesCache([...allCachedPrices, ...newPrices]);
+
+    const allPrices = [...filteredCachedPrices, ...newPrices];
+    readInProgress = false;
+    return uncachePrices(allPrices);
+  } else {
+    console.debug(`[PRICES] skipping API fetch.`);
+    readInProgress = false;
+    return uncachePrices(filteredCachedPrices);
+  }
 }
 
 function uncachePrices(prices: any[]): any {

@@ -363,7 +363,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       .filter((station) => station.Price);
 
     console.debug(
-      `[PRICES] ${filteredStations.length} prices found for ${allStations.length} sites`
+      `[PRICES] ${filteredStations.length} prices found for ${stationsInView.length} sites.`
     );
 
     setStations(filteredStations);
