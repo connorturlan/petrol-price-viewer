@@ -135,27 +135,29 @@ export async function getFuelPrices(
       price.Type == petrolType &&
       siteIds.some((siteId) => siteId == price.SiteId)
   );
-  console.debug(`[PRICES] ${filteredCachedPrices.length} matching sites found in cache`);
+  console.debug(
+    `[PRICES] ${filteredCachedPrices.length} matching sites found in cache`
+  );
 
   const cachedPricesIds = filteredCachedPrices.map((price) => price.SiteId);
   const missingPriceIds = siteIds.filter(
     (siteId) => !cachedPricesIds.some((cachedSiteId) => cachedSiteId == siteId)
   );
 
-  if (missingPriceIds.length > 0) {
-    const newApiPrices = await getPricesFromAPI(missingPriceIds);
-
-    const newPrices = cachePrices(newApiPrices);
-    updatePricesCache([...allCachedPrices, ...newPrices]);
-
-    const allPrices = [...filteredCachedPrices, ...newPrices];
-    readInProgress = false;
-    return uncachePrices(allPrices);
-  } else {
+  if (missingPriceIds.length <= 0) {
     console.debug(`[PRICES] skipping API fetch.`);
     readInProgress = false;
     return uncachePrices(filteredCachedPrices);
   }
+
+  const newApiPrices = await getPricesFromAPI(missingPriceIds);
+
+  const newPrices = cachePrices(newApiPrices);
+  updatePricesCache([...allCachedPrices, ...newPrices]);
+
+  const allPrices = [...filteredCachedPrices, ...newPrices];
+  readInProgress = false;
+  return uncachePrices(allPrices);
 }
 
 function uncachePrices(prices: any[]): any {

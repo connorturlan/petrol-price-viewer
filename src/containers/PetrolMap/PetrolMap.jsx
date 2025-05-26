@@ -346,19 +346,15 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     const fuelPrices = await getFuelPrices(fuelType, stationIds);
 
-    Array.from(Object.entries(fuelPrices)).forEach((entry) => {
-      const [siteId, price] = entry;
-
-      const station = stationsInView.find(
-        (station) => station.SiteId == siteId
-      );
-
-      if (!station) return;
-
-      station.Price = price;
-    });
-
+    const index = Object.keys(fuelPrices);
     const filteredStations = stationsInView
+      .map((station) => {
+        if (index.includes(`${station.SiteId}`)) {
+          station.Price = fuelPrices[`${station.SiteId}`];
+        }
+
+        return station;
+      })
       .sort((a, b) => a.Price - b.Price)
       .filter((station) => station.Price);
 
