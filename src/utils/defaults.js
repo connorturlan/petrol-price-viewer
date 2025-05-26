@@ -8,6 +8,7 @@ export const ENDPOINT =
 export const PROJECTION = "EPSG:3857";
 
 export const DEFAULT_FUEL_TYPE = 1;
+export const MAX_STATION_REQUEST = 200;
 
 export const SHOW_WELCOME = !(
   import.meta.env.VITE_LOCAL_SHOW_WELCOME == "FALSE"

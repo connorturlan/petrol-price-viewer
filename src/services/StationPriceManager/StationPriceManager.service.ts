@@ -1,4 +1,4 @@
-import { ENDPOINT } from "../../utils/defaults";
+import { ENDPOINT, MAX_STATION_REQUEST } from "../../utils/defaults";
 import { convertCoord } from "../../utils/utils";
 import { Station } from "./StationPriceManager.types";
 import * as defaults from "./StationPriceManager.defaults";
@@ -147,6 +147,15 @@ export async function getFuelPrices(
   if (missingPriceIds.length <= 0) {
     console.debug(`[PRICES] skipping API fetch.`);
     readInProgress = false;
+    return uncachePrices(filteredCachedPrices);
+  }
+
+  if (missingPriceIds.length >= MAX_STATION_REQUEST) {
+    readInProgress = false;
+    console.warn(
+      `[PRICES] request body length exceeds ${MAX_STATION_REQUEST}.`
+    );
+    window.alert("Search area too large, try zooming in.");
     return uncachePrices(filteredCachedPrices);
   }
 

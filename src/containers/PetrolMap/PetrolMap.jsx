@@ -31,7 +31,7 @@ import {
   setStationsOnRoute,
   updateLowestPrices,
 } from "./utils";
-import { PROJECTION } from "../../utils/defaults";
+import { MAX_STATION_REQUEST, PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
 import { UserContext } from "../../contexts/UserContext";
 import { convertCoord, ObjectIsEmpty } from "../../utils/utils";
@@ -234,104 +234,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   };
 
   const getSitePrices = async ({ reload } = {}) => {
-    getViewedSitePrices();
-    return;
-    if (!allStations || allStations.length <= 0) {
-      return;
-    }
-
-    const updatedStations = allStations.map((station) => {
-      if (reload) {
-        station.Price = 9999;
-      }
-      return station;
-    });
-
-    const stationsWithinView = updatedStations.filter((station) => {
-      return containsCoordinate(visibleBounds, [station.Lng, station.Lat]);
-    });
-
-    const stationsWithoutPrice = stationsWithinView
-      .filter((station) => {
-        return !station.Price;
-      })
-      .map((feature) => feature.SiteId);
-
-    if (stationsWithoutPrice.length >= 200) {
-      console.warn("request body length exceeds 200.");
-      window.alert("Search area too large, try zooming in.");
-      setPricesState(false);
-      return;
-    }
-
-    setPricesState(true);
-
-    var newStations = allStations;
-    if (stationsWithoutPrice.length <= 0) {
-      console.debug("[STATIONS] no new data to fetch.");
-    } else {
-      // const json = await getFuelPrices(fuelType, body);
-      const fuelPrices = await getFuelPrices(fuelType, stationsWithoutPrice);
-
-      // Object.entries(fuelPrices).forEach((site) => {
-      //   const [siteId, sitePrice] = site;
-
-      //   const station = allStations.find((station) => {
-      //     if (station.SiteId == siteId) {
-      //       return station;
-      //     }
-      //   });
-
-      //   if (!station) {
-      //     station.Price = 9999;
-      //   } else {
-      //     station.Price = sitePrice;
-      //   }
-      // });
-
-      newStations = allStations
-        .filter(
-          (station) =>
-            Object.keys(fuelPrices).includes(`${station.SiteId}`) ||
-            !!station.Price
-        )
-        .map((station) => {
-          const price = fuelPrices[station.SiteId];
-
-          station.Price = price;
-
-          return station;
-        });
-
-      console.log(
-        Object.keys(fuelPrices),
-        // allStations,
-        stationsWithinView,
-        newStations
-      );
-      setPricesState(false);
-    }
-
-    const filteredStations = newStations
-      .sort((a, b) => a.Price - b.Price)
-      .filter((station) => station.Price)
-      .filter((station) => {
-        return containsCoordinate(visibleBounds, [station.Lng, station.Lat]);
-      });
-
-    console.debug(
-      `[PRICES] ${filteredStations.length} prices found for ${allStations.length} sites`
-    );
-
-    // if (filteredStations.length <= 0) {
-    //   setWarning(true);
-    // }
-
-    setStations(filteredStations);
-    setPricesState(false);
-  };
-
-  const getViewedSitePrices = async ({ reload } = {}) => {
     if (!allStations || allStations.length <= 0) {
       return;
     }
