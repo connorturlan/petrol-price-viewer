@@ -116,12 +116,24 @@ export async function getFuelPrices(
   fuelType: number,
   siteIds: string[]
 ): Promise<[number, number][]> {
+  while (readInProgress) {
+    console.debug("[PRICES] awaiting timeout...");
+    return new Promise((resolve) => {
+      setTimeout(async () => {
+        resolve(await getFuelPrices(fuelType, siteIds));
+      }, 1_000);
+    });
+  }
+  readInProgress = true;
+  console.debug(`[PRICES] ${siteIds.length} sites requested`);
+
   petrolType = fuelType;
 
   const allOldPrices = getPricesFromCache();
   const oldPrices = allOldPrices.filter(
-    (price) => !siteIds.includes(price.SiteId)
+    (price) => price.Type == petrolType && siteIds.includes(price.SiteId)
   );
+  console.debug(`[PRICES] ${oldPrices.length} sites found in cache`);
 
   const cachedPricesIds = oldPrices.map((price) => price.SiteId);
   const newPriceIds = siteIds.filter(
@@ -131,8 +143,9 @@ export async function getFuelPrices(
 
   const newPrices = cachePrices(newApiPrices);
   const allPrices = [...oldPrices, ...newPrices];
-  updatePricesCache(allPrices);
+  updatePricesCache([...allOldPrices, ...newPrices]);
 
+  readInProgress = false;
   return uncachePrices(allPrices);
 }
 
@@ -150,6 +163,7 @@ function cachePrices(prices: any): any[] {
     return {
       SiteId: siteId,
       Price: price,
+      Type: petrolType,
       Fetched: Date.now() + defaults.PRICES_TIME_TO_LIVE,
     };
   });
