@@ -1,13 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import styles from "./ToolboxModal.module.scss";
+import { usePub, UseSub } from "../../utils/pubsub";
 
 const ToolboxModal = ({ children, summary }) => {
   const [visible, setVisible] = useState(false);
   const [containerVisible, setContainerVisible] = useState(false);
+  const refId = useId();
 
   useEffect(() => {
-    if (visible) setContainerVisible(true);
+    if (visible) {
+      setContainerVisible(true);
+    }
   }, [visible]);
+
+  const toggleModal = () => {
+    setVisible(!visible);
+    const hideModals = usePub();
+    hideModals("ToolboxModalHide", refId);
+  };
+
+  UseSub("ToolboxModalHide", (data) => {
+    if (data != refId) setVisible(false);
+  });
 
   return (
     <>
@@ -15,9 +29,7 @@ const ToolboxModal = ({ children, summary }) => {
         className={`${styles.ToolboxModal_Show} ${
           visible ? styles.ToolboxModal_Visible : styles.ToolboxModal_Hidden
         }`}
-        onClick={() => {
-          setVisible(!visible);
-        }}
+        onClick={toggleModal}
       >
         {summary}
       </button>
