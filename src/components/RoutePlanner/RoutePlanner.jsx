@@ -6,6 +6,7 @@ import { ObjectIsEmpty } from "../../utils/utils";
 import Modal from "../../containers/Modal/Modal";
 import { getCoordinatesOfAddress } from "../../utils/navigation";
 import { add } from "ol/coordinate";
+import ToolboxModal from "../../containers/ToolboxModal/ToolboxModal";
 
 const RoutePlanner = (props) => {
   const { profile, POI, loginState, setCustomLocation } =
@@ -101,7 +102,7 @@ const RoutePlanner = (props) => {
   // if (ObjectIsEmpty(profile)) return <></>;
 
   return (
-    <Modal
+    <ToolboxModal
       summary={
         <>
           <img
@@ -143,14 +144,6 @@ const RoutePlanner = (props) => {
             value={customOriginInput}
             onChange={(e) => updateState(e, setCustomOriginInput)}
           ></input>
-          {/* <button
-            disabled={customOrigin === ""}
-            onClick={() => {
-              saveCustom(customOrigin);
-              }}
-              >
-              Save
-              </button> */}
           <h3>Destination</h3>
           <input
             name="custom-destination"
@@ -167,14 +160,146 @@ const RoutePlanner = (props) => {
             value={customDestInput}
             onChange={(e) => updateState(e, setCustomDestInput)}
           ></input>
-          {/* <button
-            disabled={customDest === ""}
-            onClick={() => {
-              saveCustom(customDest);
+        </div>
+        <div className={styles.RoutePlanner_Places}>
+          {loginState && (
+            <>
+              <div className={styles.RoutePlanner_List}>
+                <div className={styles.RoutePlanner_ColumnHeading}>
+                  <h3>Origin</h3>
+                  <p>
+                    <i>{ObjectIsEmpty(origin) ? "" : origin.Name}</i>
+                  </p>
+                </div>
+                {Object.keys(POI).map((poi) => {
+                  return (
+                    <button
+                      key={poi}
+                      onClick={() => {
+                        setCustomOrigin("");
+                        if (isPointSelected(poi, origin)) {
+                          setOrigin({});
+                        } else {
+                          setOrigin(POI[poi]);
+                        }
+                      }}
+                      className={
+                        styles.RoutePlanner_Button +
+                        " " +
+                        (isPointSelected(poi, origin)
+                          ? styles.RoutePlanner_Point__Selected
+                          : "")
+                      }
+                    >
+                      {poi}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className={styles.RoutePlanner_Swap}>
+                <button
+                  className={styles.RoutePlanner_Button}
+                  onClick={swapPoints}
+                >
+                  <img
+                    src="swap_horiz_24dp_434343_FILL0_wght400_GRAD0_opsz24.svg"
+                    className={styles.RoutePlanner_Image}
+                    alt="Show"
+                    srcSet=""
+                    title="Show route planner"
+                  />
+                  <p>Swap</p>
+                </button>
+              </div>
+              <div className={styles.RoutePlanner_List}>
+                <div className={styles.RoutePlanner_ColumnHeading}>
+                  <h3>Destination</h3>
+                  <p>
+                    <i>{ObjectIsEmpty(dest) ? "" : dest.Name}</i>
+                  </p>
+                </div>
+                {!ObjectIsEmpty(origin) ? (
+                  Object.keys(POI).map((poi, index) => {
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setCustomDest("");
+                          if (isPointSelected(poi, dest)) {
+                            setDest({});
+                          } else {
+                            setDest(POI[poi]);
+                          }
+                        }}
+                        className={
+                          styles.RoutePlanner_Button +
+                          " " +
+                          (isPointSelected(poi, dest)
+                            ? styles.RoutePlanner_Point__Selected
+                            : "") +
+                          " " +
+                          (origin.Name == poi
+                            ? styles.RoutePlanner_Point__InUse
+                            : "")
+                        }
+                        style={{ gridRowStart: index + 1 }}
+                      >
+                        {poi}
+                      </button>
+                    );
+                  })
+                ) : (
+                  <p>Select Origin</p>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+      {/* <div
+        className={`${styles.RoutePlanner_Body} ${
+          !loginState && styles.RoutePlanner_Body__Short
+        }`}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <h2 className={styles.RoutePlanner_Title}>Route Planner</h2>
+        <div className={styles.RoutePlanner_Lookup}>
+          <h3>Origin</h3>
+          <input
+            type="text"
+            id="custom-origin"
+            name="custom-origin"
+            autoComplete="on"
+            className={`${
+              lookupInProgess && styles.RoutePlanner_Lookup__Loading
+            }`}
+            disabled={lookupInProgess}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") lookupOrigin(event);
             }}
-          >
-            Save
-          </button> */}
+            onBlur={lookupOrigin}
+            placeholder="e.g. 52 Wallaby Way, Sydney NSW 2000"
+            value={customOriginInput}
+            onChange={(e) => updateState(e, setCustomOriginInput)}
+          ></input>
+          <h3>Destination</h3>
+          <input
+            name="custom-destination"
+            autoComplete="true"
+            className={`${
+              lookupInProgess && styles.RoutePlanner_Lookup__Loading
+            }`}
+            disabled={lookupInProgess}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") lookupDest(event);
+            }}
+            onBlur={lookupDest}
+            placeholder="e.g. 52 Wallaby Way, Sydney NSW 2000"
+            value={customDestInput}
+            onChange={(e) => updateState(e, setCustomDestInput)}
+          ></input>
         </div>
         {loginState && (
           <>
@@ -269,8 +394,8 @@ const RoutePlanner = (props) => {
           </>
         )}
         <p>Touch anywhere to hide</p>
-      </div>
-    </Modal>
+      </div> */}
+    </ToolboxModal>
   );
 };
 
