@@ -1,10 +1,11 @@
 import { useState } from "react";
 import styles from "./PriceList.module.scss";
 import Modal from "../../containers/Modal/Modal";
+import ToolboxModal from "../../containers/ToolboxModal/ToolboxModal";
 
 function PriceList({ children }) {
   return (
-    <Modal
+    <ToolboxModal
       summary={
         <>
           <img
@@ -33,9 +34,9 @@ function PriceList({ children }) {
         >
           {children}
         </div>
-        <p>Touch anywhere to hide</p>
+        {/* <p>Touch anywhere to hide</p> */}
       </div>
-    </Modal>
+    </ToolboxModal>
   );
 }
 

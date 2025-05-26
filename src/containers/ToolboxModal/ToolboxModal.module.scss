@@ -1,6 +1,6 @@
 @use "../../styles/templates";
 
-$ToolboxWidth: 200px;
+$ToolboxWidth: 300px;
 
 .ToolboxModal {
   &_Container {
@@ -14,7 +14,6 @@ $ToolboxWidth: 200px;
     // background-color: rgba(0, 0, 0, 0.4);
 
     gap: 8px;
-    // padding: 12px;
 
     background-color: var(--background);
     color: var(--text);
@@ -70,7 +69,7 @@ $ToolboxWidth: 200px;
   }
 
   &_Hide {
-    position: relative;
+    position: absolute;
     top: 0;
     right: 0;
   }

@@ -2,21 +2,13 @@
 
 .PriceList {
   &_Body {
-    margin: 120px 60px;
     padding: 12px;
 
     display: grid;
     grid-template-rows: auto 1fr;
 
-    width: 400px;
-    max-width: 100vw;
-    height: 80vh;
-    max-height: 400px;
-    background-color: var(--background);
-
-    @include templates.modal_border;
-
-    z-index: 10;
+    height: 100%;
+    padding: 0;
   }
 
   &_List {

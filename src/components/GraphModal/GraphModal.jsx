@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import styles from "./GraphModal.module.scss";
-import { LineChart } from "@mui/x-charts";
+import { ChartsLegend, LineChart } from "@mui/x-charts";
 // import dataset from "./dataset.json";
 import { getFuelTypeColor, getFuelTypeName } from "../../utils/fueltypes";
 import { getHistoricPrices } from "../../services/service";
 import Modal from "../../containers/Modal/Modal";
+import ToolboxModal from "../../containers/ToolboxModal/ToolboxModal";
 
 const FUELTYPES = [2, 8, 3, 12];
 
@@ -44,7 +45,7 @@ const GraphModal = () => {
   }, []);
 
   return (
-    <Modal
+    <ToolboxModal
       summary={
         <>
           <img
@@ -52,9 +53,9 @@ const GraphModal = () => {
             className={styles.GraphModal_Image}
             alt="Show"
             srcSet=""
-            title="Show price chart"
+            title="Show price history chart"
           />
-          <p>Graph</p>
+          <p>History</p>
         </>
       }
     >
@@ -73,44 +74,54 @@ const GraphModal = () => {
         >
           <p>Cents per Litre</p>
           {data && data.datasets && (
-            <LineChart
-              xAxis={[
-                {
-                  label: "Date",
-                  data: data.dateindexes,
-                  valueFormatter: (v) =>
-                    new Date(data.datelabels.at(v)).toLocaleDateString(),
-                },
-              ]}
-              yAxis={[
-                {
-                  label: "Price",
-                  valueFormatter: (s) => s.cents,
-                },
-              ]}
-              series={data.datasets.map((s) => {
-                return {
-                  type: "line",
-                  data: s.cents || 0,
-                  label: s.label,
-                  color: getFuelTypeColor(s.fuelId),
-                  showMark: false,
-                };
-              })}
-              slotProps={{
-                // Custom loading message
-                loadingOverlay: { message: "Waiting for data..." },
-                // Custom message for empty chart
-                noDataOverlay: { message: "Waiting for data..." },
-              }}
-              grid={{ vertical: true, horizontal: true }}
-              margin={{ top: 10 }}
-            />
+            <>
+              <LineChart
+                xAxis={[
+                  {
+                    label: "Date",
+                    data: data.dateindexes,
+                    valueFormatter: (v) =>
+                      data.datelabels.at(v)
+                        ? new Date(data.datelabels.at(v)).toLocaleDateString()
+                        : "",
+                  },
+                ]}
+                yAxis={[
+                  {
+                    label: "Price",
+                    valueFormatter: (s) => s.cents,
+                  },
+                ]}
+                series={data.datasets.map((s) => {
+                  return {
+                    type: "line",
+                    data: s.cents || 0,
+                    label: s.label,
+                    color: getFuelTypeColor(s.fuelId),
+                    showMark: false,
+                  };
+                })}
+                slotProps={{
+                  // Custom loading message
+                  loadingOverlay: { message: "Waiting for data..." },
+                  // Custom message for empty chart
+                  noDataOverlay: { message: "Waiting for data..." },
+                  legend: {
+                    // direction: "vertical",
+                    // position: {
+                    //   vertical: "middle",
+                    //   horizontal: "right",
+                    // },
+                  },
+                }}
+                grid={{ vertical: true, horizontal: false }}
+                skipAnimation
+              />
+            </>
           )}
         </div>
-        <p>Touch anywhere to hide</p>
       </div>
-    </Modal>
+    </ToolboxModal>
   );
 };
 
