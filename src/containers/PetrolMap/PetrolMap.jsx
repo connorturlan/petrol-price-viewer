@@ -234,17 +234,20 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   };
 
   const getSitePrices = async ({ reload } = {}) => {
+    getViewedSitePrices();
+    return;
     if (!allStations || allStations.length <= 0) {
       return;
     }
 
-    if (reload) {
-      allStations.forEach((station) => {
-        station.Price = 0;
-      });
-    }
+    const updatedStations = allStations.map((station) => {
+      if (reload) {
+        station.Price = 9999;
+      }
+      return station;
+    });
 
-    const stationsWithinView = allStations.filter((station) => {
+    const stationsWithinView = updatedStations.filter((station) => {
       return containsCoordinate(visibleBounds, [station.Lng, station.Lat]);
     });
 
@@ -270,43 +273,48 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       // const json = await getFuelPrices(fuelType, body);
       const fuelPrices = await getFuelPrices(fuelType, stationsWithoutPrice);
 
-      Object.entries(fuelPrices).forEach((site) => {
-        const [siteId, sitePrice] = site;
+      // Object.entries(fuelPrices).forEach((site) => {
+      //   const [siteId, sitePrice] = site;
 
-        const station = allStations.find((station) => {
-          if (station.SiteId == siteId) {
-            return station;
-          }
-        });
-
-        if (!station) {
-          station.Price = 0;
-        } else {
-          station.Price = sitePrice;
-        }
-      });
-
-      // newStations = stationsWithinView
-      //   .filter(
-      //     (station) =>
-      //       Object.keys(fuelPrices).includes(`${station.SiteId}`) ||
-      //       !!stations.Price
-      //   )
-      //   .map((station) => {
-      //     const price = fuelPrices[station.SiteId];
-
-      //     station.Price = price;
-
-      //     return station;
+      //   const station = allStations.find((station) => {
+      //     if (station.SiteId == siteId) {
+      //       return station;
+      //     }
       //   });
 
-      console.log(fuelPrices, allStations, newStations);
+      //   if (!station) {
+      //     station.Price = 9999;
+      //   } else {
+      //     station.Price = sitePrice;
+      //   }
+      // });
+
+      newStations = allStations
+        .filter(
+          (station) =>
+            Object.keys(fuelPrices).includes(`${station.SiteId}`) ||
+            !!station.Price
+        )
+        .map((station) => {
+          const price = fuelPrices[station.SiteId];
+
+          station.Price = price;
+
+          return station;
+        });
+
+      console.log(
+        Object.keys(fuelPrices),
+        // allStations,
+        stationsWithinView,
+        newStations
+      );
       setPricesState(false);
     }
 
     const filteredStations = newStations
       .sort((a, b) => a.Price - b.Price)
-      .filter((station) => station.Price != 0)
+      .filter((station) => station.Price)
       .filter((station) => {
         return containsCoordinate(visibleBounds, [station.Lng, station.Lat]);
       });
@@ -318,6 +326,45 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     // if (filteredStations.length <= 0) {
     //   setWarning(true);
     // }
+
+    setStations(filteredStations);
+    setPricesState(false);
+  };
+
+  const getViewedSitePrices = async ({ reload } = {}) => {
+    if (!allStations || allStations.length <= 0) {
+      return;
+    }
+
+    setPricesState(true);
+
+    const stationsInView = allStations.filter((station) =>
+      containsCoordinate(visibleBounds, [station.Lng, station.Lat])
+    );
+
+    const stationIds = stationsInView.map((station) => station.SiteId);
+
+    const fuelPrices = await getFuelPrices(fuelType, stationIds);
+
+    Array.from(Object.entries(fuelPrices)).forEach((entry) => {
+      const [siteId, price] = entry;
+
+      const station = stationsInView.find(
+        (station) => station.SiteId == siteId
+      );
+
+      if (!station) return;
+
+      station.Price = price;
+    });
+
+    const filteredStations = stationsInView
+      .sort((a, b) => a.Price - b.Price)
+      .filter((station) => station.Price);
+
+    console.debug(
+      `[PRICES] ${filteredStations.length} prices found for ${allStations.length} sites`
+    );
 
     setStations(filteredStations);
     setPricesState(false);
