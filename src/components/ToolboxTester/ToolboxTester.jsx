@@ -1,11 +1,11 @@
-import styles from "./FuelSelector.module.scss";
+import styles from "./ToolboxTester.module.scss";
 import fueltypes from "../../assets/fueltypes.json";
 import { useContext } from "react";
 import { AppContext } from "../../contexts/AppContext";
 import Modal from "../../containers/Modal/Modal";
 import ToolboxModal from "../../containers/ToolboxModal/ToolboxModal";
 
-const FuelSelector = () => {
+const ToolboxTester = () => {
   const { fuelType, setFuelType } = useContext(AppContext);
 
   const handleFuelChange = (event) => {
@@ -18,22 +18,17 @@ const FuelSelector = () => {
         <>
           <img
             src="local_gas_station_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-            className={styles.FuelSelector_Image}
+            className={styles.ToolboxTester_Image}
             alt="Show"
             srcSet=""
             title="Show fuel type planner"
           />
-          <p>Fuel</p>
+          <p>Lol</p>
         </>
       }
     >
-      <div
-        className={`${styles.FuelSelector_Body}`}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <h2 className={styles.FuelSelector_Title}>Fuel Type</h2>
+      <div className={`${styles.ToolboxTester_Body}`}>
+        <h2 className={styles.ToolboxTester_Title}>Fuel Type</h2>
         <select onChange={handleFuelChange} value={fuelType}>
           {fueltypes["Fuels"].map((t) => {
             return (
@@ -48,4 +43,4 @@ const FuelSelector = () => {
   );
 };
 
-export default FuelSelector;
+export default ToolboxTester;

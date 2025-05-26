@@ -42,6 +42,7 @@
   }
 
   &_Show {
+    grid-column-start: 1;
     background-color: var(--background);
   }
 }

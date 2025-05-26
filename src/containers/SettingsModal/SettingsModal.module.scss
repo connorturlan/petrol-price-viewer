@@ -51,6 +51,7 @@
   }
 
   &_Show {
+    grid-column-start: 1;
     padding: 8px;
     z-index: 2;
     background: var(--background);

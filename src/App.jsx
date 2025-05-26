@@ -17,6 +17,7 @@ import RoutePlanner from "./components/RoutePlanner/RoutePlanner";
 import { capitalize } from "./utils/utils";
 import Toolbox from "./containers/Toolbox/Toolbox";
 import FuelSelector from "./components/FuelSelector/FuelSelector";
+import ToolboxTester from "./components/ToolboxTester/ToolboxTester";
 
 function App() {
   // set intial state

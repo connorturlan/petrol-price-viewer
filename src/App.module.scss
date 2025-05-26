@@ -152,6 +152,7 @@ p {
   }
 
   &_Layout {
+    position: absolute;
     display: grid;
     grid-template-columns: min-content 1fr;
     height: 100%;
