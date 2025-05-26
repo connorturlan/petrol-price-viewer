@@ -75,7 +75,7 @@ const SettingsModal = () => {
                 disabled={clickMode == MODES.ADD_HOME}
               >
                 <img
-                  src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                  src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24_dkgreen.svg"
                   className={styles.SetHome_Image}
                 ></img>
                 <p>Set Home</p>
@@ -90,7 +90,7 @@ const SettingsModal = () => {
                 disabled={clickMode == MODES.ADD_WORK}
               >
                 <img
-                  src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                  src="person_pin_circle_24dp_255290_FILL0_wght400_GRAD0_opsz24.svg"
                   className={styles.SetHome_Image}
                 ></img>
                 <p>Set Work</p>
@@ -107,7 +107,7 @@ const SettingsModal = () => {
                     }}
                   >
                     <img
-                      src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                      src="location_on_24dp_8C1A10_FILL0_wght400_GRAD0_opsz24.svg"
                       className={styles.SetHome_Image}
                     ></img>
                     <p>Remove {capitalize(poi)}</p>
@@ -138,7 +138,7 @@ const SettingsModal = () => {
                 }}
               >
                 <img
-                  src="home_pin_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+                  src="location_on_24dp_8C1A10_FILL0_wght400_GRAD0_opsz24.svg"
                   className={styles.SetHome_Image}
                 ></img>
                 <p>Add Custom Destination</p>
