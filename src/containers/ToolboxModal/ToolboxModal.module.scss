@@ -1,6 +1,7 @@
 @use "../../styles/templates";
+@use "../Toolbox/Toolbox.module.scss";
 
-$ToolboxWidth: 300px;
+$ModalWidth: 300px;
 
 .ToolboxModal {
   &_Container {
@@ -9,8 +10,9 @@ $ToolboxWidth: 300px;
     justify-content: flex-start;
     align-items: center;
 
+    position: fixed;
     height: 100vh;
-    width: $ToolboxWidth;
+    width: $ModalWidth;
     // background-color: rgba(0, 0, 0, 0.4);
 
     gap: 8px;
@@ -18,26 +20,31 @@ $ToolboxWidth: 300px;
     background-color: var(--background);
     color: var(--text);
 
-    z-index: 15;
-
     grid-column-start: 3;
     grid-row-start: 1;
     grid-row-end: span auto;
 
     overflow-y: auto;
 
-    // box-shadow: inset 0px 2px 8px #00000060;
+    box-shadow: 8px 0px 8px #00000060;
+
+    z-index: -10;
+
+    &__Show,
+    &__Hide {
+      // box-shadow: none;
+      animation-duration: 0.2s;
+    }
 
     &__Show {
-      animation-duration: 0.2s;
       animation-name: slide-in;
+      left: Toolbox.$ToolboxWidth;
     }
 
     &__Hide {
-      animation-duration: 0.2s;
       animation-name: slide-out;
-      left: -$ToolboxWidth;
-      margin-right: -$ToolboxWidth;
+      left: -$ModalWidth;
+      margin-right: -$ModalWidth;
     }
   }
 
@@ -49,7 +56,7 @@ $ToolboxWidth: 300px;
     align-items: center;
 
     padding: 8px;
-    z-index: 2;
+    z-index: 20;
     border: none;
     border-radius: 8px;
 
@@ -85,22 +92,22 @@ $ToolboxWidth: 300px;
 
 @keyframes slide-in {
   0% {
-    left: -$ToolboxWidth;
-    margin-right: -$ToolboxWidth;
+    left: -$ModalWidth;
+    // margin-right: -$ModalWidth;
   }
   100% {
-    left: 0;
-    margin-right: 0px;
+    left: Toolbox.$ToolboxWidth;
+    // margin-right: 0px;
   }
 }
 
 @keyframes slide-out {
   from {
-    left: 0;
+    left: Toolbox.$ToolboxWidth;
     margin-right: 0px;
   }
   to {
-    left: -$ToolboxWidth;
-    margin-right: -$ToolboxWidth;
+    left: -$ModalWidth;
+    margin-right: -$ModalWidth;
   }
 }

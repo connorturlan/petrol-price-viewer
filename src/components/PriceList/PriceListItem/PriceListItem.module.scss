@@ -1,11 +1,14 @@
 .PriceListItem {
-  display: grid;
-  grid-template-columns: 1fr 40px;
+  max-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  min-height: 1em;
+
+  overflow: hidden;
 
   gap: 4px;
   height: fit-content;
   padding: 4px;
-  border-bottom: 1px solid black;
 
   text-align: left;
 
