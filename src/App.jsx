@@ -18,7 +18,7 @@ import { capitalize } from "./utils/utils";
 import Toolbox from "./containers/Toolbox/Toolbox";
 import FuelSelector from "./components/FuelSelector/FuelSelector";
 import ToolboxTester from "./components/ToolboxTester/ToolboxTester";
-import { usePub } from "./utils/pubsub";
+import { MapMoveTo, usePub } from "./utils/pubsub";
 
 function App() {
   // set intial state
@@ -102,9 +102,7 @@ function App() {
                   name={feature.Name}
                   price={((feature.Price || 0) / 10).toFixed(1)}
                   showDetails={() => {
-                    console.log(feature);
-                    const moveTo = usePub();
-                    moveTo("MapMoveTo", [feature.Lng, feature.Lat]);
+                    MapMoveTo({ coord: [feature.Lng, feature.Lat] });
                     selectSite(feature.SiteId);
                   }}
                 />

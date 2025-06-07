@@ -4,12 +4,16 @@ import { useContext } from "react";
 import { AppContext } from "../../contexts/AppContext";
 import Modal from "../../containers/Modal/Modal";
 import ToolboxModal from "../../containers/ToolboxModal/ToolboxModal";
+import { usePub } from "../../utils/pubsub";
 
 const FuelSelector = () => {
   const { fuelType, setFuelType } = useContext(AppContext);
 
   const handleFuelChange = (event) => {
     setFuelType(event.target.value);
+
+    const hideModals = usePub();
+    hideModals("ToolboxModalHide");
   };
 
   return (

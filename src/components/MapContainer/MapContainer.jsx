@@ -8,7 +8,7 @@ import TileLayer from "ol/layer/Tile";
 import XYZ from "ol/source/XYZ";
 import { PROJECTION } from "../../utils/defaults";
 import { fromLonLat, transform } from "ol/proj";
-import { convertCoord } from "../../utils/utils";
+import { convertCoord, ObjectIsEmpty } from "../../utils/utils";
 import Style from "ol/style/Style";
 import { UseSub } from "../../utils/pubsub";
 import { duration } from "@mui/material";
@@ -48,10 +48,35 @@ const MapContainer = ({
   const mapLayers = useRef([]);
   mapLayers.current = [darkMode ? darkMapLayer : mapLayer, ...layers];
 
-  UseSub("MapMoveTo", (data) => {
+  UseSub("MapMoveTo", (newView) => {
+    if (ObjectIsEmpty(newView) || !newView.coord || newView.coord.length <= 0) {
+      console.error(
+        `[MAP]<event> map move triggered to invalid position. ${newView}`
+      );
+      return;
+    }
+    console.log(`[MAP]<event> map move to ${newView}`);
     mapRef.current.getView().animate({
-      center: data,
-      duration: 1000,
+      center: newView.coord,
+      duration: 400,
+      zoom: 16,
+    });
+  });
+
+  UseSub("MapFitTo", (newExtent) => {
+    if (ObjectIsEmpty(newExtent)) {
+      console.error(
+        `[MAP]<event> map move triggered to invalid position. ${newExtent}`
+      );
+      return;
+    }
+
+    console.log(`[MAP]<event> map move to ${newExtent}`);
+    mapRef.current.getView().fit(newExtent, {
+      size: mapRef.current.getSize(),
+      minResolution: 2,
+      duration: 800,
+      padding: [48, 48, 48, 48],
     });
   });
 

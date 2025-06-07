@@ -21,20 +21,22 @@ import Icon from "ol/style/Icon";
 import Style from "ol/style/Style";
 import { getPointsOfInterest } from "../../utils/api";
 import { getDebugBoundingPath } from "./utils";
+import zIndex from "@mui/material/styles/zIndex";
 
 export const createStationLayer = () => {
   const initialSource = new VectorSource();
 
   return new VectorLayer({
     source: initialSource,
-    // declutter: true,
+    // declutter: "obstacle",
+    zIndex: 10,
     style: (feature) => {
       defaultStyle
         .getText()
         .setText([`${feature.get("price")}`, "italic 12pt sans-serif"]);
+      // defaultStyle.setZIndex(200 - feature.get("price") * 10);
       return defaultStyle;
     },
-    zIndex: 0,
   });
 };
 
@@ -56,11 +58,12 @@ export const createLowestLayer = () => {
 
   return new VectorLayer({
     source: initialLowestSource,
+    // declutter: "obstacle",
+    zIndex: 20,
     style: (feature) => {
       lowestStyle.getText().setText([`${feature.get("price")}`, ""]);
       return lowestStyle;
     },
-    zIndex: 1,
   });
 };
 
@@ -69,11 +72,13 @@ export const createOnRouteLayer = () => {
 
   return new VectorLayer({
     source: source,
+    // declutter: true,
+    zIndex: 30,
     style: (feature) => {
       onRouteStyle.getText().setText([`${feature.get("price")}`, ""]);
+      onRouteStyle.setZIndex(-feature.get("price") * 10);
       return onRouteStyle;
     },
-    zIndex: 1,
   });
 };
 
@@ -122,8 +127,9 @@ export const createCustomLayer = (POI) => {
 
   return new VectorLayer({
     source: source,
+    declutter: false,
     style: (feature) => {
-      switch (feature.get("name")) {
+      switch (feature.get("style") || feature.get("name")) {
         case "home":
           return handleCustomLayerStyles(
             "home",

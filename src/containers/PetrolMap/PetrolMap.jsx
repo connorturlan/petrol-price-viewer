@@ -13,7 +13,7 @@ import {
 import { Point, Polygon } from "ol/geom";
 import { Feature } from "ol";
 import StationModal from "../../components/StationModal/StationModal";
-import { containsCoordinate } from "ol/extent";
+import { boundingExtent, containsCoordinate, getCenter } from "ol/extent";
 import LoadingSplash from "../../components/LoadingSplash/LoadingSplash";
 import {
   createCustomLayer,
@@ -42,6 +42,7 @@ import { RouteContext } from "../../contexts/RouteContext";
 import { getFuelPrices } from "../../services/StationPriceManager/StationPriceManager.service";
 import { createDefaultStyle } from "ol/style/Style";
 import { updateAllStations } from "../../services/StationPriceManager/StationPriceManager.service";
+import { FitMapToExtent, MapMoveTo } from "../../utils/pubsub";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -55,8 +56,15 @@ const MAP_CENTER = [138.599503, -34.92123];
 const PetrolMap = ({ fuelType, updateStations }) => {
   const { setClickMode, clickModeOptions, selectSite, darkMode } =
     useContext(AppContext);
-  const { setHome, setWork, setCustomLocation, profile, POI, getPOIs, token } =
-    useContext(UserContext);
+  const {
+    setHome,
+    setWork,
+    setCustomLocation,
+    profile,
+    POI,
+    getPOIs,
+    loginState,
+  } = useContext(UserContext);
   const { origin, setOrigin, getOrigin, dest, setDest, getDest } =
     useContext(RouteContext);
 
@@ -107,9 +115,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   useEffect(() => {
     setLayers([
       stationLayer,
+      lowestLayer,
       waypointLayer,
       onRouteLayer,
-      lowestLayer,
       customLayer,
     ]);
   }, [stationLayer, waypointLayer, onRouteLayer, lowestLayer, customLayer]);
@@ -133,21 +141,48 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setCustomLayer(createCustomLayer(POI));
   }, [profile, POI, routes]);
 
+  // useEffect(() => {
+  //   let newCenter = MAP_CENTER;
+  //   if (!ObjectIsEmpty(profile)) {
+  //     if (!ObjectIsEmpty(POI) && !ObjectIsEmpty(POI.home))
+  //       newCenter = [POI.home.Lat, POI.home.Lng];
+
+  //     if (!ObjectIsEmpty(origin)) newCenter = [origin.Lat, origin.Lng];
+  //     if (!ObjectIsEmpty(origin) && !ObjectIsEmpty(dest)) {
+  //       newCenter = [(origin.Lat + dest.Lat) / 2, (origin.Lng + dest.Lng) / 2];
+  //     }
+  //   }
+
+  //   console.log(newCenter, origin, dest);
+
+  //   setCenter(newCenter);
+  // }, [POI, origin, dest]);
+
   useEffect(() => {
     let newCenter = MAP_CENTER;
     if (!ObjectIsEmpty(profile)) {
       if (!ObjectIsEmpty(POI) && !ObjectIsEmpty(POI.home))
         newCenter = [POI.home.Lat, POI.home.Lng];
-
-      if (!ObjectIsEmpty(origin)) newCenter = [origin.Lat, origin.Lng];
-      if (!ObjectIsEmpty(origin) && !ObjectIsEmpty(dest))
-        newCenter = [(origin.Lat + dest.Lat) / 2, (origin.Lng + dest.Lng) / 2];
     }
 
-    console.log(newCenter, origin, dest);
-
     setCenter(newCenter);
-  }, [POI, origin, dest]);
+  }, [profile, POI, loginState]);
+
+  useEffect(() => {
+    const points = [];
+
+    if (!ObjectIsEmpty(origin))
+      points.push(convertCoord([origin.Lat, origin.Lng]));
+    if (!ObjectIsEmpty(dest)) points.push(convertCoord([dest.Lat, dest.Lng]));
+
+    if (points.length <= 0) return;
+
+    console.log(points);
+
+    const extent = boundingExtent(points);
+
+    FitMapToExtent(extent);
+  }, [origin, dest]);
 
   useEffect(() => {
     const getRoutes = async () => {
@@ -158,8 +193,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     triggerReload(true);
     setRoutingState(true);
-    getRoutes();
-  }, [POI, origin, dest]);
+    setTimeout(getRoutes, 800);
+    // getRoutes();
+  }, [origin, dest]);
 
   useEffect(() => {
     triggerReload(true);
@@ -288,6 +324,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     if (clickMode == MODES.DEFAULT) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
         if (feature.get("siteid") !== undefined) {
+          MapMoveTo({ coord: feature.getGeometry().getCoordinates() });
           selectSite(feature.get("siteid"));
           return;
         }

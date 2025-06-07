@@ -19,6 +19,12 @@ const ToolboxModal = ({ children, summary }) => {
     hideModals("ToolboxModalHide", refId);
   };
 
+  const hideModal = () => {
+    setVisible(false);
+    const hideModals = usePub();
+    hideModals("ToolboxModalHide", refId);
+  };
+
   UseSub("ToolboxModalHide", (data) => {
     if (data != refId) setVisible(false);
   });

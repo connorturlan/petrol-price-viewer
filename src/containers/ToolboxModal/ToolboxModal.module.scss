@@ -1,4 +1,5 @@
 @use "../../styles/templates";
+@use "../../styles/palette";
 @use "../Toolbox/Toolbox.module.scss";
 
 $ModalWidth: 300px;
@@ -13,6 +14,7 @@ $ModalWidth: 300px;
     position: fixed;
     height: 100vh;
     width: $ModalWidth;
+    max-width: calc(100vw - Toolbox.$ToolboxWidth);
     // background-color: rgba(0, 0, 0, 0.4);
 
     gap: 8px;
