@@ -29,7 +29,7 @@ function PriceList({ children }) {
         <div
           className={styles.PriceList_List}
           onClick={() => {
-            setVisible(false);
+            // setVisible(false);
           }}
         >
           {children}

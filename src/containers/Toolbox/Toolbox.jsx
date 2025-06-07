@@ -1,10 +1,17 @@
 import { useState } from "react";
 import styles from "./Toolbox.module.scss";
+import { usePub } from "../../utils/pubsub";
 
 const Toolbox = ({ children }) => {
   //   return <div></div>;
   const [shown, setVisibility] = useState(true);
   const [showContainer, setContainerVisibility] = useState(true);
+
+  const handleHide = () => {
+    setVisibility(false);
+    const hideModals = usePub();
+    hideModals("ToolboxModalHide");
+  };
 
   return (
     <>
@@ -19,10 +26,7 @@ const Toolbox = ({ children }) => {
         }}
         hidden={!showContainer}
       >
-        <button
-          className={styles.Toolbox_Hide}
-          onClick={() => setVisibility(false)}
-        >
+        <button className={styles.Toolbox_Hide} onClick={handleHide}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"

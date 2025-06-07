@@ -10,6 +10,8 @@ import { PROJECTION } from "../../utils/defaults";
 import { fromLonLat, transform } from "ol/proj";
 import { convertCoord } from "../../utils/utils";
 import Style from "ol/style/Style";
+import { UseSub } from "../../utils/pubsub";
+import { duration } from "@mui/material";
 
 const mapLayer = new TileLayer({
   source: new XYZ({
@@ -38,12 +40,20 @@ const MapContainer = ({
 
   const renderCount = useRef(0);
   const mapElement = useRef();
+  const viewRef = useRef(null);
 
   const mapRef = useRef();
   mapRef.current = map;
 
   const mapLayers = useRef([]);
   mapLayers.current = [darkMode ? darkMapLayer : mapLayer, ...layers];
+
+  UseSub("MapMoveTo", (data) => {
+    mapRef.current.getView().animate({
+      center: data,
+      duration: 1000,
+    });
+  });
 
   useEffect(() => {
     if (renderCount.current > 0) return;
@@ -54,6 +64,7 @@ const MapContainer = ({
       center: transform(mapCenter, "EPSG:4326", PROJECTION),
       zoom: 13,
     });
+    viewRef.current = view;
 
     const initialMap = new Map({
       target: mapElement.current,
@@ -90,7 +101,10 @@ const MapContainer = ({
   useEffect(() => {
     console.debug("[MAP] updating center");
     if (!map) return;
-    map.getView().setCenter(convertCoord(mapCenter));
+    map.getView().animate({
+      center: convertCoord(mapCenter),
+      duration: 1000,
+    });
   }, [mapCenter]);
 
   useEffect(() => {
