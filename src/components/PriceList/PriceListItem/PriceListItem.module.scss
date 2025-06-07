@@ -1,7 +1,9 @@
 .PriceListItem {
   display: grid;
   grid-template-columns: 1fr 40px;
-  width: 100%;
+
+  gap: 4px;
+  height: fit-content;
   padding: 4px;
   border-bottom: 1px solid black;
 
