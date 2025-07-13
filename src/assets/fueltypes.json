@@ -39,6 +39,21 @@
       "FuelId": 19,
       "Name": "e85",
       "Color": "orange"
+    },
+    {
+      "FuelId": 10000,
+      "Name": "Chademo",
+      "Color": "orange"
+    },
+    {
+      "FuelId": 10001,
+      "Name": "IEC62196 Type2 CCS",
+      "Color": "orange"
+    },
+    {
+      "FuelId": 10002,
+      "Name": "IEC62196 Type2 Outlet",
+      "Color": "orange"
     }
   ]
 }

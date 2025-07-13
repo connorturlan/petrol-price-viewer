@@ -67,6 +67,18 @@
     {
       "FuelId": 1000,
       "Name": "Diesel/Premium Diesel"
+    },
+    {
+      "FuelId": 10000,
+      "Name": "Chademo"
+    },
+    {
+      "FuelId": 10001,
+      "Name": "IEC62196Type2CCS"
+    },
+    {
+      "FuelId": 10002,
+      "Name": "IEC62196Type2Outlet"
     }
   ]
 }
