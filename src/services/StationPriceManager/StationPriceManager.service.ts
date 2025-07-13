@@ -150,14 +150,14 @@ export async function getFuelPrices(
     return uncachePrices(filteredCachedPrices);
   }
 
-  if (missingPriceIds.length >= MAX_STATION_REQUEST) {
-    readInProgress = false;
-    console.warn(
-      `[PRICES] request body length exceeds ${MAX_STATION_REQUEST}.`
-    );
-    window.alert("Search area too large, try zooming in.");
-    return uncachePrices(filteredCachedPrices);
-  }
+  // if (missingPriceIds.length >= MAX_STATION_REQUEST) {
+  //   readInProgress = false;
+  //   console.warn(
+  //     `[PRICES] request body length exceeds ${MAX_STATION_REQUEST}.`
+  //   );
+  //   window.alert("Search area too large, try zooming in.");
+  //   return uncachePrices(filteredCachedPrices);
+  // }
 
   const newApiPrices = await getPricesFromAPI(missingPriceIds);
 

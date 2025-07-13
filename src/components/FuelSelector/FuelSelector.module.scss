@@ -137,4 +137,18 @@
     align-items: center;
     height: 100%;
   }
+
+  &_Selector {
+    border: none;
+    background-color: var(--background);
+    border-radius: 8px;
+    &:hover {
+      background-color: lighen(10%, var(--background));
+      outline: 1px solid #038cfc;
+    }
+  }
+
+  &__Selected {
+    outline: 2px solid #038cfc;
+  }
 }

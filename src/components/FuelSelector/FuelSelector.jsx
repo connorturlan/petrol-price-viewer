@@ -53,7 +53,10 @@ const FuelSelector = () => {
               return (
                 <button
                   key={t.FuelId}
-                  value={t.FuelId}
+                  className={`${styles.FuelSelector_Selector} ${
+                    t.FuelId == fuelType ? styles.FuelSelector__Selected : ""
+                  }`}
+                  style={{ color: t.Color || "black" }}
                   onClick={() => handleFuelChange(t.FuelId)}
                 >
                   {t.Name}
@@ -69,7 +72,9 @@ const FuelSelector = () => {
               return (
                 <button
                   key={t.FuelId}
-                  value={t.FuelId}
+                  className={`${styles.FuelSelector_Selector} ${
+                    t.FuelId == fuelType ? styles.FuelSelector__Selected : ""
+                  }`}
                   style={{ color: t.Color || "black" }}
                   onClick={() => handleFuelChange(t.FuelId)}
                 >

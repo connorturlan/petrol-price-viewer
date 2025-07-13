@@ -275,6 +275,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     }
 
     setPricesState(true);
+    setTimeout(() => setPricesState(false), 10_000);
 
     const stationsInView = allStations.filter((station) =>
       containsCoordinate(visibleBounds, [station.Lng, station.Lat])
