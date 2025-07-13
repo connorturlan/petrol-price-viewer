@@ -265,7 +265,15 @@ async function getPricesFromAPI(
       Object.keys(prices).length
     } stations fetched`
   );
-  return prices;
+
+  const allPrices = [] as [number, number][];
+  siteIds.forEach((siteid) => {
+    allPrices[siteid] = prices[siteid] || 0;
+  });
+
+  console.log(allPrices);
+
+  return allPrices;
 }
 
 // updatePricesCache will update the prices in the local storage.

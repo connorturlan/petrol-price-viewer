@@ -34,14 +34,23 @@ export async function getFuelPrices(
     return [];
   }
 
-  return await res.json();
+  const returnedSites = await res.json();
+
+  const prices = [] as [number, number][];
+  sites.forEach((siteid) => {
+    prices[siteid] = returnedSites[siteid] || 0;
+  });
+
+  console.log(prices);
+
+  return prices;
 }
 
 export async function getHistoricPrices() {
   const res = await fetch(ENDPOINT + "/history");
   if (res.status != 200) {
     console.warn("unable to reach server.");
-    return ;
+    return;
   }
   return await res.json();
 }

@@ -18,17 +18,20 @@
     {
       "FuelId": 8,
       "Name": "Unleaded 98",
-      "Color": "red"
+      "Color": "red",
+      "Alt": 5
     },
     {
       "FuelId": 3,
       "Name": "Diesel",
-      "Color": "black"
+      "Color": "black",
+      "Alt": 14
     },
     {
       "FuelId": 14,
       "Name": "Premium Diesel",
-      "Color": "black"
+      "Color": "black",
+      "Alt": 3
     },
     {
       "FuelId": 4,
@@ -38,7 +41,8 @@
     {
       "FuelId": 19,
       "Name": "e85",
-      "Color": "orange"
+      "Color": "orange",
+      "Alt": 12
     },
     {
       "FuelId": 10000,

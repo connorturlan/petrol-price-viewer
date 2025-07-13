@@ -9,11 +9,18 @@ import { usePub } from "../../utils/pubsub";
 const FuelSelector = () => {
   const { fuelType, setFuelType } = useContext(AppContext);
 
-  const handleFuelChange = (event) => {
+  const handleFuelDropdownChange = (event) => {
     setFuelType(event.target.value);
 
     const hideModals = usePub();
     hideModals("ToolboxModalHide");
+  };
+
+  const handleFuelChange = (fuelId) => {
+    setFuelType(fuelId);
+
+    // const hideModals = usePub();
+    // hideModals("ToolboxModalHide");
   };
 
   return (
@@ -38,15 +45,39 @@ const FuelSelector = () => {
         }}
       >
         <h2 className={styles.FuelSelector_Title}>Fuel Type</h2>
-        <select onChange={handleFuelChange} value={fuelType}>
-          {fueltypes["Fuels"].map((t) => {
-            return (
-              <option key={t.FuelId} value={t.FuelId}>
-                {t.Name}
-              </option>
-            );
-          })}
-        </select>
+        <h3>Petrol</h3>
+        <div className={styles.FuelSelector_List}>
+          {fueltypes["Fuels"]
+            .filter((t) => t.FuelId < 10000)
+            .map((t) => {
+              return (
+                <button
+                  key={t.FuelId}
+                  value={t.FuelId}
+                  onClick={() => handleFuelChange(t.FuelId)}
+                >
+                  {t.Name}
+                </button>
+              );
+            })}
+        </div>
+        <h3>Electic</h3>
+        <div className={styles.FuelSelector_List}>
+          {fueltypes["Fuels"]
+            .filter((t) => t.FuelId >= 10000)
+            .map((t) => {
+              return (
+                <button
+                  key={t.FuelId}
+                  value={t.FuelId}
+                  style={{ color: t.Color || "black" }}
+                  onClick={() => handleFuelChange(t.FuelId)}
+                >
+                  {t.Name}
+                </button>
+              );
+            })}
+        </div>
       </div>
     </ToolboxModal>
   );
