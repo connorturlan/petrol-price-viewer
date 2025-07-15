@@ -215,7 +215,12 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const features = filteredstations.map((feature) => {
       const point = new Point([feature.Lng, feature.Lat]);
 
-      let price = ((feature.Price || 0) / 10).toFixed(1);
+      let price;
+      if (fuelType < 10_000) {
+        price = ((feature.Price || 0) / 10).toFixed(1);
+      } else {
+        price = feature.Price || 0;
+      }
 
       return new Feature({
         geometry: point,
@@ -237,7 +242,11 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   useEffect(() => {
     if (!stations || !visibleBounds) return;
-    updateLowestPrices(lowestLayer, stations);
+    if (fuelType >= 10_000) {
+      updateLowestPrices(lowestLayer, [], fuelType);
+      return;
+    }
+    updateLowestPrices(lowestLayer, stations, fuelType);
     updateStations && updateStations(stations);
   }, [stations, visibleBounds]);
 

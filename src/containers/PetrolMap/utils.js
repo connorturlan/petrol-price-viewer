@@ -31,7 +31,7 @@ export const getSites = async (setLoading, setStations) => {
   setLoading(false);
 };
 
-export const updateLowestPrices = async (layer, stations) => {
+export const updateLowestPrices = async (layer, stations, fuelType) => {
   const source = new VectorSource();
   layer.setSource(source);
 
