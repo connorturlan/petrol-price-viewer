@@ -30,7 +30,7 @@ export const createStationLayer = () => {
 
   const clusterSource = new Cluster({
     distance: 40,
-    minDistance: 1,
+    minDistance: 0,
     source: initialSource,
   });
 

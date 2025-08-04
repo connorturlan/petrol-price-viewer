@@ -37,8 +37,8 @@ export function stationStyle(feature: FeatureLike): StyleLike {
   const outlineStyle = isLowest
     ? new Stroke({
         color: "orange",
-        width: 2,
-        miterLimit: 2,
+        width: 1,
+        miterLimit: 0,
       })
     : new Stroke({
         color: "#555",
@@ -54,7 +54,7 @@ export function stationStyle(feature: FeatureLike): StyleLike {
     }),
     text: new Text({
       offsetY: 9,
-      font: "italic 12pt sans-serif",
+      font: "italic 10pt sans-serif",
       fill: new Fill({
         color: "#555",
       }),
@@ -62,7 +62,7 @@ export function stationStyle(feature: FeatureLike): StyleLike {
         color: backgroundColor,
       }),
       backgroundStroke: outlineStyle,
-      padding: [2, 4, 2, 4],
+      padding: [2, 2, 2, 2],
       text: text,
     }),
     zIndex: isLowest ? 10 : 0,
