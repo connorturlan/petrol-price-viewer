@@ -12,10 +12,27 @@ export type StationFeature = {
   price: number;
   chargers: number;
   availableChargers: number;
+  isLowest: boolean;
   onRoute: boolean;
 };
 
 export function stationStyle(feature: FeatureLike): StyleLike {
+  const isLowest = Boolean(feature.get("isLowest"));
+
+  // const fillColor =
+  const backgroundColor = isLowest ? "yellow" : "#eee";
+  const outlineStyle = isLowest
+    ? new Stroke({
+        color: "orange",
+        width: 2,
+        miterLimit: 2,
+      })
+    : new Stroke({
+        color: "#555",
+        width: 1,
+        lineCap: "butt",
+      });
+
   return new Style({
     image: new Icon({
       anchor: [0.5, 1],
@@ -29,16 +46,13 @@ export function stationStyle(feature: FeatureLike): StyleLike {
         color: "#555",
       }),
       backgroundFill: new Fill({
-        color: "#EEE",
+        color: backgroundColor,
       }),
-      backgroundStroke: new Stroke({
-        color: "#555",
-        width: 1,
-        lineCap: "butt",
-      }),
+      backgroundStroke: outlineStyle,
       padding: [2, 4, 2, 4],
       text: `${feature.get("price")}`,
     }),
+    zIndex: isLowest ? 10 : 0,
   });
 }
 

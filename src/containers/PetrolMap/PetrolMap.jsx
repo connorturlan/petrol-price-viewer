@@ -30,6 +30,7 @@ import {
   getSites,
   setStationsOnRoute,
   updateLowestPrices,
+  updateStationsWithLowestPrice,
 } from "./utils";
 import { MAX_STATION_REQUEST, PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
@@ -246,7 +247,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       updateLowestPrices(lowestLayer, [], fuelType);
       return;
     }
-    updateLowestPrices(lowestLayer, stations, fuelType);
+    updateStationsWithLowestPrice(stationLayer);
+    // updateLowestPrices(lowestLayer, stations, fuelType);
     updateStations && updateStations(stations);
   }, [stations, visibleBounds]);
 

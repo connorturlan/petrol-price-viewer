@@ -60,6 +60,27 @@ export const updateLowestPrices = async (layer, stations, fuelType) => {
   source.addFeatures(features);
 };
 
+export const updateStationsWithLowestPrice = async (layer) => {
+  const source = layer.getSource();
+
+  const features = source.getFeatures();
+
+  features.forEach((feature) => {
+    feature.set("isLowest", false);
+  });
+
+  const prices = features.map((feature) => Number(feature.get("price")));
+
+  const lowestPrice = prices.reduce(
+    (lowest, current) => Math.min(lowest, current),
+    prices[0]
+  );
+
+  features.forEach((feature) => {
+    feature.set("isLowest", feature.get("price") <= lowestPrice);
+  });
+};
+
 function lerp(a, b, t) {
   return (1 - t) * a + t * b;
 }
