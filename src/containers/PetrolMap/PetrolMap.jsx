@@ -29,6 +29,7 @@ import {
   getFeaturesOnRoute,
   getSites,
   setStationsOnRoute,
+  updateClusterWithLowestPrice,
   updateLowestPrices,
   updateStationsWithLowestPrice,
 } from "./utils";
@@ -207,8 +208,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     // may be null on first render
     if (!stations || stations.length <= 0) return;
 
-    const source = new VectorSource();
-    stationLayer.setSource(source);
+    const clusterSource = stationLayer.getSource();
+    const source = clusterSource.getSource();
+
+    source.clear();
     const filteredstations = stations.filter(
       (feature) => feature.Price && feature.Price < 9999
     );
@@ -247,8 +250,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       updateLowestPrices(lowestLayer, [], fuelType);
       return;
     }
-    updateStationsWithLowestPrice(stationLayer);
-    // updateLowestPrices(lowestLayer, stations, fuelType);
+    // updateStationsWithLowestPrice(stationLayer);
+    updateClusterWithLowestPrice(stationLayer.getSource());
     updateStations && updateStations(stations);
   }, [stations, visibleBounds]);
 

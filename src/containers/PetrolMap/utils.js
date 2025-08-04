@@ -60,15 +60,7 @@ export const updateLowestPrices = async (layer, stations, fuelType) => {
   source.addFeatures(features);
 };
 
-export const updateStationsWithLowestPrice = async (layer) => {
-  const source = layer.getSource();
-
-  const features = source.getFeatures();
-
-  features.forEach((feature) => {
-    feature.set("isLowest", false);
-  });
-
+export const getLowestFeaturePrice = (features) => {
   const prices = features.map((feature) => Number(feature.get("price")));
 
   const lowestPrice = prices.reduce(
@@ -76,9 +68,37 @@ export const updateStationsWithLowestPrice = async (layer) => {
     prices[0]
   );
 
+  return lowestPrice;
+};
+
+export const updateSourceWithLowestPrice = async (source) => {
+  const features = source.getFeatures();
+
+  features.forEach((feature) => {
+    feature.set("isLowest", false);
+  });
+
+  const lowestPrice = getLowestFeaturePrice(features);
+
   features.forEach((feature) => {
     feature.set("isLowest", feature.get("price") <= lowestPrice);
   });
+};
+
+export const updateStationsWithLowestPrice = async (layer) => {
+  const source = layer.getSource();
+
+  updateSourceWithLowestPrice(source);
+};
+
+export const updateClusterWithLowestPrice = async (clusterSource) => {
+  const features = clusterSource.getFeatures();
+
+  features.forEach((feature) => {
+    feature.set("price", getLowestFeaturePrice(feature.get("features")));
+  });
+
+  updateSourceWithLowestPrice(clusterSource);
 };
 
 function lerp(a, b, t) {

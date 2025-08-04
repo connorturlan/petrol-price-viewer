@@ -1,5 +1,6 @@
 import { FeatureLike } from "ol/Feature";
 import { Geometry } from "ol/geom";
+import { toSize } from "ol/size";
 import Fill from "ol/style/Fill";
 import Icon from "ol/style/Icon";
 import Stroke from "ol/style/Stroke";
@@ -18,6 +19,18 @@ export type StationFeature = {
 
 export function stationStyle(feature: FeatureLike): StyleLike {
   const isLowest = Boolean(feature.get("isLowest"));
+
+  const isCluster = !!feature.get("features");
+
+  let text = "";
+  if (isCluster) {
+    text =
+      feature.get("features")?.length <= 1
+        ? `${feature.get("price") || 9999}`
+        : `${feature.get("price") || 9999} +`;
+  } else {
+    text = `${feature.get("price")}`;
+  }
 
   // const fillColor =
   const backgroundColor = isLowest ? "yellow" : "#eee";
@@ -50,7 +63,7 @@ export function stationStyle(feature: FeatureLike): StyleLike {
       }),
       backgroundStroke: outlineStyle,
       padding: [2, 4, 2, 4],
-      text: `${feature.get("price")}`,
+      text: text,
     }),
     zIndex: isLowest ? 10 : 0,
   });

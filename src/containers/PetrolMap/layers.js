@@ -23,14 +23,19 @@ import Style from "ol/style/Style";
 import { getPointsOfInterest } from "../../utils/api";
 import { getDebugBoundingPath } from "./utils";
 import zIndex from "@mui/material/styles/zIndex";
+import Cluster from "ol/source/Cluster.js";
 
 export const createStationLayer = () => {
   const initialSource = new VectorSource();
 
-  return new VectorLayer({
+  const clusterSource = new Cluster({
+    distance: 40,
+    minDistance: 1,
     source: initialSource,
-    // declutter: "obstacle",
-    zIndex: 10,
+  });
+
+  return new VectorLayer({
+    source: clusterSource,
     style: stationStyle,
   });
 };
