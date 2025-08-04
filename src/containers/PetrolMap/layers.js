@@ -6,6 +6,7 @@ import {
   defaultStyleDark,
   lowestStyle,
   onRouteStyle,
+  stationStyle,
   waypointStyle,
 } from "./styles";
 import { Feature } from "ol";
@@ -30,13 +31,7 @@ export const createStationLayer = () => {
     source: initialSource,
     // declutter: "obstacle",
     zIndex: 10,
-    style: (feature) => {
-      defaultStyle
-        .getText()
-        .setText([`${feature.get("price")}`, "italic 12pt sans-serif"]);
-      // defaultStyle.setZIndex(200 - feature.get("price") * 10);
-      return defaultStyle;
-    },
+    style: stationStyle,
   });
 };
 
