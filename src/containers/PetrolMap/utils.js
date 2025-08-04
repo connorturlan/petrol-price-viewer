@@ -60,6 +60,16 @@ export const updateLowestPrices = async (layer, stations, fuelType) => {
   source.addFeatures(features);
 };
 
+export const getLowestFeature = (features) => {
+  const lowestPrice = features.reduce(
+    (lowest, current) =>
+      lowest.get("price") < current.get("price") ? lowest : current,
+    features[0]
+  );
+
+  return lowestPrice;
+};
+
 export const getLowestFeaturePrice = (features) => {
   const prices = features.map((feature) => Number(feature.get("price")));
 
@@ -96,6 +106,10 @@ export const updateClusterWithLowestPrice = async (clusterSource) => {
 
   features.forEach((feature) => {
     feature.set("price", getLowestFeaturePrice(feature.get("features")));
+    feature.set(
+      "siteid",
+      getLowestFeature(feature.get("features"))?.get("siteid")
+    );
   });
 
   updateSourceWithLowestPrice(clusterSource);
