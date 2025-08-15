@@ -10,7 +10,7 @@ import {
   transform,
   transformWithProjections,
 } from "ol/proj";
-import { Point, Polygon } from "ol/geom";
+import { Circle, Point, Polygon } from "ol/geom";
 import { Feature } from "ol";
 import StationModal from "../../components/StationModal/StationModal";
 import { boundingExtent, containsCoordinate, getCenter } from "ol/extent";
@@ -29,6 +29,7 @@ import {
   getFeaturesOnRoute,
   getSites,
   setStationsOnRoute,
+  updateClusterWithChargerCount,
   updateClusterWithLowestPrice,
   updateLowestPrices,
   updateStationsWithLowestPrice,
@@ -217,7 +218,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     );
 
     const features = filteredstations.map((feature) => {
-      const point = new Point([feature.Lng, feature.Lat]);
+      const coord = [feature.Lng, feature.Lat];
+      const point = new Point(coord);
 
       let price;
       if (fuelType < 10_000) {
@@ -247,7 +249,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   useEffect(() => {
     if (!stations || !visibleBounds) return;
     if (fuelType >= 10_000) {
-      updateLowestPrices(lowestLayer, [], fuelType);
+      // updateLowestPrices(lowestLayer, [], fuelType);
+      updateClusterWithChargerCount(stationLayer.getSource());
       return;
     }
     // updateStationsWithLowestPrice(stationLayer);
@@ -398,8 +401,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setVisibleBounds(extent);
   };
 
-  if (!stationLayer || !lowestLayer || !allStations || allStations.length <= 0)
-    return;
+  // if (!stationLayer || !lowestLayer || !allStations || allStations.length <= 0)
+  //   return;
 
   return (
     <div className={styles.PetrolMap}>

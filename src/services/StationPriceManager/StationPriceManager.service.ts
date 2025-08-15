@@ -72,12 +72,18 @@ function filterExpiredStations(stations: Station[]): Station[] {
 async function getAllStationsFromAPI(
   knownSiteIds: number[]
 ): Promise<Station[]> {
-  const res = await fetch(`${ENDPOINT}${defaults.STATIONS_API}`);
-  if (res.status != 200) {
-    window.alert("site data not found.");
+  let json: any[];
+  try {
+    const res = await fetch(`${ENDPOINT}${defaults.STATIONS_API}`);
+    if (res.status != 200) {
+      window.alert("site data not found.");
+      return [];
+    }
+    json = await res.json();
+  } catch (error) {
+    console.error(`error while fetching sites: ${error}`);
     return [];
   }
-  const json = await res.json();
 
   // TODO: change this to the station type.
   const modifiedJson = json.map((station: any) => {
@@ -256,6 +262,7 @@ async function getPricesFromAPI(
   }
 
   const prices = await res.json();
+  if (!prices || prices.length <= 0) return [];
   // const priceData = prices.map((price: any) => {
   //   return { ...price, Fetched: Date.now() + defaults.PRICES_TIME_TO_LIVE };
   // });

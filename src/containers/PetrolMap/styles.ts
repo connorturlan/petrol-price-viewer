@@ -1,5 +1,5 @@
 import { FeatureLike } from "ol/Feature";
-import { Geometry } from "ol/geom";
+import { Circle, Geometry } from "ol/geom";
 import { toSize } from "ol/size";
 import Fill from "ol/style/Fill";
 import Icon from "ol/style/Icon";
@@ -17,6 +17,10 @@ export type StationFeature = {
   onRoute: boolean;
 };
 
+const colorMap = {
+  "2": [],
+};
+
 export function stationStyle(feature: FeatureLike): StyleLike {
   const isLowest = Boolean(feature.get("isLowest"));
 
@@ -26,42 +30,44 @@ export function stationStyle(feature: FeatureLike): StyleLike {
   if (isCluster) {
     text =
       feature.get("features")?.length <= 1
-        ? `${feature.get("price") || 9999}`
-        : `${feature.get("price") || 9999} +`;
+        ? `${feature.get("price") || 0}`
+        : `${feature.get("price") || 0}*`;
   } else {
     text = `${feature.get("price")}`;
   }
 
   // const fillColor =
-  const backgroundColor = isLowest ? "yellow" : "#eee";
-  const outlineStyle = isLowest
+  const font = isLowest ? "normal 2em sans-serif" : "italic 1.2em sans-serif";
+  const backgroundColor = isLowest ? "darkorange" : "#555";
+  const textOutline = isLowest
     ? new Stroke({
-        color: "orange",
-        width: 1,
-        miterLimit: 0,
+        color: "yellow",
+        width: 8,
+        miterLimit: 10,
       })
     : new Stroke({
-        color: "#555",
-        width: 1,
+        color: "#eee",
+        width: 8,
         lineCap: "butt",
       });
 
   return new Style({
-    image: new Icon({
-      anchor: [0.5, 1],
-      src: "red-pin.svg",
-      height: 24,
-    }),
+    // image: new Icon({
+    //   anchor: [0.5, 1],
+    //   src: "red-pin.svg",
+    //   height: 24,
+    // }),
     text: new Text({
       offsetY: 9,
-      font: "italic 10pt sans-serif",
+      font: font,
       fill: new Fill({
-        color: "#555",
-      }),
-      backgroundFill: new Fill({
         color: backgroundColor,
       }),
-      backgroundStroke: outlineStyle,
+      stroke: textOutline,
+      // backgroundFill: new Fill({
+      //   color: backgroundColor,
+      // }),
+      // backgroundStroke: outlineStyle,
       padding: [2, 2, 2, 2],
       text: text,
     }),

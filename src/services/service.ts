@@ -50,7 +50,7 @@ export async function getHistoricPrices() {
   const res = await fetch(ENDPOINT + "/history");
   if (res.status != 200) {
     console.warn("unable to reach server.");
-    return;
+    return { dates: [], datasets: [] };
   }
   return await res.json();
 }

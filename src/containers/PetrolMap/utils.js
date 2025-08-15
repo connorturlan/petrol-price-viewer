@@ -102,6 +102,8 @@ export const updateStationsWithLowestPrice = async (layer) => {
 };
 
 export const updateClusterWithLowestPrice = async (clusterSource) => {
+  if (!clusterSource) return;
+
   const features = clusterSource.getFeatures();
 
   features.forEach((feature) => {
@@ -113,6 +115,20 @@ export const updateClusterWithLowestPrice = async (clusterSource) => {
   });
 
   updateSourceWithLowestPrice(clusterSource);
+};
+
+export const updateClusterWithChargerCount = async (clusterSource) => {
+  const features = clusterSource.getFeatures();
+
+  features.forEach((feature) => {
+    feature.set("price", getLowestFeaturePrice(feature.get("features")));
+    feature.set(
+      "siteid",
+      getLowestFeature(feature.get("features"))?.get("siteid")
+    );
+  });
+
+  // updateSourceWithLowestPrice(clusterSource);
 };
 
 function lerp(a, b, t) {
