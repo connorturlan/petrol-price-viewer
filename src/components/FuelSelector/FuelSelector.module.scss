@@ -154,6 +154,15 @@
   }
 
   &_Selector {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    & img {
+      object-fit: contain;
+      height: 50%;
+    }
+
     font-weight: bold;
     border: none;
     background-color: var(--background);

@@ -62,13 +62,14 @@ const FuelSelector = () => {
                   }}
                   onClick={() => handleFuelChange(t.FuelId)}
                 >
-                  {t.Name}
+                  <img src="local_gas_station_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
+                  <p>{t.Name}</p>
                 </button>
               );
             })}
         </div>
         <h3>Electic</h3>
-        <div className={styles.FuelSelector_List}>
+        <div className={styles.FuelSelector_Grid}>
           {fueltypes["Fuels"]
             .filter((t) => t.FuelId >= 10000)
             .map((t) => {
@@ -81,7 +82,8 @@ const FuelSelector = () => {
                   style={{ color: t.Color || "black" }}
                   onClick={() => handleFuelChange(t.FuelId)}
                 >
-                  {t.Name}
+                  <img src="ev_station_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
+                  <p>{t.Name}</p>
                 </button>
               );
             })}
