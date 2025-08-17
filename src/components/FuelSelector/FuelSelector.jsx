@@ -8,6 +8,7 @@ import { usePub } from "../../utils/pubsub";
 
 const FuelSelector = () => {
   const { fuelType, setFuelType } = useContext(AppContext);
+  const publisher = usePub();
 
   const handleFuelDropdownChange = (event) => {
     setFuelType(event.target.value);
@@ -19,8 +20,7 @@ const FuelSelector = () => {
   const handleFuelChange = (fuelId) => {
     setFuelType(fuelId);
 
-    // const hideModals = usePub();
-    // hideModals("ToolboxModalHide");
+    publisher("FuelTypeChange", null);
   };
 
   return (

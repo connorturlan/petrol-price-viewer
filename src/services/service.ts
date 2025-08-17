@@ -41,8 +41,6 @@ export async function getFuelPrices(
     prices[siteid] = returnedSites[siteid] || 0;
   });
 
-  console.log(prices);
-
   return prices;
 }
 

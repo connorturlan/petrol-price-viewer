@@ -278,8 +278,6 @@ async function getPricesFromAPI(
     allPrices[siteid] = prices[siteid] || 0;
   });
 
-  console.log(allPrices);
-
   return allPrices;
 }
 

@@ -45,7 +45,7 @@ import { RouteContext } from "../../contexts/RouteContext";
 import { getFuelPrices } from "../../services/StationPriceManager/StationPriceManager.service";
 import { createDefaultStyle } from "ol/style/Style";
 import { updateAllStations } from "../../services/StationPriceManager/StationPriceManager.service";
-import { FitMapToExtent, MapMoveTo } from "../../utils/pubsub";
+import { FitMapToExtent, MapMoveTo, UseSub } from "../../utils/pubsub";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -261,10 +261,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   }, [stations, visibleBounds]);
 
   useEffect(() => {
-    updateOnRouteStations();
-  }, [routes]);
-
-  useEffect(() => {
     resetFuelPrices();
     getSitePrices({ reload: true });
   }, [fuelType]);
@@ -287,6 +283,15 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setStationsOnRoute(onRouteLayer, stationsOnRoute);
     setRoutingState(false);
   };
+
+  useEffect(() => {
+    updateOnRouteStations();
+  }, [routes]);
+
+  UseSub("FuelTypeChange", (data) => {
+    console.log(data);
+    updateOnRouteStations();
+  });
 
   const getSitePrices = async ({ reload } = {}) => {
     if (!allStations || allStations.length <= 0) {
