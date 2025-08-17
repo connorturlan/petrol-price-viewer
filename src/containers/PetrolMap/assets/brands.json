@@ -1,0 +1,249 @@
+{
+  "Brands": [
+    {
+      "BrandId": 2,
+      "Name": "Caltex",
+      "Image": "pin-caltex.png"
+    },
+    {
+      "BrandId": 5,
+      "Name": "BP",
+      "Image": "pin-bp.png"
+    },
+    {
+      "BrandId": 7,
+      "Name": "Budget",
+      "Image": "pin-budget.png"
+    },
+    {
+      "BrandId": 12,
+      "Name": "Independent",
+      "Image": "pin-independent.png"
+    },
+    {
+      "BrandId": 16,
+      "Name": "Mobil",
+      "Image": "pin-mobil.png"
+    },
+    {
+      "BrandId": 20,
+      "Name": "Shell",
+      "Image": "pin-shell.png"
+    },
+    {
+      "BrandId": 23,
+      "Name": "United",
+      "Image": "pin-united.png"
+    },
+    {
+      "BrandId": 27,
+      "Name": "Unbranded",
+      "Image": "pin-unbranded.png"
+    },
+    {
+      "BrandId": 51,
+      "Name": "Apco",
+      "Image": "pin-apco.png"
+    },
+    {
+      "BrandId": 57,
+      "Name": "Metro Fuel",
+      "Image": "pin-metro-fuel.png"
+    },
+    {
+      "BrandId": 65,
+      "Name": "Petrogas",
+      "Image": "pin-petrogas.png"
+    },
+    {
+      "BrandId": 72,
+      "Name": "Gull",
+      "Image": "pin-gull.png"
+    },
+    {
+      "BrandId": 86,
+      "Name": "Liberty",
+      "Image": "pin-liberty.png"
+    },
+    {
+      "BrandId": 87,
+      "Name": "AM/PM",
+      "Image": "pin-am-pm.png"
+    },
+    {
+      "BrandId": 105,
+      "Name": "Better Choice",
+      "Image": "pin-better-choice.png"
+    },
+    {
+      "BrandId": 110,
+      "Name": "Freedom Fuels",
+      "Image": "pin-freedom-fuels.png"
+    },
+    {
+      "BrandId": 111,
+      "Name": "Coles Express",
+      "Image": "pin-coles-express.png"
+    },
+    {
+      "BrandId": 113,
+      "Name": "7 Eleven",
+      "Image": "pin-7-eleven.png"
+    },
+    {
+      "BrandId": 114,
+      "Name": "Astron",
+      "Image": "pin-astron.png"
+    },
+    {
+      "BrandId": 115,
+      "Name": "Prime Petroleum",
+      "Image": "pin-prime-petroleum.png"
+    },
+    {
+      "BrandId": 167,
+      "Name": "Speedway",
+      "Image": "pin-speedway.png"
+    },
+    {
+      "BrandId": 169,
+      "Name": "On the Run",
+      "Image": "pin-on-the-run.png"
+    },
+    {
+      "BrandId": 2301,
+      "Name": "Choice",
+      "Image": "pin-choice.png"
+    },
+    {
+      "BrandId": 4896,
+      "Name": "Mogas",
+      "Image": "pin-mogas.png"
+    },
+    {
+      "BrandId": 5094,
+      "Name": "Puma Energy",
+      "Image": "pin-puma-energy.png"
+    },
+    {
+      "BrandId": 2031031,
+      "Name": "Costco",
+      "Image": "pin-costco.png"
+    },
+    {
+      "BrandId": 2418945,
+      "Name": "Endeavour Petroleum",
+      "Image": "pin-endeavour-petroleum.png"
+    },
+    {
+      "BrandId": 2418947,
+      "Name": "Riordan Fuels",
+      "Image": "pin-riordan-fuels.png"
+    },
+    {
+      "BrandId": 2418994,
+      "Name": "Pacific Petroleum",
+      "Image": "pin-pacific-petroleum.png"
+    },
+    {
+      "BrandId": 2418995,
+      "Name": "Vibe",
+      "Image": "pin-vibe.png"
+    },
+    {
+      "BrandId": 2419007,
+      "Name": "Lowes",
+      "Image": "pin-lowes.png"
+    },
+    {
+      "BrandId": 2419008,
+      "Name": "Westside",
+      "Image": "pin-westside.png"
+    },
+    {
+      "BrandId": 2419037,
+      "Name": "Enhance",
+      "Image": "pin-enhance.png"
+    },
+    {
+      "BrandId": 2459022,
+      "Name": "FuelXpress",
+      "Image": "pin-fuelxpress.png"
+    },
+    {
+      "BrandId": 3421028,
+      "Name": "X Convenience",
+      "Image": "pin-x-convenience.png"
+    },
+    {
+      "BrandId": 3421066,
+      "Name": "Ampol",
+      "Image": "pin-ampol.png"
+    },
+    {
+      "BrandId": 3421073,
+      "Name": "EG Ampol",
+      "Image": "pin-eg-ampol.png"
+    },
+    {
+      "BrandId": 3421074,
+      "Name": "Perrys",
+      "Image": "pin-perrys.png"
+    },
+    {
+      "BrandId": 3421075,
+      "Name": "IOR Petroleum",
+      "Image": "pin-ior-petroleum.png"
+    },
+    {
+      "BrandId": 3421139,
+      "Name": "Pearl Energy",
+      "Image": "pin-pearl-energy.png"
+    },
+    {
+      "BrandId": 3421162,
+      "Name": "Pacific Fuel Solutions",
+      "Image": "pin-pacific-fuel-solutions.png"
+    },
+    {
+      "BrandId": 3421183,
+      "Name": "U-Go",
+      "Image": "pin-u-go.png"
+    },
+    {
+      "BrandId": 3421193,
+      "Name": "Reddy Express",
+      "Image": "pin-reddy-express.png"
+    },
+    {
+      "BrandId": 3421195,
+      "Name": "Ultra Petroleum",
+      "Image": "pin-ultra-petroleum.png"
+    },
+    {
+      "BrandId": 3421196,
+      "Name": "Bennett’s Petroleum",
+      "Image": "pin-bennetts-petroleum.png"
+    },
+    {
+      "BrandId": 3421202,
+      "Name": "Atlas Fuel",
+      "Image": "pin-atlas-fuel.png"
+    },
+    {
+      "BrandId": 3421204,
+      "Name": "Woodham Petroleum",
+      "Image": "pin-woodham-petroleum.png"
+    },
+    {
+      "BrandId": 3421207,
+      "Name": "Tas Petroleum",
+      "Image": "pin-tas-petroleum.png"
+    },
+    {
+      "BrandId": 3421230,
+      "Name": "SOLO",
+      "Image": "pin-solo.png"
+    }
+  ]
+}

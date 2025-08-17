@@ -234,6 +234,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         name: feature.Name,
         price: price || "loading...",
         placeid: feature.GPI,
+        brandid: feature.BrandId,
       });
     });
     source.addFeatures(features);

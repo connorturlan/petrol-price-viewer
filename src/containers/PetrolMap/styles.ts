@@ -6,6 +6,7 @@ import Icon from "ol/style/Icon";
 import Stroke from "ol/style/Stroke";
 import Style, { StyleLike } from "ol/style/Style";
 import Text from "ol/style/Text";
+import brands from "./assets/brands-indev.json";
 
 export type StationFeature = {
   name: string;
@@ -20,6 +21,14 @@ export type StationFeature = {
 const colorMap = {
   "2": [],
 };
+
+const brandEntries = brands.Brands.map((brand) => {
+  return [
+    brand.BrandId,
+    { brandId: brand.BrandId, name: brand.Name, image: brand.Image },
+  ];
+});
+const brandMap = Object.fromEntries(brandEntries);
 
 export function stationStyle(feature: FeatureLike): StyleLike {
   const isLowest = Boolean(feature.get("isLowest"));
@@ -37,26 +46,28 @@ export function stationStyle(feature: FeatureLike): StyleLike {
   }
 
   // const fillColor =
-  const font = isLowest ? "normal 2em sans-serif" : "italic 1.2em sans-serif";
+  const font = isLowest ? "normal 1em sans-serif" : "italic 1em sans-serif";
   const backgroundColor = isLowest ? "darkorange" : "#555";
   const textOutline = isLowest
     ? new Stroke({
         color: "yellow",
-        width: 8,
+        width: 4,
         miterLimit: 10,
       })
     : new Stroke({
         color: "#eee",
-        width: 8,
+        width: 4,
         lineCap: "butt",
       });
 
+  const iconSrc = brandMap[feature.get("brandId")] || "red-pin.svg";
+
   return new Style({
-    // image: new Icon({
-    //   anchor: [0.5, 1],
-    //   src: "red-pin.svg",
-    //   height: 24,
-    // }),
+    image: new Icon({
+      anchor: [0.5, 1],
+      src: iconSrc,
+      height: 24,
+    }),
     text: new Text({
       offsetY: 9,
       font: font,

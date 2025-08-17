@@ -1,0 +1,249 @@
+{
+  "Brands": [
+    {
+      "BrandId": 2,
+      "Name": "Caltex",
+      "Image": ""
+    },
+    {
+      "BrandId": 5,
+      "Name": "BP",
+      "Image": ""
+    },
+    {
+      "BrandId": 7,
+      "Name": "Budget",
+      "Image": ""
+    },
+    {
+      "BrandId": 12,
+      "Name": "Independent",
+      "Image": ""
+    },
+    {
+      "BrandId": 16,
+      "Name": "Mobil",
+      "Image": ""
+    },
+    {
+      "BrandId": 20,
+      "Name": "Shell",
+      "Image": ""
+    },
+    {
+      "BrandId": 23,
+      "Name": "United",
+      "Image": ""
+    },
+    {
+      "BrandId": 27,
+      "Name": "Unbranded",
+      "Image": ""
+    },
+    {
+      "BrandId": 51,
+      "Name": "Apco",
+      "Image": ""
+    },
+    {
+      "BrandId": 57,
+      "Name": "Metro Fuel",
+      "Image": ""
+    },
+    {
+      "BrandId": 65,
+      "Name": "Petrogas",
+      "Image": ""
+    },
+    {
+      "BrandId": 72,
+      "Name": "Gull",
+      "Image": ""
+    },
+    {
+      "BrandId": 86,
+      "Name": "Liberty",
+      "Image": ""
+    },
+    {
+      "BrandId": 87,
+      "Name": "AM/PM",
+      "Image": ""
+    },
+    {
+      "BrandId": 105,
+      "Name": "Better Choice",
+      "Image": ""
+    },
+    {
+      "BrandId": 110,
+      "Name": "Freedom Fuels",
+      "Image": ""
+    },
+    {
+      "BrandId": 111,
+      "Name": "Coles Express",
+      "Image": ""
+    },
+    {
+      "BrandId": 113,
+      "Name": "7 Eleven",
+      "Image": ""
+    },
+    {
+      "BrandId": 114,
+      "Name": "Astron",
+      "Image": ""
+    },
+    {
+      "BrandId": 115,
+      "Name": "Prime Petroleum",
+      "Image": ""
+    },
+    {
+      "BrandId": 167,
+      "Name": "Speedway",
+      "Image": ""
+    },
+    {
+      "BrandId": 169,
+      "Name": "On the Run",
+      "Image": "pin-otr.png"
+    },
+    {
+      "BrandId": 2301,
+      "Name": "Choice",
+      "Image": ""
+    },
+    {
+      "BrandId": 4896,
+      "Name": "Mogas",
+      "Image": ""
+    },
+    {
+      "BrandId": 5094,
+      "Name": "Puma Energy",
+      "Image": ""
+    },
+    {
+      "BrandId": 2031031,
+      "Name": "Costco",
+      "Image": ""
+    },
+    {
+      "BrandId": 2418945,
+      "Name": "Endeavour Petroleum",
+      "Image": ""
+    },
+    {
+      "BrandId": 2418947,
+      "Name": "Riordan Fuels",
+      "Image": ""
+    },
+    {
+      "BrandId": 2418994,
+      "Name": "Pacific Petroleum",
+      "Image": ""
+    },
+    {
+      "BrandId": 2418995,
+      "Name": "Vibe",
+      "Image": ""
+    },
+    {
+      "BrandId": 2419007,
+      "Name": "Lowes",
+      "Image": ""
+    },
+    {
+      "BrandId": 2419008,
+      "Name": "Westside",
+      "Image": ""
+    },
+    {
+      "BrandId": 2419037,
+      "Name": "Enhance",
+      "Image": ""
+    },
+    {
+      "BrandId": 2459022,
+      "Name": "FuelXpress",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421028,
+      "Name": "X Convenience",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421066,
+      "Name": "Ampol",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421073,
+      "Name": "EG Ampol",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421074,
+      "Name": "Perrys",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421075,
+      "Name": "IOR Petroleum",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421139,
+      "Name": "Pearl Energy",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421162,
+      "Name": "Pacific Fuel Solutions",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421183,
+      "Name": "U-Go",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421193,
+      "Name": "Reddy Express",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421195,
+      "Name": "Ultra Petroleum",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421196,
+      "Name": "Bennett’s Petroleum",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421202,
+      "Name": "Atlas Fuel",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421204,
+      "Name": "Woodham Petroleum",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421207,
+      "Name": "Tas Petroleum",
+      "Image": ""
+    },
+    {
+      "BrandId": 3421230,
+      "Name": "SOLO",
+      "Image": ""
+    }
+  ]
+}
