@@ -1,5 +1,5 @@
 .PriceListItem {
-  max-width: 100%;
+  width: 100%;
   // display: flex;
   // justify-content: space-between;
   display: grid;
@@ -11,7 +11,9 @@
 
   & img {
     width: 20px;
-    height: 27px;
+    height: 1em;
+    object-position: top;
+    object-fit: cover;
   }
 
   gap: 4px;

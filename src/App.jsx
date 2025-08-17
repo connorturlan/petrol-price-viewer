@@ -19,6 +19,7 @@ import Toolbox from "./containers/Toolbox/Toolbox";
 import FuelSelector from "./components/FuelSelector/FuelSelector";
 import ToolboxTester from "./components/ToolboxTester/ToolboxTester";
 import { MapMoveTo, usePub } from "./utils/pubsub";
+import StationFilter from "./components/StationFilter/StationFilter";
 
 function App() {
   // set intial state
@@ -93,6 +94,7 @@ function App() {
         <Toolbox>
           <LoginControl />
           <FuelSelector />
+          <StationFilter />
           <PriceList>
             {mapFeatures
               .sort((a, b) => a.Price - b.Price)
