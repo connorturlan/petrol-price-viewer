@@ -62,14 +62,10 @@ export function stationStyle(feature: FeatureLike): StyleLike {
       });
 
   const brandId = feature.get("brandid");
+  console.log(brandId, brandMap[brandId]);
   let iconSrc = brandId
-    ? brandMap[brandId]?.Image || "red-pin.svg"
+    ? brandMap[brandId].image || "red-pin.svg"
     : "red-pin.svg";
-  if (brandId == 169) {
-    iconSrc = "pin-otr.png";
-  } else if (brandId == 3421028) {
-    iconSrc = "pin-x-convenience.png";
-  }
 
   return new Style({
     image: new Icon({
