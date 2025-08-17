@@ -4,6 +4,8 @@ import { getCookie, setCookie } from "../utils/cookies";
 import {
   checkToken,
   getPointsOfInterest,
+  getToken,
+  newToken,
   setPointsOfInterest,
 } from "../utils/api";
 
@@ -93,12 +95,21 @@ export const UserProvider = ({ children }) => {
     return poiRef.current;
   };
 
+  const loginLock = useRef(false);
+
   const processLogin = async () => {
+    if (loginLock.current) return;
     if (ObjectIsEmpty(profile)) {
       console.warn("profile was empty during process login");
       return;
     }
-    updateLocalPOIs();
+
+    loginLock.current = true;
+    const token = await getToken(profile.id);
+    console.log(token);
+
+    await updateLocalPOIs();
+    loginLock.current = false;
   };
 
   useEffect(() => {
@@ -124,9 +135,9 @@ export const UserProvider = ({ children }) => {
       if (!isTokenValid) {
         console.log("[LOGIN] token is invalid, resetting login.");
         setProfile({});
-        setCookie("userprofile", "", 0);
-        setCookie("usertoken", "", 0);
-        window.location.reload();
+        // setCookie("userprofile", "", 0);
+        // setCookie("usertoken", "", 0);
+        return;
       }
     };
     onLoginTokenCheck();

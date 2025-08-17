@@ -34,15 +34,15 @@ const LoginControl = () => {
         return;
       }
 
-      if (
-        !window.confirm(
-          "You're not a registered user, would you like to register?"
-        )
-      ) {
-        setUser({});
-        setProfile({});
-        return;
-      }
+      // if (
+      //   !window.confirm(
+      //     "You're not a registered user, would you like to register?"
+      //   )
+      // ) {
+      //   setUser({});
+      //   setProfile({});
+      //   return;
+      // }
 
       register(profileData, userData);
       return;
@@ -51,10 +51,10 @@ const LoginControl = () => {
     setCookie("userprofile", JSON.stringify(profileData), 30);
 
     // get the usertoken
-    const freshToken = await newToken(userData.UserID);
+    // const freshToken = await newToken(userData.UserID);
     // setToken(freshToken);
 
-    processLogin();
+    // processLogin();
   };
 
   const register = async (profileData, userData) => {
