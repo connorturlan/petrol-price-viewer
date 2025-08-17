@@ -29,6 +29,7 @@ const brandEntries = brands.Brands.map((brand) => {
   ];
 });
 const brandMap = Object.fromEntries(brandEntries);
+console.log(brandMap);
 
 export function stationStyle(feature: FeatureLike): StyleLike {
   const isLowest = Boolean(feature.get("isLowest"));
@@ -60,13 +61,21 @@ export function stationStyle(feature: FeatureLike): StyleLike {
         lineCap: "butt",
       });
 
-  const iconSrc = brandMap[feature.get("brandId")] || "red-pin.svg";
+  const brandId = feature.get("brandid");
+  let iconSrc = brandId
+    ? brandMap[brandId]?.Image || "red-pin.svg"
+    : "red-pin.svg";
+  if (brandId == 169) {
+    iconSrc = "pin-otr.png";
+  } else if (brandId == 3421028) {
+    iconSrc = "pin-x-convenience.png";
+  }
 
   return new Style({
     image: new Icon({
       anchor: [0.5, 1],
       src: iconSrc,
-      height: 24,
+      height: 32,
     }),
     text: new Text({
       offsetY: 9,

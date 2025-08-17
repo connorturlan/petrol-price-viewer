@@ -229,12 +229,13 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       }
 
       return new Feature({
+        coord,
         geometry: point,
         siteid: feature.SiteId,
         name: feature.Name,
         price: price || "loading...",
         placeid: feature.GPI,
-        brandid: feature.BrandId,
+        brandid: feature.BrandID,
       });
     });
     source.addFeatures(features);
@@ -343,7 +344,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     if (clickMode == MODES.DEFAULT) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
         if (feature.get("siteid") !== undefined) {
-          MapMoveTo({ coord: feature.getGeometry().getCoordinates() });
+          MapMoveTo({ coord: feature.get("coord") });
           selectSite(feature.get("siteid"));
           return;
         }

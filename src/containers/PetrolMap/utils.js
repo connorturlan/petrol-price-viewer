@@ -107,11 +107,11 @@ export const updateClusterWithLowestPrice = async (clusterSource) => {
   const features = clusterSource.getFeatures();
 
   features.forEach((feature) => {
-    feature.set("price", getLowestFeaturePrice(feature.get("features")));
-    feature.set(
-      "siteid",
-      getLowestFeature(feature.get("features"))?.get("siteid")
-    );
+    const lowestFeature = getLowestFeature(feature.get("features"));
+    feature.set("coord", lowestFeature?.get("coord"));
+    feature.set("price", lowestFeature?.get("price"));
+    feature.set("siteid", lowestFeature?.get("siteid"));
+    feature.set("brandid", lowestFeature?.get("brandid"));
   });
 
   updateSourceWithLowestPrice(clusterSource);
