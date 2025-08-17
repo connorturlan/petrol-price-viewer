@@ -8,7 +8,7 @@
     {
       "BrandId": 5,
       "Name": "BP",
-      "Image": ""
+      "Image": "pin-bp.png"
     },
     {
       "BrandId": 7,
@@ -68,7 +68,7 @@
     {
       "BrandId": 87,
       "Name": "AM/PM",
-      "Image": ""
+      "Image": "pin-ampm.png"
     },
     {
       "BrandId": 105,
@@ -128,7 +128,7 @@
     {
       "BrandId": 2031031,
       "Name": "Costco",
-      "Image": ""
+      "Image": "pin-costco.png"
     },
     {
       "BrandId": 2418945,
@@ -208,7 +208,7 @@
     {
       "BrandId": 3421183,
       "Name": "U-Go",
-      "Image": ""
+      "Image": "pin-ugo.png"
     },
     {
       "BrandId": 3421193,
