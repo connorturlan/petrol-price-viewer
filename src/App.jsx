@@ -14,7 +14,7 @@ import SettingsModal from "./containers/SettingsModal/SettingsModal";
 import { AppContext } from "./contexts/AppContext";
 import WelcomeSplash from "./components/WelcomeSplash/WelcomeSplash";
 import RoutePlanner from "./components/RoutePlanner/RoutePlanner";
-import { capitalize } from "./utils/utils";
+import { capitalize, getImageFromStationBrandId } from "./utils/utils";
 import Toolbox from "./containers/Toolbox/Toolbox";
 import FuelSelector from "./components/FuelSelector/FuelSelector";
 import ToolboxTester from "./components/ToolboxTester/ToolboxTester";
@@ -101,6 +101,7 @@ function App() {
                   key={feature.SiteId}
                   name={feature.Name}
                   price={((feature.Price || 0) / 10).toFixed(1)}
+                  image={getImageFromStationBrandId(feature.BrandID)}
                   showDetails={() => {
                     MapMoveTo({ coord: [feature.Lng, feature.Lat] });
                     selectSite(feature.SiteId);

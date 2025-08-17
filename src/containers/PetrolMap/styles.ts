@@ -6,7 +6,7 @@ import Icon from "ol/style/Icon";
 import Stroke from "ol/style/Stroke";
 import Style, { StyleLike } from "ol/style/Style";
 import Text from "ol/style/Text";
-import brands from "./assets/brands-indev.json";
+import { getImageFromStationBrandId } from "../../utils/utils";
 
 export type StationFeature = {
   name: string;
@@ -17,15 +17,6 @@ export type StationFeature = {
   isLowest: boolean;
   onRoute: boolean;
 };
-
-const brandEntries = brands.Brands.map((brand) => {
-  return [
-    brand.BrandId,
-    { brandId: brand.BrandId, name: brand.Name, image: brand.Image },
-  ];
-});
-const brandMap = Object.fromEntries(brandEntries);
-console.log(brandMap);
 
 export function stationStyle(feature: FeatureLike): StyleLike {
   const isLowest = Boolean(feature.get("isLowest"));
@@ -58,7 +49,7 @@ export function stationStyle(feature: FeatureLike): StyleLike {
 
   const brandId = feature.get("brandid");
   let iconSrc = brandId
-    ? brandMap[brandId].image || "red-pin.svg"
+    ? getImageFromStationBrandId(brandId) || "red-pin.svg"
     : "red-pin.svg";
 
   return new Style({
