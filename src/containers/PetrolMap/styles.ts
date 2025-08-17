@@ -18,10 +18,6 @@ export type StationFeature = {
   onRoute: boolean;
 };
 
-const colorMap = {
-  "2": [],
-};
-
 const brandEntries = brands.Brands.map((brand) => {
   return [
     brand.BrandId,
@@ -46,12 +42,11 @@ export function stationStyle(feature: FeatureLike): StyleLike {
     text = `${feature.get("price")}`;
   }
 
-  // const fillColor =
   const font = isLowest ? "normal 1em sans-serif" : "italic 1em sans-serif";
   const backgroundColor = isLowest ? "darkorange" : "#555";
   const textOutline = isLowest
     ? new Stroke({
-        color: "yellow",
+        color: "#fffb00",
         width: 4,
         miterLimit: 10,
       })
@@ -79,11 +74,13 @@ export function stationStyle(feature: FeatureLike): StyleLike {
         color: backgroundColor,
       }),
       stroke: textOutline,
-      // backgroundFill: new Fill({
-      //   color: backgroundColor,
-      // }),
-      // backgroundStroke: outlineStyle,
-      padding: [2, 2, 2, 2],
+      backgroundStroke: new Stroke({
+        color: "#22222220",
+        width: 8,
+        lineJoin: "round",
+        lineCap: "round",
+      }),
+      padding: [-4, 4, -4, 4],
       text: text,
     }),
     zIndex: isLowest ? 10 : 0,
