@@ -46,7 +46,7 @@ const FuelSelector = () => {
       >
         <h2 className={styles.FuelSelector_Title}>Fuel Type</h2>
         <h3>Petrol</h3>
-        <div className={styles.FuelSelector_List}>
+        <div className={styles.FuelSelector_Grid}>
           {fueltypes["Fuels"]
             .filter((t) => t.FuelId < 10000)
             .map((t) => {
@@ -56,7 +56,10 @@ const FuelSelector = () => {
                   className={`${styles.FuelSelector_Selector} ${
                     t.FuelId == fuelType ? styles.FuelSelector__Selected : ""
                   }`}
-                  style={{ color: t.Color || "black" }}
+                  style={{
+                    color: t.Color || "black",
+                    borderColor: t.FuelId == fuelType && t.Color,
+                  }}
                   onClick={() => handleFuelChange(t.FuelId)}
                 >
                   {t.Name}

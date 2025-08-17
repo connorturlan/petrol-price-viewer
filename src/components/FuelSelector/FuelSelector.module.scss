@@ -35,6 +35,21 @@
     overflow-y: auto;
   }
 
+  &_Grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    padding: 12px;
+    max-height: 100%;
+
+    overflow-y: auto;
+
+    & > .FuelSelector_Selector {
+      height: 80px;
+      width: 80px;
+    }
+  }
+
   &_Container {
     display: flex;
     flex-direction: column;
@@ -139,9 +154,13 @@
   }
 
   &_Selector {
+    font-weight: bold;
     border: none;
     background-color: var(--background);
     border-radius: 8px;
+    border: 1px solid #cccccc;
+    box-shadow: 2px 2px 4px #00000030;
+
     &:hover {
       background-color: lighen(10%, var(--background));
       outline: 1px solid #038cfc;
@@ -149,6 +168,6 @@
   }
 
   &__Selected {
-    outline: 2px solid #038cfc;
+    border: 4px solid #038cfc;
   }
 }
