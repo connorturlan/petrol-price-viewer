@@ -13,9 +13,16 @@ import Style from "ol/style/Style";
 import { UseSub } from "../../utils/pubsub";
 import { duration } from "@mui/material";
 
+const lightMapLayers = [
+  "https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}",
+  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}.png",
+  "https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png",
+];
+
 const mapLayer = new TileLayer({
   source: new XYZ({
-    url: "https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}",
+    url: lightMapLayers.at(0),
     transition: 0,
   }),
 });

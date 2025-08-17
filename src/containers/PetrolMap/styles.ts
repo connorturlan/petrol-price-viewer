@@ -62,7 +62,6 @@ export function stationStyle(feature: FeatureLike): StyleLike {
       });
 
   const brandId = feature.get("brandid");
-  console.log(brandId, brandMap[brandId]);
   let iconSrc = brandId
     ? brandMap[brandId].image || "red-pin.svg"
     : "red-pin.svg";
