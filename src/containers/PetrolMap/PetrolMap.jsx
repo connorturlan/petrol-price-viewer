@@ -346,6 +346,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         if (feature.get("siteid") !== undefined) {
           MapMoveTo({ coord: feature.get("coord") });
           selectSite(feature.get("siteid"));
+          console.log(feature.get("siteid"));
           return;
         }
 

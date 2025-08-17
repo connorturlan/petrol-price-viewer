@@ -28,7 +28,7 @@ export function stationStyle(feature: FeatureLike): StyleLike {
     text =
       feature.get("features")?.length <= 1
         ? `${feature.get("price") || 0}`
-        : `${feature.get("price") || 0}*`;
+        : `${feature.get("price") || 0} +${feature.get("features").length}`;
   } else {
     text = `${feature.get("price")}`;
   }
