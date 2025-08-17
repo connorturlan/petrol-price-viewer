@@ -70,7 +70,7 @@ export function stationStyle(feature: FeatureLike): StyleLike {
     image: new Icon({
       anchor: [0.5, 1],
       src: iconSrc,
-      height: 32,
+      height: 48,
     }),
     text: new Text({
       offsetY: 9,

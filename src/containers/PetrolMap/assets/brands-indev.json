@@ -3,7 +3,7 @@
     {
       "BrandId": 2,
       "Name": "Caltex",
-      "Image": ""
+      "Image": "pin-caltex.png"
     },
     {
       "BrandId": 5,
@@ -63,7 +63,7 @@
     {
       "BrandId": 86,
       "Name": "Liberty",
-      "Image": ""
+      "Image": "pin-liberty.png"
     },
     {
       "BrandId": 87,
