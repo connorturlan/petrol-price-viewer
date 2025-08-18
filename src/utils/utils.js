@@ -18,20 +18,40 @@ export const convertCoordFromLatLon = (coord) => {
   return convertCoord([coord.at(1), coord.at(0)]);
 };
 
-let brandMap;
+let brandIdMap, brandNameMap;
 
-const constructBrandMap = () => {
-  const brandEntries = brands.Brands.map((brand) => {
+const constructBrandMaps = () => {
+  const brandIdEntries = brands.Brands.map((brand) => {
     return [
       brand.BrandId,
       { brandId: brand.BrandId, name: brand.Name, image: brand.Image },
     ];
   });
-  brandMap = Object.fromEntries(brandEntries);
+  const brandNameEntries = brands.Brands.map((brand) => {
+    return [
+      brand.Name,
+      { brandId: brand.BrandId, name: brand.Name, image: brand.Image },
+    ];
+  });
+  brandIdMap = Object.fromEntries(brandIdEntries);
+  brandNameMap = Object.fromEntries(brandNameEntries);
 };
 
 export const getImageFromStationBrandId = (brandId) => {
-  if (!brandMap) constructBrandMap();
+  if (!brandIdMap) constructBrandMaps();
   if (!brandId) return "red-pin.svg";
-  return brandMap[brandId].image || "red-pin.svg";
+  return brandIdMap[brandId].image || "red-pin.svg";
+};
+
+export const getImageFromStationName = (name) => {
+  if (!brandNameMap) constructBrandMaps();
+  if (!name) return "red-pin.svg";
+  return brandNameMap[name]?.image || "red-pin.svg";
+};
+
+export const getImageFromStationDetails = (feature) => {
+  const brandId = feature.get("brandid");
+  return brandId == 0
+    ? getImageFromStationName(feature.get("name"))
+    : getImageFromStationBrandId(brandId);
 };

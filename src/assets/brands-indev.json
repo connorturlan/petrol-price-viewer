@@ -1,6 +1,31 @@
 {
   "Brands": [
     {
+      "BrandId": 0,
+      "Name": "ChargeFox",
+      "Image": "pin-chargefox.png"
+    },
+    {
+      "BrandId": 0,
+      "Name": "JOLT",
+      "Image": "pin-jolt.png"
+    },
+    {
+      "BrandId": 0,
+      "Name": "Evie",
+      "Image": "pin-evie.png"
+    },
+    {
+      "BrandId": 0,
+      "Name": "Tesla",
+      "Image": "pin-tesla.png"
+    },
+    {
+      "BrandId": 0,
+      "Name": "Tesla Destination",
+      "Image": "pin-tesla.png"
+    },
+    {
       "BrandId": 2,
       "Name": "Caltex",
       "Image": "pin-caltex.png"

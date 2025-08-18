@@ -6,7 +6,10 @@ import Icon from "ol/style/Icon";
 import Stroke from "ol/style/Stroke";
 import Style, { StyleLike } from "ol/style/Style";
 import Text from "ol/style/Text";
-import { getImageFromStationBrandId } from "../../utils/utils";
+import {
+  getImageFromStationBrandId,
+  getImageFromStationDetails,
+} from "../../utils/utils";
 
 export type StationFeature = {
   name: string;
@@ -47,10 +50,7 @@ export function stationStyle(feature: FeatureLike): StyleLike {
         lineCap: "butt",
       });
 
-  const brandId = feature.get("brandid");
-  let iconSrc = brandId
-    ? getImageFromStationBrandId(brandId) || "red-pin.svg"
-    : "red-pin.svg";
+  let iconSrc = getImageFromStationDetails(feature);
 
   return new Style({
     image: new Icon({

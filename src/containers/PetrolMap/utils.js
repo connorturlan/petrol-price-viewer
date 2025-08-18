@@ -101,7 +101,7 @@ export const updateStationsWithLowestPrice = async (layer) => {
   updateSourceWithLowestPrice(source);
 };
 
-export const updateClusterWithLowestPrice = async (clusterSource) => {
+const doTheThing = async (clusterSource, checkLowest = true) => {
   if (!clusterSource) return;
 
   const features = clusterSource.getFeatures();
@@ -109,26 +109,21 @@ export const updateClusterWithLowestPrice = async (clusterSource) => {
   features.forEach((feature) => {
     const lowestFeature = getLowestFeature(feature.get("features"));
     feature.set("coord", lowestFeature?.get("coord"));
+    feature.set("name", lowestFeature?.get("name"));
     feature.set("price", lowestFeature?.get("price"));
     feature.set("siteid", lowestFeature?.get("siteid"));
     feature.set("brandid", lowestFeature?.get("brandid"));
   });
 
-  updateSourceWithLowestPrice(clusterSource);
+  if (checkLowest) updateSourceWithLowestPrice(clusterSource);
+};
+
+export const updateClusterWithLowestPrice = async (clusterSource) => {
+  doTheThing(clusterSource);
 };
 
 export const updateClusterWithChargerCount = async (clusterSource) => {
-  const features = clusterSource.getFeatures();
-
-  features.forEach((feature) => {
-    feature.set("price", getLowestFeaturePrice(feature.get("features")));
-    feature.set(
-      "siteid",
-      getLowestFeature(feature.get("features"))?.get("siteid")
-    );
-  });
-
-  // updateSourceWithLowestPrice(clusterSource);
+  doTheThing(clusterSource, false);
 };
 
 function lerp(a, b, t) {
