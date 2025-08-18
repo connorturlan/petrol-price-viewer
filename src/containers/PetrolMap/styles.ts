@@ -36,7 +36,7 @@ export function stationStyle(feature: FeatureLike): StyleLike {
     text = `${feature.get("price")}`;
   }
 
-  const font = isLowest ? "normal 1em sans-serif" : "italic 1em sans-serif";
+  const font = isLowest ? "normal 1.2em sans-serif" : "normal 1em sans-serif";
   const backgroundColor = isLowest ? "darkorange" : "#555";
   const textOutline = isLowest
     ? new Stroke({
@@ -50,13 +50,14 @@ export function stationStyle(feature: FeatureLike): StyleLike {
         lineCap: "butt",
       });
 
-  let iconSrc = getImageFromStationDetails(feature);
+  const iconSrc = getImageFromStationDetails(feature);
+  const iconHeight = isLowest ? 64 : 48;
 
   return new Style({
     image: new Icon({
       anchor: [0.5, 1],
       src: iconSrc,
-      height: 48,
+      height: iconHeight,
     }),
     text: new Text({
       offsetY: 9,
