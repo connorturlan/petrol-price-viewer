@@ -20,6 +20,7 @@ import FuelSelector from "./components/FuelSelector/FuelSelector";
 import ToolboxTester from "./components/ToolboxTester/ToolboxTester";
 import { MapMoveTo, usePub } from "./utils/pubsub";
 import StationFilter from "./components/StationFilter/StationFilter";
+import LocationSelector from "./components/LocationSelector/LocationSelector";
 
 function App() {
   // set intial state
@@ -93,6 +94,7 @@ function App() {
       <div className={styles.App_Layout}>
         <Toolbox>
           <LoginControl />
+          <LocationSelector />
           <FuelSelector />
           <StationFilter />
           <PriceList>

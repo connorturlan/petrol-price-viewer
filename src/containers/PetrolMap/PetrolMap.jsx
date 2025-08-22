@@ -134,9 +134,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   useEffect(() => {
     triggerReload(true);
-    setStationsLayer(
-      darkMode ? createStationLayerDark() : createStationLayer()
-    );
+    // setStationsLayer(
+    //   darkMode ? createStationLayerDark() : createStationLayer()
+    // );
   }, [darkMode]);
 
   useEffect(() => {

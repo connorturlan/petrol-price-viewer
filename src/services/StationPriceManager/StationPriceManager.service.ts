@@ -126,11 +126,15 @@ export async function getFuelPrices(
     console.debug("[PRICES] awaiting timeout...");
     return new Promise((resolve) => {
       setTimeout(async () => {
+        readInProgress = false;
         resolve(await getFuelPrices(fuelType, siteIds));
       }, 1_000);
     });
   }
   readInProgress = true;
+  setTimeout(async () => {
+    readInProgress = false;
+  }, 2_000);
   console.debug(`[PRICES] ${siteIds.length} sites requested`);
 
   petrolType = fuelType;
@@ -165,13 +169,14 @@ export async function getFuelPrices(
   //   return uncachePrices(filteredCachedPrices);
   // }
 
+  // TODO: paginate the request
   const newApiPrices = await getPricesFromAPI(missingPriceIds);
 
   const newPrices = cachePrices(newApiPrices);
   updatePricesCache([...allCachedPrices, ...newPrices]);
+  readInProgress = false;
 
   const allPrices = [...filteredCachedPrices, ...newPrices];
-  readInProgress = false;
   return uncachePrices(allPrices);
 }
 

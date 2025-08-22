@@ -58,15 +58,17 @@ const MapContainer = ({
   UseSub("MapMoveTo", (newView) => {
     if (ObjectIsEmpty(newView) || !newView.coord || newView.coord.length <= 0) {
       console.error(
-        `[MAP]<event> map move triggered to invalid position. ${newView}`
+        `[MAP]<event> map move triggered to invalid position:`,
+        newView
       );
       return;
     }
     console.log(`[MAP]<event> map move to ${newView}`);
+    const zoom = newView.zoom || 16;
     mapRef.current.getView().animate({
       center: newView.coord,
       duration: 400,
-      zoom: 16,
+      zoom: zoom,
     });
   });
 

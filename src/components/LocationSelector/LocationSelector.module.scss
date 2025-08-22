@@ -1,0 +1,182 @@
+@use "../../styles/templates";
+
+.LocationSelector {
+  &_Body {
+  }
+
+  &_Lookup {
+    grid-column: span 3;
+    &__Loading {
+      border-radius: 4px;
+      outline: 2px solid #038cfc;
+    }
+
+    display: grid;
+    grid-template-rows: 20px 20px;
+    grid-template-columns: 1fr 3fr;
+    gap: 8px;
+
+    text-align: left;
+    align-items: center;
+
+    &_Text {
+      text-align: center;
+      grid-column: span 2;
+    }
+  }
+
+  &_List {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    max-height: 100%;
+
+    overflow-y: auto;
+  }
+
+  &_Grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    padding: 12px;
+    max-height: 100%;
+
+    overflow-y: auto;
+
+    & > .LocationSelector_Selector {
+      height: 80px;
+      width: 80px;
+    }
+  }
+
+  &_Container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+
+    z-index: 100;
+  }
+
+  &_Title {
+    margin: 0;
+    padding: 0;
+
+    grid-column: span 3;
+  }
+
+  &_ColumnHeading {
+    margin: 0;
+    padding: 0;
+
+    height: 48px;
+    width: 100%;
+
+    & * {
+      margin: 0;
+      padding: 0;
+    }
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--background);
+  }
+
+  &_Show,
+  &_Button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 8px;
+    z-index: 2;
+    background-color: var(--background);
+    border: none;
+    border-radius: 8px;
+
+    user-select: none;
+    cursor: pointer;
+    color: var(--text);
+
+    &:hover {
+      background: rgb(216, 216, 216);
+    }
+  }
+
+  &_Show {
+    background-color: var(--background);
+  }
+
+  &_Image {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+
+  &_Point {
+    &__Selected {
+      outline: 2px solid #038cfc;
+      background-color: #a0ebff;
+
+      &:hover {
+        background-color: #7ad4ec;
+      }
+    }
+    &__InUse {
+      cursor: not-allowed;
+      background-color: #bebebe;
+
+      &:hover {
+        background-color: #bebebe;
+      }
+    }
+  }
+
+  &_Swap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  &_Selector {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    & img {
+      object-fit: contain;
+      height: 50%;
+    }
+
+    font-weight: bold;
+    border: none;
+    background-color: var(--background);
+    border-radius: 8px;
+    border: 1px solid #cccccc;
+    box-shadow: 2px 2px 4px #00000030;
+
+    &:hover {
+      background-color: lighen(10%, var(--background));
+      outline: 1px solid #038cfc;
+    }
+  }
+
+  &__Selected {
+    border: 4px solid #038cfc;
+  }
+}
