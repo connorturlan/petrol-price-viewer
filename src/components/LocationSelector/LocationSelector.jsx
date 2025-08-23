@@ -12,7 +12,7 @@ const LocationSelector = () => {
 
   const handleCityChange = (city) => {
     // publisher("FuelTypeChange", null);
-    publisher("MapMoveTo", { coord: convertCoord(city.Coord), zoom: 14 });
+    publisher("MapMoveTo", { coord: convertCoord(city.Coord), zoom: 13 });
   };
 
   return (
@@ -24,7 +24,7 @@ const LocationSelector = () => {
             className={styles.LocationSelector_Image}
             alt="Show"
             srcSet=""
-            title="Show fuel type planner"
+            title="Show city selector"
           />
           <p>City</p>
         </>
