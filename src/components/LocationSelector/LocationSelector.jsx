@@ -6,6 +6,7 @@ import Modal from "../../containers/Modal/Modal";
 import ToolboxModal from "../../containers/ToolboxModal/ToolboxModal";
 import { usePub } from "../../utils/pubsub";
 import { convertCoord, convertCoordFromLatLon } from "../../utils/utils";
+import { setCookie } from "../../utils/cookies";
 
 const LocationSelector = () => {
   const publisher = usePub();
@@ -13,6 +14,7 @@ const LocationSelector = () => {
   const handleCityChange = (city) => {
     // publisher("FuelTypeChange", null);
     publisher("MapMoveTo", { coord: convertCoord(city.Coord), zoom: 13 });
+    setCookie("mapCenter", JSON.stringify(city.Coord), 7);
   };
 
   return (

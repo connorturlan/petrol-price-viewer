@@ -46,6 +46,7 @@ import { getFuelPrices } from "../../services/StationPriceManager/StationPriceMa
 import { createDefaultStyle } from "ol/style/Style";
 import { updateAllStations } from "../../services/StationPriceManager/StationPriceManager.service";
 import { FitMapToExtent, MapMoveTo, UseSub } from "../../utils/pubsub";
+import { getCookie } from "../../utils/cookies";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -54,7 +55,9 @@ export const MODES = Object.freeze({
   ADD_POI: 3,
 });
 
-const MAP_CENTER = [138.599503, -34.92123];
+const MAP_CENTER = getCookie("mapCenter")
+  ? JSON.parse(getCookie("mapCenter")) || [138.599503, -34.92123]
+  : [138.599503, -34.92123];
 
 const PetrolMap = ({ fuelType, updateStations }) => {
   const { setClickMode, clickModeOptions, selectSite, darkMode } =
