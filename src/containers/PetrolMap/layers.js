@@ -5,6 +5,7 @@ import {
   defaultStyle,
   defaultStyleDark,
   lowestStyle,
+  nestedStationStyle,
   onRouteStyle,
   stationStyle,
   waypointStyle,
@@ -25,7 +26,7 @@ import { getDebugBoundingPath } from "./utils";
 import zIndex from "@mui/material/styles/zIndex";
 import Cluster from "ol/source/Cluster.js";
 
-export const createStationLayer = () => {
+export const createStationLayer = (onRouteStations, darkMode) => {
   const initialSource = new VectorSource();
 
   const clusterSource = new Cluster({
@@ -36,7 +37,7 @@ export const createStationLayer = () => {
 
   return new VectorLayer({
     source: clusterSource,
-    style: stationStyle,
+    style: nestedStationStyle(onRouteStations, darkMode),
   });
 };
 
@@ -178,7 +179,7 @@ export const addRoutes = async (source, routes) => {
     );
     return;
   }
-  routes.forEach((waypoints) => {
+  routes?.forEach((waypoints) => {
     addRoute(source, waypoints);
   });
 };

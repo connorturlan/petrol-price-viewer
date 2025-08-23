@@ -70,6 +70,20 @@ export const getLowestFeature = (features) => {
   return lowestPrice;
 };
 
+export const getPriorityFeature = (features) => {
+  const lowestPrice = features.reduce(
+    (lowest, current) =>
+      !lowest.get("isOnRoute") && current.get("price")
+        ? current
+        : lowest.get("price") < current.get("price")
+        ? lowest
+        : current,
+    features[0]
+  );
+
+  return lowestPrice;
+};
+
 export const getLowestFeaturePrice = (features) => {
   const prices = features.map((feature) => Number(feature.get("price")));
 
@@ -256,7 +270,9 @@ export const setStationsOnRoute = (layer, onRoute) => {
 
   // show some of the lowest prices.
   const lowestPrices = features.sort((a, b) => a.get("price") - b.get("price"));
-  source.addFeatures(lowestPrices.slice(0, ROUTING_STATION_COUNT));
+  const lowestStations = lowestPrices.slice(0, ROUTING_STATION_COUNT);
+  // source.addFeatures(lowestStations);
+  return lowestStations;
 };
 
 export const setDebugBoundsForRoute = (layer, route) => {

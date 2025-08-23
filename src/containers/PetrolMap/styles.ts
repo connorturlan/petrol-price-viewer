@@ -10,6 +10,7 @@ import {
   getImageFromStationBrandId,
   getImageFromStationDetails,
 } from "../../utils/utils";
+import { Ref, RefObject } from "react";
 
 export type StationFeature = {
   name: string;
@@ -21,8 +22,85 @@ export type StationFeature = {
   onRoute: boolean;
 };
 
+export function nestedStationStyle(
+  onRouteStations: RefObject<number[]>
+): Function {
+  return (feature) => {
+    const isLowest = Boolean(feature.get("isLowest"));
+    const isOnRoute = onRouteStations.current?.includes(
+      Number(feature.get("siteid"))
+    );
+
+    const isCluster = !!feature.get("features");
+
+    let text = "";
+    if (isCluster) {
+      text =
+        feature.get("features")?.length <= 1
+          ? `${feature.get("price") || 0}`
+          : `${feature.get("price") || 0} +${feature.get("features").length}`;
+    } else {
+      text = `${feature.get("price")}`;
+    }
+
+    const font =
+      isLowest || isOnRoute
+        ? "normal 1.2em sans-serif"
+        : "normal 1em sans-serif";
+    const backgroundColor = isLowest ? "darkorange" : "#555";
+    const textOutline = isLowest
+      ? new Stroke({
+          color: "#fffb00",
+          width: 4,
+        })
+      : isOnRoute
+      ? new Stroke({
+          color: "#b8dfffbb",
+          width: 4,
+        })
+      : new Stroke({
+          color: "#eee",
+          width: 4,
+        });
+
+    const iconSrc = getImageFromStationDetails(feature);
+    const iconHeight = isLowest || isOnRoute ? 64 : 48;
+    const strokeColor = isLowest
+      ? "#22222220"
+      : isOnRoute
+      ? "#038cfcbb"
+      : "#22222220";
+
+    return new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: iconSrc,
+        height: iconHeight,
+      }),
+      text: new Text({
+        offsetY: 9,
+        font: font,
+        fill: new Fill({
+          color: backgroundColor,
+        }),
+        stroke: textOutline,
+        backgroundStroke: new Stroke({
+          color: strokeColor,
+          width: 8,
+          lineJoin: "round",
+          lineCap: "round",
+        }),
+        padding: [-4, 4, -4, 4],
+        text: text,
+      }),
+      zIndex: isLowest ? 10 : isOnRoute ? 10 : 0,
+    });
+  };
+}
+
 export function stationStyle(feature: FeatureLike): StyleLike {
   const isLowest = Boolean(feature.get("isLowest"));
+  const isOnRoute = Boolean(feature.get("isOnRoute"));
 
   const isCluster = !!feature.get("features");
 
@@ -52,6 +130,11 @@ export function stationStyle(feature: FeatureLike): StyleLike {
 
   const iconSrc = getImageFromStationDetails(feature);
   const iconHeight = isLowest ? 64 : 48;
+  const strokeColor = isLowest
+    ? "#22222220"
+    : isOnRoute
+    ? "#22222220"
+    : "#22222220";
 
   return new Style({
     image: new Icon({
@@ -67,7 +150,7 @@ export function stationStyle(feature: FeatureLike): StyleLike {
       }),
       stroke: textOutline,
       backgroundStroke: new Stroke({
-        color: "#22222220",
+        color: strokeColor,
         width: 8,
         lineJoin: "round",
         lineCap: "round",
@@ -207,6 +290,7 @@ export const customStyle = new Style({
 });
 
 export const waypointStyle = new Style({
+  zIndex: 1,
   stroke: new Stroke({ color: "#038cfcbb", width: 8 }),
   fill: new Fill({
     color: "#a0ebff60",

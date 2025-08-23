@@ -89,6 +89,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const [layers, setLayers] = useState([]);
 
+  const onRouteStations = useRef([]);
+
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
   const [loadingRouting, setRoutingState] = useState(false);
@@ -100,7 +102,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   const [center, setCenter] = useState(newCenter);
 
   useEffect(() => {
-    setStationsLayer(createStationLayer());
+    setStationsLayer(createStationLayer(onRouteStations, darkMode));
     setLowestLayer(createLowestLayer());
     setOnRouteLayer(createOnRouteLayer());
     setCustomLayer(createCustomLayer(POI));
@@ -117,9 +119,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   useEffect(() => {
     setLayers([
+      waypointLayer,
       stationLayer,
       lowestLayer,
-      waypointLayer,
       onRouteLayer,
       customLayer,
     ]);
@@ -280,7 +282,19 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     console.debug(
       `[ROUTING] ${stationsOnRoute.length} points added of ${routes.length} routes`
     );
-    setStationsOnRoute(onRouteLayer, stationsOnRoute);
+    const lowestFeatures = setStationsOnRoute(onRouteLayer, stationsOnRoute);
+    const lowestIds = lowestFeatures.map((feature) => feature.get("siteid"));
+    onRouteStations.current = lowestIds;
+    // stationLayer
+    //   .getSource()
+    //   .getFeatures()
+    //   .forEach((cluster) => {
+    //     cluster.get("features").forEach((feature) => {
+    //       feature.set("isOnRoute", lowestIds.includes(feature.get("siteid")));
+    //       if (lowestIds.includes(feature.get("siteid"))) console.log(feature);
+    //     });
+    //   });
+    stationLayer.getSource().changed();
     setRoutingState(false);
   };
 
