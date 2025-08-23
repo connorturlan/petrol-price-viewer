@@ -93,3 +93,18 @@ export async function getCoordinatesOfAddress(address) {
   }
   return res.json();
 }
+
+export async function getCoordinatesWithAddressQuery(address) {
+  console.debug(`[ROUTING] getting geocoding result for ${address}.`);
+
+  const res = await fetch(
+    `${GEOCODING_API}?format=json&limit=40&q=${address}, australia`
+  );
+  if (res.status != 200) {
+    console.warn(
+      `[ROUTING] unable to get data from geocoding service, code:${res.status} message:code:${res.statusText}`
+    );
+    return {};
+  }
+  return res.json();
+}
