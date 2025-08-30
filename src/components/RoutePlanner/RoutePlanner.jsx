@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./RoutePlanner.module.scss";
 import { UserContext } from "../../contexts/UserContext";
 import { RouteContext } from "../../contexts/RouteContext";
@@ -17,6 +17,7 @@ const RoutePlanner = (props) => {
     useContext(UserContext);
   const { origin, setOrigin, dest, setDest } = useContext(RouteContext);
 
+  const [autocompleteInProgess, setAutocompleteProgress] = useState(false);
   const [lookupInProgess, setLookupProgress] = useState(false);
 
   const [customOrigin, setCustomOrigin] = useState("");
@@ -61,15 +62,56 @@ const RoutePlanner = (props) => {
     }
   };
 
+  const TIMEOUT = 2_000;
+  const timeoutRef = useRef(Date.now());
+  const timeoutTimerRef = useRef(-1);
+
+  const autocomplete = async (address, isOrigin) => {
+    if (address.length <= 3) {
+      return;
+    }
+
+    if (autocompleteInProgess || timeoutRef.current + TIMEOUT > Date.now()) {
+      clearTimeout(timeoutTimerRef.current);
+      timeoutTimerRef.current = setTimeout(() => {
+        autocomplete(address);
+      }, TIMEOUT);
+      return;
+    }
+    timeoutRef.current = Date.now();
+
+    setAutocompleteProgress(true);
+    const addressData = await getCoordinatesWithAddressQuery(address);
+    setAutocompleteProgress(false);
+
+    toggleAddressList(true);
+    setAddressList(addressData);
+    setAddressListCallback(() => {
+      return (selectedAddress) => {
+        toggleAddressList(false);
+        console.log(address, selectedAddress);
+        setWaypoint(isOrigin, address, selectedAddress);
+      };
+    });
+  };
+
+  const completeOrigin = () => {
+    autocomplete(customOriginInput, true);
+  };
+
+  const completeDest = async () => {
+    autocomplete(customDestInput, false);
+  };
+
   const lookup = async (address, isOrigin) => {
     if (lookupInProgess) return;
     if (!address) return;
 
     setLookupProgress(true);
     const addressData = await getCoordinatesWithAddressQuery(address);
-    setTimeout(() => {
-      setLookupProgress(false);
-    }, 2_000);
+    setLookupProgress(false);
+    // setTimeout(() => {
+    // }, 2_000);
 
     if (ObjectIsEmpty(addressData) || addressData.length <= 0) {
       window.alert(`no address found for ${address}`);
@@ -166,7 +208,10 @@ const RoutePlanner = (props) => {
             onBlur={lookupOrigin}
             placeholder="e.g. 52 Wallaby Way, Sydney NSW 2000"
             value={customOriginInput}
-            onChange={(e) => updateState(e, setCustomOriginInput)}
+            onChange={(e) => {
+              updateState(e, setCustomOriginInput);
+              completeOrigin(e.target.value);
+            }}
           ></input>
           <h3>Destination</h3>
           <input

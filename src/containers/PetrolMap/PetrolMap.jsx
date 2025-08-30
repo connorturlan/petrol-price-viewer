@@ -37,16 +37,22 @@ import {
 import { MAX_STATION_REQUEST, PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
 import { UserContext } from "../../contexts/UserContext";
-import { convertCoord, ObjectIsEmpty } from "../../utils/utils";
+import {
+  convertCoord,
+  convertCoordFromLatLon,
+  ObjectIsEmpty,
+} from "../../utils/utils";
 import { getRoutesBetweenPoints } from "../../utils/navigation";
 import { fromExtent } from "ol/geom/Polygon";
 import { RouteContext } from "../../contexts/RouteContext";
 // import { getFuelPrices } from "../../services/service";
 import { getFuelPrices } from "../../services/StationPriceManager/StationPriceManager.service";
-import { createDefaultStyle } from "ol/style/Style";
+import Style, { createDefaultStyle } from "ol/style/Style";
 import { updateAllStations } from "../../services/StationPriceManager/StationPriceManager.service";
 import { FitMapToExtent, MapMoveTo, UseSub } from "../../utils/pubsub";
 import { getCookie } from "../../utils/cookies";
+import { getDistance } from "ol/sphere";
+import { customStyle } from "./styles";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -94,6 +100,41 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const onRouteStations = useRef([]);
 
+  const filterLayer = useRef(
+    new VectorLayer({
+      style: (feature) => {
+        return new Style({
+          zIndex: feature.get("driver_position") || feature.get("driver") || 0,
+          fill: new Fill({
+            color: "#FFFFFF",
+          }),
+          stroke: new Stroke({
+            color: `#${feature.get("driver_colour") || "333"}`,
+            width: 6,
+            miterLimit: 2,
+          }),
+          text: new Text({
+            justify: "center",
+            textBaseline: "top",
+            offsetY: -4.5,
+            font: "bold 9pt  sans-serif",
+            fill: new Fill({
+              color: "#222",
+            }),
+            padding: [2, 4, 2, 4],
+            text: `${feature.get("driver")}\n${feature.get("driver_name")}`,
+            stroke: new Stroke({
+              color: "#FFFFFF",
+              width: 4,
+              miterLimit: 2,
+            }),
+          }),
+        });
+      },
+      source: new VectorSource(),
+    })
+  );
+
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
   const [loadingRouting, setRoutingState] = useState(false);
@@ -122,13 +163,14 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   useEffect(() => {
     setLayers([
+      filterLayer.current,
       waypointLayer,
       stationLayer,
       lowestLayer,
       onRouteLayer,
       customLayer,
     ]);
-  }, [stationLayer, waypointLayer, onRouteLayer, lowestLayer, customLayer]);
+  }, [stationLayer, waypointLayer, onRouteLayer, customLayer]);
 
   useEffect(() => {
     if (!reload) return;
@@ -236,6 +278,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       return new Feature({
         coord,
         geometry: point,
+        ...feature,
         siteid: feature.SiteId,
         name: feature.Name,
         price: price || "loading...",
@@ -245,8 +288,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     });
     source.addFeatures(features);
 
+    source.changed();
+
     console.debug(`[STATIONS] added ${filteredstations.length} stations.`);
-  }, [stations, allStations]);
+  }, [stations]);
 
   useEffect(() => {
     if (loadingStations || !allStations || loadingPrices) return;
@@ -413,6 +458,54 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       triggerReload(true);
     }
   };
+
+  UseSub("UpdateDistanceFilter", (data) => {
+    console.log("getting features within range");
+
+    const filterCenter = [data.center.Lat, data.center.Lng];
+    const filterDistance = data.distance;
+
+    console.log(
+      fromLonLat(filterCenter),
+      convertCoord(MAP_CENTER),
+      filterCenter
+    );
+
+    const circle = new Circle({
+      center: convertCoord(filterCenter),
+      radius: 20,
+    });
+
+    const centerFeature = new Feature({
+      geometry: circle,
+    });
+
+    console.log(customLayer);
+    const source = filterLayer.current.getSource();
+    if (source) {
+      source.clear();
+      source.addFeature(centerFeature);
+      console.log("source was dewfined");
+      console.log(source.getFeatures());
+      source.changed();
+      MapMoveTo({ coord: convertCoord(filterCenter) });
+    } else {
+      console.log("source was undewfined");
+    }
+
+    const filteredStations = allStations.map((feature) => {
+      const coord = transform(
+        [feature.Lng, feature.Lat],
+        "EPSG:3857",
+        "EPSG:4326"
+      );
+      const distance = getDistance(filterCenter, coord);
+      const withinRange = distance < filterDistance;
+      feature.inRange = withinRange;
+      return feature;
+    });
+    setAllStations(filteredStations);
+  });
 
   const onInit = (map) => {
     const extent = map.getView().calculateExtent(map.getSize());

@@ -32,12 +32,13 @@ export function nestedStationStyle(
     );
 
     const isCluster = !!feature.get("features");
+    const isFiltered = !!feature.get("inRange");
 
     let text = "";
     if (isCluster) {
       text =
         feature.get("features")?.length <= 1
-          ? `${feature.get("price") || 0}`
+          ? `${feature.get("price") || 0} ${isFiltered}`
           : `${feature.get("price") || 0} +${feature.get("features").length}`;
     } else {
       text = `${feature.get("price")}`;
@@ -65,7 +66,9 @@ export function nestedStationStyle(
 
     const iconSrc = getImageFromStationDetails(feature);
     const iconHeight = isLowest || isOnRoute ? 64 : 48;
-    const strokeColor = isLowest
+    const strokeColor = isFiltered
+      ? "#08ff3198"
+      : isLowest
       ? "#22222220"
       : isOnRoute
       ? "#038cfcbb"

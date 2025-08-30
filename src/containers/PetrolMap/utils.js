@@ -127,6 +127,7 @@ const doTheThing = async (clusterSource, checkLowest = true) => {
     feature.set("price", lowestFeature?.get("price"));
     feature.set("siteid", lowestFeature?.get("siteid"));
     feature.set("brandid", lowestFeature?.get("brandid"));
+    feature.set("inRange", lowestFeature?.get("inRange"));
   });
 
   if (checkLowest) updateSourceWithLowestPrice(clusterSource);

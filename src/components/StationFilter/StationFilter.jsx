@@ -1,27 +1,31 @@
 import styles from "./StationFilter.module.scss";
 import fueltypes from "../../assets/fueltypes.json";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../contexts/AppContext";
 import Modal from "../../containers/Modal/Modal";
 import ToolboxModal from "../../containers/ToolboxModal/ToolboxModal";
 import { usePub } from "../../utils/pubsub";
+import { RouteContext } from "../../contexts/RouteContext";
+import { ObjectIsEmpty } from "../../utils/utils";
 
 const StationFilter = () => {
-  const { fuelType, setFuelType } = useContext(AppContext);
   const publisher = usePub();
 
-  const handleFuelDropdownChange = (event) => {
-    setFuelType(event.target.value);
+  const { origin, setOrigin, getOrigin } = useContext(RouteContext);
 
-    const hideModals = usePub();
-    hideModals("ToolboxModalHide");
+  const [distance, setDistance] = useState(2);
+
+  const handleDistanceChange = (event) => {
+    setDistance(event.target.value);
   };
 
-  const handleFuelChange = (fuelId) => {
-    setFuelType(fuelId);
-
-    publisher("FuelTypeChange", null);
-  };
+  useEffect(() => {
+    if (ObjectIsEmpty(origin)) return;
+    publisher("UpdateDistanceFilter", {
+      center: origin,
+      distance: distance * 1_000,
+    });
+  }, [distance]);
 
   return (
     <ToolboxModal
@@ -44,50 +48,18 @@ const StationFilter = () => {
           e.stopPropagation();
         }}
       >
-        <h2 className={styles.StationFilter_Title}>Fuel Type</h2>
-        <h3>Petrol</h3>
-        <div className={styles.StationFilter_Grid}>
-          {fueltypes["Fuels"]
-            .filter((t) => t.FuelId < 10000)
-            .map((t) => {
-              return (
-                <button
-                  key={t.FuelId}
-                  className={`${styles.StationFilter_Selector} ${
-                    t.FuelId == fuelType ? styles.StationFilter__Selected : ""
-                  }`}
-                  style={{
-                    color: t.Color || "black",
-                    borderColor: t.FuelId == fuelType && t.Color,
-                  }}
-                  onClick={() => handleFuelChange(t.FuelId)}
-                >
-                  <img src="local_gas_station_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
-                  <p>{t.Name}</p>
-                </button>
-              );
-            })}
+        <h2 className={styles.StationFilter_Title}>Filter Stations</h2>
+        <div>
+          <h3>Within Range</h3>
+          <input
+            type="number"
+            value={distance}
+            onChange={handleDistanceChange}
+          ></input>
+          <p>km</p>
+          <div></div>
         </div>
-        <h3>Electic</h3>
-        <div className={styles.StationFilter_Grid}>
-          {fueltypes["Fuels"]
-            .filter((t) => t.FuelId >= 10000)
-            .map((t) => {
-              return (
-                <button
-                  key={t.FuelId}
-                  className={`${styles.StationFilter_Selector} ${
-                    t.FuelId == fuelType ? styles.StationFilter__Selected : ""
-                  }`}
-                  style={{ color: t.Color || "black" }}
-                  onClick={() => handleFuelChange(t.FuelId)}
-                >
-                  <img src="ev_station_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
-                  <p>{t.Name}</p>
-                </button>
-              );
-            })}
-        </div>
+        <div className={styles.StationFilter_Grid}></div>
       </div>
     </ToolboxModal>
   );

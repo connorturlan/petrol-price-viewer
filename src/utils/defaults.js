@@ -13,3 +13,7 @@ export const MAX_STATION_REQUEST = 200;
 export const SHOW_WELCOME = !(
   import.meta.env.VITE_LOCAL_SHOW_WELCOME == "FALSE"
 );
+
+export const GEOCODING_API = "https://nominatim.fueltool.com.au/search";
+// import.meta.env.VITE_GEOCODING_API ||
+// `https://nominatim.fueltool.com.au/search`;

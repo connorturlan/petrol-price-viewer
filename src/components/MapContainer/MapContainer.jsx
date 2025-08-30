@@ -63,7 +63,7 @@ const MapContainer = ({
       );
       return;
     }
-    console.log(`[MAP]<event> map move to ${newView}`);
+    console.log(`[MAP]<event> map move to ${newView.coord}`);
     const zoom = newView.zoom || 16;
     mapRef.current.getView().animate({
       center: newView.coord,

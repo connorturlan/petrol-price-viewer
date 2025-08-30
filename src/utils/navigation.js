@@ -1,7 +1,7 @@
 import polyline from "polyline";
 import { convertCoordFromLatLon, ObjectIsEmpty } from "./utils";
 import { fromLonLat } from "ol/proj";
-import { PROJECTION } from "./defaults";
+import { PROJECTION, GEOCODING_API } from "./defaults";
 import { parseLocation } from "australia-address-parser";
 
 const ALTERNATIVES = true;
@@ -43,8 +43,6 @@ export async function getRoutesBetweenPoints(start, finish) {
   // return routes
   return routes;
 }
-
-const GEOCODING_API = `https://nominatim.openstreetmap.org/search`;
 
 export async function getCoordinatesOfAddress(address) {
   console.debug(`[ROUTING] getting geocoding result for ${address}.`);
