@@ -21,6 +21,8 @@ import ToolboxTester from "./components/ToolboxTester/ToolboxTester";
 import { MapMoveTo, usePub } from "./utils/pubsub";
 import StationFilter from "./components/StationFilter/StationFilter";
 import LocationSelector from "./components/LocationSelector/LocationSelector";
+import { fromLonLat } from "ol/proj";
+import { PROJECTION } from "./utils/defaults";
 
 function App() {
   // set intial state
@@ -99,6 +101,7 @@ function App() {
           <StationFilter />
           <PriceList>
             {mapFeatures
+              .filter((station) => station.Price && station.Price < 9999)
               .sort((a, b) => a.Price - b.Price)
               .map((feature) => (
                 <PriceListItem
@@ -107,7 +110,9 @@ function App() {
                   price={((feature.Price || 0) / 10).toFixed(1)}
                   image={getImageFromStationBrandId(feature.BrandID)}
                   showDetails={() => {
-                    MapMoveTo({ coord: [feature.Lng, feature.Lat] });
+                    MapMoveTo({
+                      coord: fromLonLat([feature.Lng, feature.Lat], PROJECTION),
+                    });
                     selectSite(feature.SiteId);
                   }}
                 />

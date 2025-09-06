@@ -77,7 +77,7 @@ const FeatureText = [
     textOutline: "#71b671ff",
     backgroundFill: "",
     backgroudOutline: "#97f79740",
-    iconHeight: 64,
+    iconHeight: 32,
   },
   // 5 - lowest & in range
   {
@@ -158,28 +158,25 @@ export function stationStyle(feature: FeatureLike): StyleLike {
       height: style?.iconHeight,
     }),
     text: new Text({
-      offsetY: 9,
+      offsetY: 16,
       font: style?.textStyle,
       fill: new Fill({
         color: style?.textFill,
       }),
       stroke: new Stroke({
         color: style?.textOutline,
-        width: 4,
+        width: 8,
       }),
-      // backgroundFill: new Fill({
-      //   color: style?.backgroundFill || "FFFFFF",
-      // }),
       backgroundStroke: new Stroke({
         color: style?.backgroudOutline,
-        width: 8,
+        width: 16,
         lineJoin: "round",
         lineCap: "round",
       }),
-      padding: [-4, 4, -4, 4],
+      padding: [-8, 0, -8, 0],
       text: text,
     }),
-    zIndex: isLowest ? 10 : isOnRoute ? 10 : 0,
+    zIndex: styleIndex,
   });
 }
 

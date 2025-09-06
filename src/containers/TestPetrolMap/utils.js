@@ -70,18 +70,21 @@ export const getLowestFeature = (features) => {
   return lowestPrice;
 };
 
+const getPriority = (feature) => {
+  const isLowest = Boolean(feature.get("isLowest"));
+  const isFiltered = Boolean(feature.get("inRange"));
+  const isOnRoute = Boolean(feature.get("isOnRoute"));
+  return (isLowest ? 4 : 0) + (isOnRoute ? 2 : 0) + (isFiltered ? 1 : 0);
+};
+
 export const getPriorityFeature = (features) => {
-  const lowestPrice = features.reduce(
-    (lowest, current) =>
-      !lowest.get("isOnRoute") && current.get("price")
-        ? current
-        : lowest.get("price") < current.get("price")
-        ? lowest
-        : current,
+  const priorityFeature = features.reduce(
+    (priority, current) =>
+      getPriority(priority) > getPriority(current) ? priority : current,
     features[0]
   );
 
-  return lowestPrice;
+  return priorityFeature;
 };
 
 export const getLowestFeaturePrice = (features) => {
@@ -121,7 +124,7 @@ const doTheThing = async (clusterSource, checkLowest = true) => {
   const features = clusterSource.getFeatures();
 
   features.forEach((feature) => {
-    const priorityFeature = getLowestFeature(feature.get("features"));
+    const priorityFeature = getPriorityFeature(feature.get("features"));
     priorityFeature.getKeys().forEach((key) => {
       feature.set(key, priorityFeature?.get(key));
     });

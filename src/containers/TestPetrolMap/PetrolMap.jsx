@@ -265,6 +265,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     } else {
       setPricesLoading(false);
       updateStationsLayer();
+      updateStations(allStations);
     }
     drawCircle(fromLonLat(center, PROJECTION));
   }, [allStations, visibleBounds]);
