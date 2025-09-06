@@ -104,7 +104,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     new VectorLayer({
       style: (feature) => {
         return new Style({
-          zIndex: feature.get("driver_position") || feature.get("driver") || 0,
           fill: new Fill({
             color: "#FFFFFF",
           }),
@@ -117,12 +116,14 @@ const PetrolMap = ({ fuelType, updateStations }) => {
             justify: "center",
             textBaseline: "top",
             offsetY: -4.5,
-            font: "bold 9pt  sans-serif",
+            font: "bold 5em sans-serif",
             fill: new Fill({
               color: "#222",
             }),
             padding: [2, 4, 2, 4],
-            text: `${feature.get("driver")}\n${feature.get("driver_name")}`,
+            text: `${feature.get("driver")}\n${feature.get(
+              "driver_name"
+            )}hello,world!`,
             stroke: new Stroke({
               color: "#FFFFFF",
               width: 4,
@@ -134,6 +135,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       source: new VectorSource(),
     })
   );
+
+  const [statefulFilterLayer, setFilterLayer] = useState(new VectorLayer());
 
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
@@ -154,16 +157,21 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     // getSites(setStationsState, setAllStations);
     const getAllSites = async () => {
       setStationsState(true);
-      const stations = await updateAllStations();
-      setAllStations(stations);
+      const newStations = await updateAllStations();
+      setAllStations(newStations);
       setStationsState(false);
     };
+    // setFilterLayer(
+    //   new VectorLayer({
+    //     style: filterLayer.current.getStyle(),
+    //     source: filterLayer.current.getSource(),
+    //   })
+    // );
     getAllSites();
   }, []);
 
   useEffect(() => {
     setLayers([
-      filterLayer.current,
       waypointLayer,
       stationLayer,
       lowestLayer,
@@ -459,40 +467,41 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     }
   };
 
-  UseSub("UpdateDistanceFilter", (data) => {
+  const getAllStations = useRef(() => {});
+  useEffect(() => {
+    getAllStations.current = () => {
+      return stations;
+    };
+  }, [stations]);
+
+  const handleFilter = (data) => {
     console.log("getting features within range");
 
     const filterCenter = [data.center.Lat, data.center.Lng];
     const filterDistance = data.distance;
 
-    console.log(
-      fromLonLat(filterCenter),
-      convertCoord(MAP_CENTER),
-      filterCenter
-    );
+    // const circle = new Circle({
+    //   center: convertCoord(filterCenter),
+    //   radius: 20,
+    // });
 
-    const circle = new Circle({
-      center: convertCoord(filterCenter),
-      radius: 20,
-    });
+    // const centerFeature = new Feature({
+    //   geometry: circle,
+    // });
 
-    const centerFeature = new Feature({
-      geometry: circle,
-    });
+    // console.log(customLayer);
+    // const source = statefulFilterLayer.getSource();
+    // if (source) {
+    //   source.clear();
+    //   source.addFeature(centerFeature);
+    //   console.log("source was dewfined");
+    //   console.log(source.getFeatures());
+    //   MapMoveTo({ coord: convertCoord(filterCenter) });
+    // } else {
+    //   console.log("source was undewfined");
+    // }
 
-    console.log(customLayer);
-    const source = filterLayer.current.getSource();
-    if (source) {
-      source.clear();
-      source.addFeature(centerFeature);
-      console.log("source was dewfined");
-      console.log(source.getFeatures());
-      source.changed();
-      MapMoveTo({ coord: convertCoord(filterCenter) });
-    } else {
-      console.log("source was undewfined");
-    }
-
+    console.log(allStations, stations, getAllStations.current());
     const filteredStations = allStations.map((feature) => {
       const coord = transform(
         [feature.Lng, feature.Lat],
@@ -501,11 +510,14 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       );
       const distance = getDistance(filterCenter, coord);
       const withinRange = distance < filterDistance;
+      // console.log(filterCenter, coord, distance, withinRange);
       feature.inRange = withinRange;
       return feature;
     });
     setAllStations(filteredStations);
-  });
+  };
+
+  UseSub("UpdateDistanceFilter", handleFilter);
 
   const onInit = (map) => {
     const extent = map.getView().calculateExtent(map.getSize());

@@ -129,6 +129,7 @@ const MapContainer = ({
   useEffect(() => {
     console.debug("[MAP] updating layers");
     if (!map) return;
+    // mapLayers.current = [darkMode ? darkMapLayer : mapLayer, ...layers];
     map.setLayers(mapLayers.current);
   }, [layers]);
 
