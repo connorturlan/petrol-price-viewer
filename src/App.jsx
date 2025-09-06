@@ -9,7 +9,7 @@ import { setCookie } from "./utils/cookies";
 import GraphModal from "./components/GraphModal/GraphModal";
 import ToolBar from "./containers/ToolBar/ToolBar";
 import LoginControl from "./components/LoginControl/LoginControl";
-import PetrolMap, { MODES } from "./containers/PetrolMap/PetrolMap";
+import PetrolMap from "./containers/TestPetrolMap/PetrolMap";
 import SettingsModal from "./containers/SettingsModal/SettingsModal";
 import { AppContext } from "./contexts/AppContext";
 import WelcomeSplash from "./components/WelcomeSplash/WelcomeSplash";

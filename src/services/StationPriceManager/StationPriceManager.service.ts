@@ -87,7 +87,8 @@ async function getAllStationsFromAPI(
 
   // TODO: change this to the station type.
   const modifiedJson = json.map((station: any) => {
-    const coord = convertCoord([station.Lng, station.Lat]);
+    const coord = [station.Lng, station.Lat];
+    // const coord = convertCoord([station.Lng, station.Lat]);
 
     return {
       ...station,

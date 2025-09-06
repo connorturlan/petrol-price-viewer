@@ -50,8 +50,8 @@ export const getImageFromStationName = (name) => {
 };
 
 export const getImageFromStationDetails = (feature) => {
-  const brandId = feature.get("brandid");
+  const brandId = feature.get("BrandID");
   return brandId == 0
-    ? getImageFromStationName(feature.get("name"))
+    ? getImageFromStationName(feature.get("Name"))
     : getImageFromStationBrandId(brandId);
 };
