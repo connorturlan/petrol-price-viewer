@@ -29,7 +29,7 @@ const COUNTDOWN_TIME = 2;
 
 const WelcomeSplash = (props) => {
   const [visible, setVisible] = useState(
-    SHOW_WELCOME && getCookie("weekly_welcome") != "show"
+    SHOW_WELCOME || getCookie("weekly_welcome") != "show"
   );
   const [countdown, setCountdown] = useState(
     getCookie("userprofile") === "" ? COUNTDOWN_TIME : 0
@@ -73,13 +73,13 @@ const WelcomeSplash = (props) => {
         >
           <h2 className={styles.WelcomeSplash_Title}>Fuel Tool</h2>
           <p>
-            Hello and welcome to Fuel Tool! Your handy tool for saving money on
-            your petrol bill.
+            Welcome to Fuel Tool! Your handy tool for saving money on your
+            petrol bill.
           </p>
           <p>
             Fuel Tool is provided as a free service for viewing petrol prices
-            across South Australia, but it is not free to run. If you would like
-            to support me you can support this project and many others at:
+            across Australia, but it is not free to run. If you would like to
+            support me you can support this project and many others at:
           </p>
           <a
             className={styles.WelcomeSplash_Image}
@@ -88,18 +88,22 @@ const WelcomeSplash = (props) => {
           >
             <img src="white-button.png" alt="buy me a coffee" srcset="" />
           </a>
-          <p>Thank you for using Fuel Tool!</p>
           <b>
-            This app is regularly updated, if you have any issues while using
-            the app please reach out to{" "}
-            <a href="mailto://connorturlan@gmail.com?subject=Fuel Tool issue report">
-              connorturlan@gmail.com
+            <a href="mailto://info@fueltool.com.au?subject=[Inquiry] Fuel Tool Advertisement">
+              I'm interested in advertising!
             </a>
-            .
           </b>
-          {/* <b>
-            Touch anywhere to hide{countdown > 0 ? ` in ${countdown}` : ""}.
-          </b> */}
+          <b>
+            <a href="mailto://info@fueltool.com.au?subject=[Inquiry] Fuel Tool Sponsorship">
+              I'm interested in sponsoring!
+            </a>
+          </b>
+          <b>
+            <a href="mailto://support@fueltool.com.au?subject=[Issue] Fuel Tool">
+              I'm having issues?
+            </a>
+          </b>
+          <p>Thank you for using Fuel Tool!</p>
           <b>{countdown > 0 ? `Loading...` : "Touch anywhere to hide"}.</b>
         </div>
       </div>

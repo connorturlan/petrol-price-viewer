@@ -1,5 +1,7 @@
 .WelcomeSplash {
   &_Body {
+    max-width: 400px;
+
     margin: 120px 60px;
     padding: 32px;
 
@@ -60,7 +62,7 @@
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.4);
 
-    width: 400px;
+    // width: 400px;
     max-width: 100vw;
 
     z-index: 100;
