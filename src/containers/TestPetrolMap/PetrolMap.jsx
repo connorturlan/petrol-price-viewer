@@ -123,7 +123,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       source: new VectorSource(),
       style: new Style({
         fill: new Fill({
-          color: "#97f79710",
+          color: "#97f79740",
         }),
         stroke: new Stroke({
           color: "#81c981",

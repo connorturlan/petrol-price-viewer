@@ -34,61 +34,77 @@ const DEBUG = false;
 7 - lowest & on route & in range
 */
 const FeatureText = [
+  // 0 - standard
   {
     textStyle: "normal 1em sans-serif",
-    textFill: "#22222220",
-    textOutline: "#fffb00",
+    textFill: "#333",
+    textOutline: "#eee",
     backgroundFill: "",
-    backgroudOutline: "#22222220",
+    backgroudOutline: "#22222240",
+    iconHeight: 32,
   },
+  // 1 - lowest
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#22222220",
+    textFill: "#333",
     textOutline: "#fffb00",
     backgroundFill: "",
-    backgroudOutline: "#22222220",
+    backgroudOutline: "#ff7b00ff",
+    iconHeight: 64,
   },
+  // 2 - on route
+  {
+    textStyle: "normal 1em sans-serif",
+    textFill: "#333",
+    textOutline: "#b8dfffbb",
+    backgroundFill: "",
+    backgroudOutline: "#038cfcbb",
+    iconHeight: 48,
+  },
+  // 3 - lowest & on route
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#22222220",
-    textOutline: "#fffb00",
+    textFill: "#333",
+    textOutline: "#b8fffbbb",
     backgroundFill: "",
-    backgroudOutline: "#22222220",
+    backgroudOutline: "#03f4fcbb",
+    iconHeight: 64,
   },
+  // 4 - in range
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#22222220",
-    textOutline: "#fffb00",
+    textFill: "#333",
+    textOutline: "#71b671ff",
     backgroundFill: "",
-    backgroudOutline: "#22222220",
+    backgroudOutline: "#97f79740",
+    iconHeight: 64,
   },
+  // 5 - lowest & in range
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#22222220",
+    textFill: "#333",
     textOutline: "#fffb00",
     backgroundFill: "",
-    backgroudOutline: "#22222220",
+    backgroudOutline: "#ff7b00ff",
+    iconHeight: 64,
   },
+  // 6 - on route & in range
+  {
+    textStyle: "normal 1em sans-serif",
+    textFill: "#333",
+    textOutline: "#b8dfffbb",
+    backgroundFill: "",
+    backgroudOutline: "#038cfcbb",
+    iconHeight: 48,
+  },
+  // 7 - lowest & on route & in range
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#22222220",
-    textOutline: "#fffb00",
+    textFill: "#333",
+    textOutline: "#b8fffbbb",
     backgroundFill: "",
-    backgroudOutline: "#22222220",
-  },
-  {
-    textStyle: "normal 1.2em sans-serif",
-    textFill: "#22222220",
-    textOutline: "#fffb00",
-    backgroundFill: "",
-    backgroudOutline: "#22222220",
-  },
-  {
-    textStyle: "normal 1.2em sans-serif",
-    textFill: "#22222220",
-    textOutline: "#fffb00",
-    backgroundFill: "",
-    backgroudOutline: "#22222220",
+    backgroudOutline: "#03f4fcbb",
+    iconHeight: 64,
   },
 ];
 
@@ -129,49 +145,33 @@ export function stationStyle(feature: FeatureLike): StyleLike {
     text = getFeatureText(feature);
   }
 
-  const font =
-    isLowest || isOnRoute ? "normal 1.2em sans-serif" : "normal 1em sans-serif";
-  const backgroundColor = isLowest ? "darkorange" : "#555";
-  const textOutline = isLowest
-    ? new Stroke({
-        color: "#fffb00",
-        width: 4,
-      })
-    : isOnRoute
-    ? new Stroke({
-        color: "#b8dfffbb",
-        width: 4,
-      })
-    : new Stroke({
-        color: "#eee",
-        width: 4,
-      });
+  const styleIndex =
+    (isLowest ? 1 : 0) + (isOnRoute ? 2 : 0) + (isFiltered ? 4 : 0);
+  const style = FeatureText.at(styleIndex);
 
   const iconSrc = getImageFromStationDetails(feature);
-  const iconHeight = isLowest || isOnRoute ? 64 : 48;
-  const strokeColor = isFiltered
-    ? "#08ff3198"
-    : isLowest
-    ? "#22222220"
-    : isOnRoute
-    ? "#038cfcbb"
-    : "#22222220";
 
   return new Style({
     image: new Icon({
       anchor: [0.5, 1],
       src: iconSrc,
-      height: iconHeight,
+      height: style?.iconHeight,
     }),
     text: new Text({
       offsetY: 9,
-      font: font,
+      font: style?.textStyle,
       fill: new Fill({
-        color: backgroundColor,
+        color: style?.textFill,
       }),
-      stroke: textOutline,
+      stroke: new Stroke({
+        color: style?.textOutline,
+        width: 4,
+      }),
+      // backgroundFill: new Fill({
+      //   color: style?.backgroundFill || "FFFFFF",
+      // }),
       backgroundStroke: new Stroke({
-        color: strokeColor,
+        color: style?.backgroudOutline,
         width: 8,
         lineJoin: "round",
         lineCap: "round",
@@ -209,7 +209,7 @@ export function _stationStyle(feature: FeatureLike): StyleLike {
       })
     : new Stroke({
         color: "#eee",
-        width: 4,
+        width: 8,
         lineCap: "butt",
       });
 
