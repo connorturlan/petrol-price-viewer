@@ -99,13 +99,15 @@ const StationFilter = () => {
     }
   };
 
-  useEffect(() => {
+  const updateFilter = () => {
     if (ObjectIsEmpty(origin)) return;
     publisher("UpdateDistanceFilter", {
       center: origin,
       distance: distance * 1_000,
     });
-  }, [distance, customOrigin]);
+  };
+
+  useEffect(updateFilter, [customOrigin]);
 
   return (
     <ToolboxModal
@@ -135,11 +137,14 @@ const StationFilter = () => {
           <div>
             <LocationLookup onSelectCallback={setOrigin} />
           </div>
-          <div>
+          <div className={styles.StationFilter_Range}>
             <input
+              className={styles.StationFilter_RangeInput}
               type="range"
               value={distance}
               onChange={handleDistanceChange}
+              onMouseUp={updateFilter}
+              onDragEnd={updateFilter}
               min={1}
               max={100}
             ></input>
