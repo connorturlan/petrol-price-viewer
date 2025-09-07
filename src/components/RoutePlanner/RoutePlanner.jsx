@@ -11,6 +11,7 @@ import {
 import { add } from "ol/coordinate";
 import ToolboxModal from "../../containers/ToolboxModal/ToolboxModal";
 import AddressPicker from "../AddressPicker/AddressPicker";
+import LocationLookup from "../LocationLookup/LocationLookup";
 
 const RoutePlanner = (props) => {
   const { profile, POI, loginState, setCustomLocation } =
@@ -34,6 +35,7 @@ const RoutePlanner = (props) => {
   }
 
   function swapPoints() {
+    console.log(origin);
     setOrigin(dest);
     setDest(origin);
 
@@ -191,7 +193,34 @@ const RoutePlanner = (props) => {
         }}
       >
         <h2 className={styles.RoutePlanner_Title}>Route Planner</h2>
-        <div className={styles.RoutePlanner_Lookup}>
+        <div className={styles.RoutePlanner_Search}>
+          <LocationLookup
+            placeholder={"From"}
+            initialValue={origin.Name || ""}
+            onSelectCallback={(location) => {
+              setOrigin(location);
+            }}
+          />
+          <div className={styles.RoutePlanner_Swap}>
+            <button className={styles.RoutePlanner_Button} onClick={swapPoints}>
+              <img
+                src="swap_horiz_24dp_434343_FILL0_wght400_GRAD0_opsz24.svg"
+                className={styles.RoutePlanner_SwapImage}
+                alt="Show"
+                srcSet=""
+                title="Show route planner"
+              />
+            </button>
+          </div>
+          <LocationLookup
+            placeholder={"To"}
+            initialValue={dest.Name || ""}
+            onSelectCallback={(location) => {
+              setDest(location);
+            }}
+          />
+        </div>
+        {/* <div className={styles.RoutePlanner_Lookup}>
           <h3>Origin</h3>
           <input
             type="text"
@@ -333,7 +362,7 @@ const RoutePlanner = (props) => {
               </>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
       {/* <div
         className={`${styles.RoutePlanner_Body} ${

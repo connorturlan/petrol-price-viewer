@@ -131,16 +131,21 @@ const StationFilter = () => {
         <h2 className={styles.StationFilter_Title}>Filter Stations</h2>
         <div>
           <h3>Within Range</h3>
-          <input
-            type="number"
-            value={distance}
-            onChange={handleDistanceChange}
-          ></input>
-          <p>km</p>
+
           <div>
             <LocationLookup onSelectCallback={setOrigin} />
           </div>
-          <div className={styles.RoutePlanner_List}>
+          <div>
+            <input
+              type="range"
+              value={distance}
+              onChange={handleDistanceChange}
+              min={1}
+              max={100}
+            ></input>
+            <p>{distance} km</p>
+          </div>
+          {/* <div className={styles.RoutePlanner_List}>
             <input
               type="text"
               id="custom-origin"
@@ -203,7 +208,7 @@ const StationFilter = () => {
                 })}
               </>
             )}
-          </div>
+          </div> */}
         </div>
         <div className={styles.StationFilter_Grid}></div>
       </div>

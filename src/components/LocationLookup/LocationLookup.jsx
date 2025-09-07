@@ -1,23 +1,29 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./LocationLookup.module.scss";
 import { UserContext } from "../../contexts/UserContext";
 import { getCoordinatesWithAddressQuery } from "../../utils/navigation";
 import { ObjectIsEmpty } from "../../utils/utils";
 import AddressPicker from "../AddressPicker/AddressPicker";
 
-const LocationLookup = ({ onSelectCallback }) => {
+const LocationLookup = ({ onSelectCallback, placeholder, initialValue }) => {
   const { loginState, POI } = useContext(UserContext);
 
   const [isFocused, setFocus] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState(initialValue || "");
+  useEffect(() => {
+    setSearchText(initialValue);
+  }, [initialValue]);
 
   const [showAddressList, toggleAddressList] = useState(false);
   const [addressList, setAddressList] = useState([]);
   const [addressListCallback, setAddressListCallback] = useState(() => {});
   const [lookupInProgess, setLookupProgress] = useState(false);
 
-  const handleLocationChange = (location) => {
+  const handleLocationChange = (name, location) => {
     console.log("location change to", location);
+    setAddressList([]);
+    toggleAddressList(false);
+    setSearchText(name);
     onSelectCallback(location);
   };
 
@@ -44,7 +50,7 @@ const LocationLookup = ({ onSelectCallback }) => {
         return (selectedAddress) => {
           toggleAddressList(false);
           console.log(address, selectedAddress);
-          setWaypoint(selectedAddress);
+          setWaypoint(address, selectedAddress);
         };
       });
       return true;
@@ -53,13 +59,13 @@ const LocationLookup = ({ onSelectCallback }) => {
 
     console.log(address, addressData);
 
-    setWaypoint(addressData.at(0));
+    setWaypoint(address, addressData.at(0));
     return true;
   };
 
-  const setWaypoint = (addressData) => {
-    handleLocationChange({
-      Name: "start",
+  const setWaypoint = (query, addressData) => {
+    handleLocationChange(query, {
+      Name: query,
       Lat: parseFloat(addressData.lon),
       Lng: parseFloat(addressData.lat),
     });
@@ -72,7 +78,7 @@ const LocationLookup = ({ onSelectCallback }) => {
         <button
           key={poi}
           onClick={() => {
-            handleLocationChange(POI[poi]);
+            handleLocationChange(poi, POI[poi]);
           }}
         >
           {poi}
@@ -86,7 +92,7 @@ const LocationLookup = ({ onSelectCallback }) => {
         <input
           className={styles.LocationLookup_Search}
           type="text"
-          placeholder="Search"
+          placeholder={placeholder || "Search"}
           value={searchText}
           disabled={lookupInProgess}
           onChange={(e) => {
@@ -106,7 +112,10 @@ const LocationLookup = ({ onSelectCallback }) => {
         />
         <div
           className={styles.LocationLookup_SavedLocations}
-          style={{ display: isFocused || showAddressList ? "flex" : "none" }}
+          style={{
+            display:
+              isFocused || showAddressList || lookupInProgess ? "flex" : "none",
+          }}
         >
           <div>
             <button>Use Current Location</button>

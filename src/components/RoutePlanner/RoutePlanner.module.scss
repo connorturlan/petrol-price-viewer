@@ -12,6 +12,12 @@
     overflow-y: auto;
   }
 
+  &_Search {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
   &POIBody {
     display: grid;
     // grid-template-rows: 60px 1fr 3fr;
@@ -143,6 +149,16 @@
     border-radius: 50%;
     width: 40px;
     height: 40px;
+  }
+
+  &_SwapImage {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
   }
 
   &_Point {
