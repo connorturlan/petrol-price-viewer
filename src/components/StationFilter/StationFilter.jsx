@@ -144,7 +144,7 @@ const StationFilter = () => {
               value={distance}
               onChange={handleDistanceChange}
               onMouseUp={updateFilter}
-              onDragEnd={updateFilter}
+              onTouchEnd={updateFilter}
               min={1}
               max={20}
             ></input>
