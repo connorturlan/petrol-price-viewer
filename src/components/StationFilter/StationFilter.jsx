@@ -9,6 +9,7 @@ import { RouteContext } from "../../contexts/RouteContext";
 import { ObjectIsEmpty } from "../../utils/utils";
 import { UserContext } from "../../contexts/UserContext";
 import { getCoordinatesWithAddressQuery } from "../../utils/navigation";
+import LocationLookup from "../LocationLookup/LocationLookup";
 
 const StationFilter = () => {
   const publisher = usePub();
@@ -136,7 +137,9 @@ const StationFilter = () => {
             onChange={handleDistanceChange}
           ></input>
           <p>km</p>
-          <div></div>
+          <div>
+            <LocationLookup onSelectCallback={setOrigin} />
+          </div>
           <div className={styles.RoutePlanner_List}>
             <input
               type="text"
