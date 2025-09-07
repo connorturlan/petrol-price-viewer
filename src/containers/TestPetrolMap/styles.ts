@@ -83,9 +83,9 @@ const FeatureText = [
   {
     textStyle: "normal 1.2em sans-serif",
     textFill: "#333",
-    textOutline: "#fffb00",
+    textOutline: "#a6ff00ff",
     backgroundFill: "",
-    backgroudOutline: "#ff7b00ff",
+    backgroudOutline: "#2dcf63ff",
     iconHeight: 64,
   },
   // 6 - on route & in range
@@ -135,7 +135,7 @@ const getFeatureText = (feature: FeatureLike): string => {
 export function stationStyle(feature: FeatureLike): StyleLike {
   const isCluster = !!feature.get("features");
   const isLowest = Boolean(feature.get("isLowest"));
-  const isFiltered = Boolean(feature.get("inRange"));
+  const isFiltered = Boolean(feature.get("lowestInRange"));
   const isOnRoute = Boolean(feature.get("isOnRoute"));
 
   let text = "";

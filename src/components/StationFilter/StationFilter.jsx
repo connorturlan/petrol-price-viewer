@@ -146,7 +146,7 @@ const StationFilter = () => {
               onMouseUp={updateFilter}
               onDragEnd={updateFilter}
               min={1}
-              max={100}
+              max={20}
             ></input>
             <p>{distance} km</p>
           </div>

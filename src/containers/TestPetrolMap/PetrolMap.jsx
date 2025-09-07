@@ -35,7 +35,7 @@ import {
   getCorners,
   getFeaturesAvailableOnRoute,
   getFeaturesOnRoute,
-  getLowestStationOnRoute,
+  getLowestStationsFromArray,
   getSites,
   setStationsOnRoute,
   updateClusterWithChargerCount,
@@ -343,7 +343,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       `[ROUTING] ${stationsOnRoute.length} points added of ${routes.length} routes`
     );
 
-    const lowestFeatures = getLowestStationOnRoute(stationsOnRoute);
+    const lowestFeatures = getLowestStationsFromArray(stationsOnRoute);
     const lowestIds = lowestFeatures.map((feature) => feature.SiteId);
 
     const updatedStations = allStations.map((station) => {
@@ -376,11 +376,13 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     source.clear();
     const circle = drawCircle(
       filterCenter,
-      filterDistance * (1 / Math.abs(Math.cos(toRadians(filter.center.Lat))))
+      filterDistance * (0.9 / Math.abs(Math.cos(toRadians(filter.center.Lat))))
     );
     FitMapToExtent(circle.getExtent());
 
-    const filteredStations = allStations.map((station) => {
+    const stationsInRange = [];
+
+    const updatedInRangeStations = allStations.map((station) => {
       const coord = fromLonLat([station.Lng, station.Lat], PROJECTION);
       const distance = getDistance(
         [filter.center.Lat, filter.center.Lng],
@@ -390,10 +392,28 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       // const distance = getLength(line);
       const inRange = distance < filterDistance;
 
+      if (inRange) {
+        stationsInRange.push(station);
+      }
+
       // console.log(station.SiteId, filterCenter, coord, distance, inRange);
       return { ...station, inRange };
     });
-    setAllStations(filteredStations);
+
+    console.debug(`[FILTER] ${stationsInRange.length} stations in range`);
+
+    const lowestStation = getLowestStationsFromArray(stationsInRange);
+    const lowestPrice = lowestStation.at(0).Price;
+    console.log(lowestStation, lowestPrice);
+
+    const updatedLowestStations = updatedInRangeStations.map((station) => {
+      return {
+        ...station,
+        lowestInRange: station.inRange && station.Price <= lowestPrice,
+      };
+    });
+
+    setAllStations(updatedLowestStations);
   };
 
   useEffect(() => {

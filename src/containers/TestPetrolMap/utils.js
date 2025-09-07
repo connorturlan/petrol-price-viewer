@@ -72,9 +72,10 @@ export const getLowestFeature = (features) => {
 
 const getPriority = (feature) => {
   const isLowest = Boolean(feature.get("isLowest"));
-  const isFiltered = Boolean(feature.get("inRange"));
   const isOnRoute = Boolean(feature.get("isOnRoute"));
-  return (isLowest ? 4 : 0) + (isOnRoute ? 2 : 0) + (isFiltered ? 1 : 0);
+  const isFiltered = Boolean(feature.get("lowestInRange"));
+  return (isLowest ? 40 : 0) + (isOnRoute ? 20 : 0) + (isFiltered ? 10 : 0);
+  // return isLowest ? 4 : 0;
 };
 
 export const getPriorityFeature = (features) => {
@@ -276,11 +277,14 @@ export const setStationsOnRoute = (layer, onRoute) => {
   return lowestStations;
 };
 
-export const getLowestStationOnRoute = (stationsOnRoute) => {
+export const getLowestStationsFromArray = (
+  stationsOnRoute,
+  number = ROUTING_STATION_COUNT
+) => {
   const lowestPrices = stationsOnRoute
     .filter((station) => station.Price)
     .sort((a, b) => a.Price - b.Price);
-  const lowestStations = lowestPrices.slice(0, ROUTING_STATION_COUNT);
+  const lowestStations = lowestPrices.slice(0, number);
   return lowestStations;
 };
 

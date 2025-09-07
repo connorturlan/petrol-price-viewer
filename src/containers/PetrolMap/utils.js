@@ -73,9 +73,9 @@ export const getLowestFeature = (features) => {
 export const getPriorityFeature = (features) => {
   const lowestPrice = features.reduce(
     (lowest, current) =>
-      !lowest.get("isOnRoute") && current.get("price")
+      !lowest.get("isOnRoute") && current.get("Price")
         ? current
-        : lowest.get("price") < current.get("price")
+        : lowest.get("price") < current.get("Price")
         ? lowest
         : current,
     features[0]
@@ -85,7 +85,7 @@ export const getPriorityFeature = (features) => {
 };
 
 export const getLowestFeaturePrice = (features) => {
-  const prices = features.map((feature) => Number(feature.get("price")));
+  const prices = features.map((feature) => Number(feature.get("Price")));
 
   const lowestPrice = prices.reduce(
     (lowest, current) => Math.min(lowest, current),
@@ -105,7 +105,7 @@ export const updateSourceWithLowestPrice = async (source) => {
   const lowestPrice = getLowestFeaturePrice(features);
 
   features.forEach((feature) => {
-    feature.set("isLowest", feature.get("price") <= lowestPrice);
+    feature.set("isLowest", feature.get("Price") <= lowestPrice);
   });
 };
 
