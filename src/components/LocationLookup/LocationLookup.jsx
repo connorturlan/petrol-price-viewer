@@ -71,6 +71,18 @@ const LocationLookup = ({ onSelectCallback, placeholder, initialValue }) => {
     });
   };
 
+  // handle location based access
+  const locationEnabled = "geolocation" in navigator;
+  const handleCurrentLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      handleLocationChange("Current", {
+        Name: "Current",
+        Lat: parseFloat(position.coords.longitude),
+        Lng: parseFloat(position.coords.latitude),
+      });
+    });
+  };
+
   const savedLocations =
     loginState &&
     Object.keys(POI).map((poi) => {
@@ -88,7 +100,7 @@ const LocationLookup = ({ onSelectCallback, placeholder, initialValue }) => {
 
   return (
     <div className={styles.LocationLookup_Container}>
-      <div className={styles.LocationLookup_Searchbar}>
+      <div className={`${styles.LocationLookup_Searchbar}`}>
         <input
           className={styles.LocationLookup_Search}
           type="text"
@@ -111,14 +123,20 @@ const LocationLookup = ({ onSelectCallback, placeholder, initialValue }) => {
           }}
         />
         <div
-          className={styles.LocationLookup_SavedLocations}
-          style={{
-            display:
-              isFocused || showAddressList || lookupInProgess ? "flex" : "none",
-          }}
+          className={`${styles.LocationLookup_Focusbar} ${
+            isFocused
+              ? styles.LocationLookup_Focusbar_Show
+              : styles.LocationLookup_Focusbar_Hide
+          }`}
+          // style={{
+          //   display:
+          //     isFocused || showAddressList || lookupInProgess ? "flex" : "none",
+          // }}
         >
           <div>
-            <button>Use Current Location</button>
+            <button enabled={locationEnabled} onClick={handleCurrentLocation}>
+              Use Current Location
+            </button>
             <button>Pick on Map</button>
           </div>
           <p>Suggestions</p>

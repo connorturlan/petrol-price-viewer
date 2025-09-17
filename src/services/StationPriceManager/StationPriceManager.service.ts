@@ -1,6 +1,6 @@
 import { ENDPOINT, MAX_STATION_REQUEST } from "../../utils/defaults";
 import { convertCoord } from "../../utils/utils";
-import { Station } from "./StationPriceManager.types";
+import { MapSector, StationInterface } from "./StationPriceManager.types";
 import * as defaults from "./StationPriceManager.defaults";
 
 // allStations is all stations that have been filtered, and that haven't expired in the cache.
@@ -47,8 +47,8 @@ export async function updateAllStations() {
 }
 
 // getAllStationsFromCache will get all stations from local storage.
-function getAllStationsFromCache(): Station[] {
-  const allStations: Station[] =
+function getAllStationsFromCache(): StationInterface[] {
+  const allStations: StationInterface[] =
     JSON.parse(localStorage.getItem(defaults.STATIONS_CACHE) ?? "[]") || [];
 
   console.debug(
@@ -58,7 +58,9 @@ function getAllStationsFromCache(): Station[] {
 }
 
 // filterExpiredStations filters out all stations that have exceeded the time to live.
-function filterExpiredStations(stations: Station[]): Station[] {
+function filterExpiredStations(
+  stations: StationInterface[]
+): StationInterface[] {
   const filteredStations = stations.filter((station) => {
     return Date.now() < station.Fetched;
   });
@@ -71,7 +73,7 @@ function filterExpiredStations(stations: Station[]): Station[] {
 // getAllStationsFromAPI will get all station information from the API.
 async function getAllStationsFromAPI(
   knownSiteIds: number[]
-): Promise<Station[]> {
+): Promise<StationInterface[]> {
   let json: any[];
   try {
     const res = await fetch(`${ENDPOINT}${defaults.STATIONS_API}`);
@@ -105,7 +107,7 @@ async function getAllStationsFromAPI(
 }
 
 // updateStationsCache will populate the cache with the new information from the API.
-function updateStationsCache(stations: Station[]) {
+function updateStationsCache(stations: StationInterface[]) {
   localStorage.setItem(defaults.STATIONS_CACHE, JSON.stringify(stations));
   console.debug(
     `[STATIONS] updating stations in cache, ${stations.length} items stored`
@@ -299,4 +301,97 @@ function updatePricesCache(prices: any[]) {
 // setPetrolType will update the petrol type.
 export function setPetrolType(newType: number) {
   petrolType = newType;
+}
+
+function writeSectorsCache(sectors: MapSector[]) {
+  localStorage.setItem(defaults.SECTORS_CACHE, JSON.stringify(sectors));
+  console.debug(
+    `[SECTORS] updating stations in cache, ${sectors.length} items added`
+  );
+}
+
+function pushToSectorsCache(newSectors: MapSector[]) {
+  const sectors = readSectorsCache();
+  sectors.push(...newSectors);
+  writeSectorsCache(sectors);
+}
+
+function readSectorsCache(): MapSector[] {
+  const sectorsJSON = localStorage.getItem(defaults.SECTORS_CACHE);
+  const sectors = JSON.parse(sectorsJSON ?? "[]") as MapSector[];
+  console.debug(`[SECTORS] found ${sectors.length} sectors in cache`);
+  return sectors;
+}
+
+function isSectorInCache(sectorID: number): boolean {
+  const sectors = readSectorsCache();
+  return sectors.some((sector: MapSector): boolean => {
+    return (
+      sector.id == sectorID &&
+      sector.ft + defaults.SECTORS_TIME_TO_LIVE > Date.now()
+    );
+  });
+}
+
+function getSectorsFromCache(sectorIDs: number[]): MapSector[] {
+  const sectors = readSectorsCache();
+  return sectors.filter((sector) => sectorIDs.includes(sector.id));
+}
+
+export async function getSectors(): Promise<MapSector[]> {
+  let sectors: MapSector[];
+  try {
+    const res = await fetch(`${ENDPOINT}${defaults.SECTORS_API_V1}`);
+    if (res.status != 200) {
+      window.alert("site data not found.");
+      return [];
+    }
+    sectors = await res.json();
+  } catch (error) {
+    console.error(`error while fetching sectors: ${error}`);
+    return [];
+  }
+
+  return sectors;
+}
+
+export async function getPricesFromSectors(
+  SectorIDs: number[]
+): Promise<MapSector[]> {
+  const newSectors: MapSector[] = [];
+  const sectors: MapSector[] = [];
+
+  // get sectors from cache.
+  const cached = SectorIDs.filter((sector) => isSectorInCache(sector));
+  sectors.push(...getSectorsFromCache(cached));
+
+  // get sectors from api.
+  const uncached = SectorIDs.filter((sector) => !isSectorInCache(sector));
+  if (uncached.length > 0) {
+    try {
+      const res = await fetch(
+        `${ENDPOINT}${defaults.SECTORS_API_V1}?id=${uncached.join(",")}`
+      );
+      if (res.status != 200) {
+        window.alert("sector data not found.");
+        return [];
+      }
+      newSectors.push(...(await res.json()));
+      newSectors.forEach((sector) => (sector.ft = Date.now()));
+      // update cache.
+      pushToSectorsCache(newSectors);
+
+      // update sectors.
+      sectors.push(...newSectors);
+    } catch (error) {
+      console.error(`error while fetching sectors: ${error}`);
+      return [];
+    }
+  }
+
+  console.log(
+    `${cached.length} cached, and ${uncached.length} uncached sectors found. ${sectors.length} sectors found.`
+  );
+
+  return sectors;
 }

@@ -29,9 +29,49 @@
     }
   }
 
-  &_SavedLocations {
+  &_Focusbar {
     display: flex;
     flex-direction: column;
     gap: 2px;
+
+    position: relative;
+    &_Show,
+    &_Hide {
+      animation-duration: 1s;
+    }
+
+    &_Show {
+      animation-name: slide-in;
+      display: flex;
+      height: 100%;
+    }
+
+    &_Hide {
+      animation-name: slide-out;
+      display: none;
+    }
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    height: 0%;
+  }
+  to {
+    opacity: 1;
+    height: 100%;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    opacity: 1;
+    height: 100%;
+  }
+  to {
+    display: none;
+    opacity: 0;
+    height: 0%;
   }
 }

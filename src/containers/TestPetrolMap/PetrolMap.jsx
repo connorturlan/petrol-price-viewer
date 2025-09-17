@@ -16,8 +16,10 @@ import StationModal from "../../components/StationModal/StationModal";
 import {
   boundingExtent,
   containsCoordinate,
+  containsExtent,
   getArea,
   getCenter,
+  intersects,
   returnOrUpdate,
 } from "ol/extent";
 import LoadingSplash from "../../components/LoadingSplash/LoadingSplash";
@@ -55,7 +57,11 @@ import { getRoutesBetweenPoints } from "../../utils/navigation";
 import { fromExtent } from "ol/geom/Polygon";
 import { RouteContext } from "../../contexts/RouteContext";
 // import { getFuelPrices } from "../../services/service";
-import { getFuelPrices } from "../../services/StationPriceManager/StationPriceManager.service";
+import {
+  getFuelPrices,
+  getPricesFromSectors,
+  getSectors,
+} from "../../services/StationPriceManager/StationPriceManager.service";
 import Style, { createDefaultStyle } from "ol/style/Style";
 import { updateAllStations } from "../../services/StationPriceManager/StationPriceManager.service";
 import { FitMapToExtent, MapMoveTo, UseSub } from "../../utils/pubsub";
@@ -67,6 +73,7 @@ import Stroke from "ol/style/Stroke";
 import Fill from "ol/style/Fill";
 import Text from "ol/style/Text";
 import { toRadians } from "ol/math";
+import FeatureFormat from "ol/format/Feature";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -115,9 +122,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   const drawingLayer = useRef(undefined);
   const markerLayer = useRef(undefined);
   const waypointLayer = useRef(undefined);
+  const debugLayer = useRef(undefined);
   const [layers, setLayers] = useState([]);
 
-  const setupMapLayers = () => {
+  const setupMapLayers = async () => {
     stationLayer.current = createStationLayer([], darkMode);
     drawingLayer.current = new VectorLayer({
       source: new VectorSource(),
@@ -131,11 +139,44 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         }),
       }),
     });
-    markerLayer.current = createCustomLayer(POI);
+    (debugLayer.current = new VectorLayer({
+      source: new VectorSource(),
+      style: (feature) => {
+        return new Style({
+          fill: new Fill({
+            color: "#7fdfe233",
+          }),
+          stroke: new Stroke({
+            color: "#7fdfe2ff",
+            width: feature.get("insideView") ? 8 : 2,
+          }),
+          text: new Text({
+            text: feature.get("id"),
+            font: "italic 12pt sans-serif",
+          }),
+        });
+      },
+    })),
+      (markerLayer.current = createCustomLayer(POI));
     waypointLayer.current = createWaypointLayer(POI.home, POI.work);
+
+    const debug = await getSectors();
+    const source = debugLayer.current.getSource();
+    const features = debug.map((sector) => {
+      const tl = fromLonLat(sector.tl);
+      const br = fromLonLat(sector.br);
+      console.log(tl, br);
+      return new Feature({
+        id: sector.id,
+        geometry: fromExtent([...tl, ...br]),
+        insideView: containsExtent(visibleBounds, [...tl, ...br]),
+      });
+    });
+    source.addFeatures(features);
 
     setLayers([
       drawingLayer.current,
+      debugLayer.current,
       waypointLayer.current,
       stationLayer.current,
       markerLayer.current,
@@ -424,6 +465,26 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setFilter(data);
   });
 
+  const updateInViewSectors = async (bounds) => {
+    const source = debugLayer.current.getSource();
+    const sectors = source
+      .getFeatures()
+      .filter((sector) => {
+        const extent = sector.get("geometry").getExtent();
+        const insideBounds = intersects(bounds, extent);
+        sector.set("insideView", insideBounds);
+        return insideBounds;
+      })
+      .map((sector) => sector.get("id"));
+    source.changed();
+
+    const uniqueSet = new Set(sectors);
+    const uniqueArray = [...uniqueSet];
+
+    const prices = await getPricesFromSectors(uniqueArray);
+    console.log("got prices for sectors:", prices);
+  };
+
   const onInit = (map) => {
     if (!map) return;
 
@@ -438,6 +499,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setVisibleBounds(extent);
 
     updateMapClusterValues();
+    updateInViewSectors(extent);
   };
 
   const onClick = (event, map) => {

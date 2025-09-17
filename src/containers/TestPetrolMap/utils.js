@@ -74,14 +74,17 @@ const getPriority = (feature) => {
   const isLowest = Boolean(feature.get("isLowest"));
   const isOnRoute = Boolean(feature.get("isOnRoute"));
   const isFiltered = Boolean(feature.get("lowestInRange"));
-  return (isLowest ? 40 : 0) + (isOnRoute ? 20 : 0) + (isFiltered ? 10 : 0);
+  return (isLowest ? 4 : 0) + (isOnRoute ? 2 : 0) + (isFiltered ? 1 : 0);
   // return isLowest ? 4 : 0;
 };
 
 export const getPriorityFeature = (features) => {
   const priorityFeature = features.reduce(
     (priority, current) =>
-      getPriority(priority) > getPriority(current) ? priority : current,
+      getPriority(priority) > getPriority(current) ||
+      priority.get("Price") <= current.get("Price")
+        ? priority
+        : current,
     features[0]
   );
 
