@@ -1,6 +1,11 @@
 import { ENDPOINT, MAX_STATION_REQUEST } from "../../utils/defaults";
 import { convertCoord } from "../../utils/utils";
-import { MapSector, StationInterface } from "./StationPriceManager.types";
+import {
+  FuelPrice,
+  MapSector,
+  StationDetails,
+  StationInterface,
+} from "./StationPriceManager.types";
 import * as defaults from "./StationPriceManager.defaults";
 
 // allStations is all stations that have been filtered, and that haven't expired in the cache.
@@ -123,14 +128,16 @@ export async function getFilteredStations() {}
 // getFuelPrices
 export async function getFuelPrices(
   fuelType: number,
-  siteIds: string[]
+  stationIDs: number[]
 ): Promise<[number, number][]> {
+  return convertFuelPrice(getFuelPricesFromSectors(fuelType, stationIDs));
+
   while (readInProgress) {
     console.debug("[PRICES] awaiting timeout...");
     return new Promise((resolve) => {
       setTimeout(async () => {
         readInProgress = false;
-        resolve(await getFuelPrices(fuelType, siteIds));
+        resolve(await getFuelPrices(fuelType, stationIDs));
       }, 1_000);
     });
   }
@@ -138,7 +145,7 @@ export async function getFuelPrices(
   setTimeout(async () => {
     readInProgress = false;
   }, 2_000);
-  console.debug(`[PRICES] ${siteIds.length} sites requested`);
+  console.debug(`[PRICES] ${stationIDs.length} sites requested`);
 
   petrolType = fuelType;
 
@@ -146,14 +153,14 @@ export async function getFuelPrices(
   const filteredCachedPrices = allCachedPrices.filter(
     (price) =>
       price.Type == petrolType &&
-      siteIds.some((siteId) => siteId == price.SiteId)
+      stationIDs.some((siteId) => siteId == price.SiteId)
   );
   console.debug(
     `[PRICES] ${filteredCachedPrices.length} matching sites found in cache`
   );
 
   const cachedPricesIds = filteredCachedPrices.map((price) => price.SiteId);
-  const missingPriceIds = siteIds.filter(
+  const missingPriceIds = stationIDs.filter(
     (siteId) => !cachedPricesIds.some((cachedSiteId) => cachedSiteId == siteId)
   );
 
@@ -187,6 +194,14 @@ function uncachePrices(prices: any[]): any {
   const allPrices = {};
   prices.forEach((price) => {
     allPrices[price.SiteId] = price.Price;
+  });
+  return allPrices;
+}
+
+function convertFuelPrice(prices: FuelPrice[]): any {
+  const allPrices: any = {};
+  prices.forEach((price) => {
+    allPrices[price.SiteID] = price.Price;
   });
   return allPrices;
 }
@@ -303,39 +318,85 @@ export function setPetrolType(newType: number) {
   petrolType = newType;
 }
 
-function writeSectorsCache(sectors: MapSector[]) {
-  localStorage.setItem(defaults.SECTORS_CACHE, JSON.stringify(sectors));
-  console.debug(
-    `[SECTORS] updating stations in cache, ${sectors.length} items added`
-  );
+function remapFuelPrice(id: number, o: any): FuelPrice {
+  return {
+    SiteID: id,
+    // FuelID (id)
+    FuelID: o.id,
+    // CollectionMethod (c)
+    CollectionMethod: o.c,
+    // TransactionDateUTC (t)
+    TransactionDateUTC: o.t,
+    // Price (p)
+    Price: o.p,
+  };
 }
 
-function pushToSectorsCache(newSectors: MapSector[]) {
-  const sectors = readSectorsCache();
-  sectors.push(...newSectors);
-  writeSectorsCache(sectors);
+function remapStationDetails(o: any): StationDetails {
+  const fuelTypes = new Map<number, FuelPrice>();
+  Array.from(Object.entries(o.t)).forEach(([k, v]: [string, any]) => {
+    return fuelTypes.set(Number(k), remapFuelPrice(o.id, v));
+  });
+  return {
+    // SiteID (id)
+    SiteID: o.id,
+    // Name (n)
+    Name: o.n,
+    // Lat (lt)
+    Lat: o.lt,
+    // Lng (lg)
+    Lng: o.lg,
+    // GooglePlaceID (gi)
+    GooglePlaceID: o.gi,
+    // Address (a)
+    Address: o.a,
+    // BrandID (b)
+    BrandID: o.b,
+    // Postcode (p)
+    Postcode: o.p,
+    // LastUpdated (u)
+    LastUpdated: o.u,
+    // FuelTypes (t)
+    FuelTypes: fuelTypes,
+  } as StationDetails;
 }
 
-function readSectorsCache(): MapSector[] {
-  const sectorsJSON = localStorage.getItem(defaults.SECTORS_CACHE);
-  const sectors = JSON.parse(sectorsJSON ?? "[]") as MapSector[];
-  console.debug(`[SECTORS] found ${sectors.length} sectors in cache`);
-  return sectors;
-}
+const SectorDictionary = new Map<number, MapSector>();
+const StationDictionary = new Map<number, StationDetails>();
 
-function isSectorInCache(sectorID: number): boolean {
-  const sectors = readSectorsCache();
-  return sectors.some((sector: MapSector): boolean => {
-    return (
-      sector.id == sectorID &&
-      sector.ft + defaults.SECTORS_TIME_TO_LIVE > Date.now()
+function addSectorsToSectorStationMap(sectors: MapSector[]) {
+  sectors.forEach((sector) => {
+    SectorDictionary.set(sector.id, sector);
+    Array.from(Object.entries(sector.st.s)).forEach(
+      ([stationID, station]: [string, StationDetails]) => {
+        StationDictionary.set(Number(stationID), remapStationDetails(station));
+      }
     );
   });
 }
 
-function getSectorsFromCache(sectorIDs: number[]): MapSector[] {
-  const sectors = readSectorsCache();
-  return sectors.filter((sector) => sectorIDs.includes(sector.id));
+function getStationDetails(stationIDs: number[]): StationDetails[] {
+  const details = stationIDs
+    .map((stationID) => StationDictionary.get(stationID))
+    .filter((station) => station != undefined);
+
+  return details;
+}
+
+function getFuelPricesFromSectors(
+  fuelID: number,
+  stationIDs: number[]
+): FuelPrice[] {
+  const prices = getStationDetails(stationIDs)
+    .filter((station) => station.FuelTypes.has(fuelID))
+    .map((station) => {
+      return (
+        station.FuelTypes.get(fuelID) ||
+        ({ SiteID: station.SiteID, Price: 0 } as FuelPrice)
+      );
+    });
+
+  return prices;
 }
 
 export async function getSectors(): Promise<MapSector[]> {
@@ -362,11 +423,15 @@ export async function getPricesFromSectors(
   const sectors: MapSector[] = [];
 
   // get sectors from cache.
-  const cached = SectorIDs.filter((sector) => isSectorInCache(sector));
-  sectors.push(...getSectorsFromCache(cached));
+  const cached = SectorIDs.map((sectorID) =>
+    SectorDictionary.get(sectorID)
+  ).filter((sector) => sector != undefined);
+  sectors.push(...cached);
 
   // get sectors from api.
-  const uncached = SectorIDs.filter((sector) => !isSectorInCache(sector));
+  const uncached = SectorIDs.filter(
+    (sectorID) => !SectorDictionary.has(sectorID)
+  );
   if (uncached.length > 0) {
     try {
       const res = await fetch(
@@ -379,7 +444,7 @@ export async function getPricesFromSectors(
       newSectors.push(...(await res.json()));
       newSectors.forEach((sector) => (sector.ft = Date.now()));
       // update cache.
-      pushToSectorsCache(newSectors);
+      addSectorsToSectorStationMap(newSectors);
 
       // update sectors.
       sectors.push(...newSectors);

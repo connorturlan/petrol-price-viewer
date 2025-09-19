@@ -8,4 +8,4 @@ export const PRICES_TIME_TO_LIVE = 900_000; // < 7 days
 
 export const SECTORS_CACHE = "MapSectors";
 export const SECTORS_API_V1 = "/api/v1/sectors";
-export const SECTORS_TIME_TO_LIVE = 10_000; // < 7 days
+export const SECTORS_TIME_TO_LIVE = 900_000; // < 7 days

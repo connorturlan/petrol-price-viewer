@@ -3,27 +3,45 @@ export interface StationInterface {
   SiteId: number;
 }
 
+export type FuelPrice = {
+  // SiteID - this isn't included by the api
+  SiteID: number;
+  // FuelID (id)
+  FuelID: number;
+  // CollectionMethod (c)
+  CollectionMethod: string;
+  // TransactionDateUTC (t)
+  TransactionDateUTC: string;
+  // Price (p)
+  Price: number;
+};
+
 export type StationDetails = {
   // SiteID (id)
-  SiteID: string;
+  SiteID: number;
   // Name (n)
   Name: string;
   // Lat (lt)
-  Lat: string;
+  Lat: number;
   // Lng (lg)
-  Lng: string;
+  Lng: number;
   // GooglePlaceID (gi)
   GooglePlaceID: string;
   // Address (a)
   Address: string;
   // BrandID (b)
-  BrandID: string;
+  BrandID: number;
   // Postcode (p)
   Postcode: string;
   // LastUpdated (u)
   LastUpdated: string;
   // FuelTypes (t)
-  FuelTypes: string;
+  FuelTypes: Map<number, FuelPrice>;
+};
+
+export type StationList = {
+  // Sites (s)
+  s: StationDetails[];
 };
 
 export type MapSector = {
@@ -36,7 +54,7 @@ export type MapSector = {
   // StationsIDs (si)
   si: number[];
   // StationData (st)
-  st: number[];
+  st: StationList;
   // Fetched (ft)
   ft: number;
 };

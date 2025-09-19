@@ -121,6 +121,10 @@ const MapContainer = ({
       onMove && onMove(event, mapRef.current);
     });
 
+    initialMap.on("zoomend", (event) => {
+      onMove && onMove(event, mapRef.current);
+    });
+
     setMap(initialMap);
     mapRef.current = initialMap;
     onInit && onInit(initialMap);

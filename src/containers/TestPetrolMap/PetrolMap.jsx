@@ -165,7 +165,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const features = debug.map((sector) => {
       const tl = fromLonLat(sector.tl);
       const br = fromLonLat(sector.br);
-      console.log(tl, br);
       return new Feature({
         id: sector.id,
         geometry: fromExtent([...tl, ...br]),
@@ -176,7 +175,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     setLayers([
       drawingLayer.current,
-      debugLayer.current,
+      // debugLayer.current,
       waypointLayer.current,
       stationLayer.current,
       markerLayer.current,
@@ -265,7 +264,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       });
     });
     source.addFeatures(features);
-    // console.log(features.at(0));
 
     source.changed();
 
@@ -275,6 +273,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   };
 
   const updateMapClusterValues = () => {
+    if (!stationLayer.current) return;
     if (fuelType >= 10_000) {
       updateClusterWithChargerCount(stationLayer.current.getSource());
     } else {
@@ -349,8 +348,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     if (points.length <= 0) return;
 
-    console.log(points);
-
     const extent = boundingExtent(points);
 
     FitMapToExtent(extent);
@@ -411,7 +408,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       PROJECTION
     );
     const filterDistance = filter.distance;
-    console.log(1 / Math.abs(Math.cos(toRadians(filterCenter[0]))));
 
     const source = drawingLayer.current.getSource();
     source.clear();
@@ -445,7 +441,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     const lowestStation = getLowestStationsFromArray(stationsInRange);
     const lowestPrice = lowestStation.at(0).Price;
-    console.log(lowestStation, lowestPrice);
+    // console.log(lowestStation, lowestPrice);
 
     const updatedLowestStations = updatedInRangeStations.map((station) => {
       return {
@@ -466,6 +462,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   });
 
   const updateInViewSectors = async (bounds) => {
+    if (!debugLayer.current) return;
+
     const source = debugLayer.current.getSource();
     const sectors = source
       .getFeatures()
@@ -481,8 +479,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const uniqueSet = new Set(sectors);
     const uniqueArray = [...uniqueSet];
 
-    const prices = await getPricesFromSectors(uniqueArray);
-    console.log("got prices for sectors:", prices);
+    await getPricesFromSectors(uniqueArray);
+
+    await getSitePrices();
   };
 
   const onInit = (map) => {
@@ -490,6 +489,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     const extent = map.getView().calculateExtent(map.getSize());
     setVisibleBounds(extent);
+
+    updateMapClusterValues();
+    updateInViewSectors(extent);
   };
 
   const onMove = (event, map) => {
@@ -560,9 +562,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       // triggerReload(true);
     }
   };
-
-  // if (!stationLayer || !lowestLayer || !allStations || allStations.length <= 0)
-  //   return;
 
   const isLoading = loadingStations || loadingPrices || loadingRoutes;
 
