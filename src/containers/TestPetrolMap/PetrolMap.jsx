@@ -295,10 +295,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   }, []);
 
   useEffect(() => {
-    resetFuelPrices();
-  }, [fuelType]);
-
-  useEffect(() => {
     if (!loadingPrices) {
       setPricesLoading(true);
       getSitePrices();
@@ -391,6 +387,11 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setAllStations(updatedStations);
     setLoadingRoutes(false);
   };
+
+  useEffect(() => {
+    // resetFuelPrices();
+    updateMapClusterValues();
+  }, [fuelType]);
 
   useEffect(() => {
     updateWaypointLayer();

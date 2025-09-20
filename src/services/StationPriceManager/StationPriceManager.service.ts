@@ -388,7 +388,7 @@ function getFuelPricesFromSectors(
   stationIDs: number[]
 ): FuelPrice[] {
   const prices = getStationDetails(stationIDs)
-    .filter((station) => station.FuelTypes.has(fuelID))
+    // .filter((station) => station.FuelTypes.has(fuelID))
     .map((station) => {
       return (
         station.FuelTypes.get(fuelID) ||
