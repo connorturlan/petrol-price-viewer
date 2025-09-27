@@ -18,6 +18,7 @@ const lightMapLayers = [
   "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
   "https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}.png",
   "https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png",
+  "http://c.tile.opentopomap.org/{z}/{x}/{y}.png",
 ];
 
 const mapLayer = new TileLayer({

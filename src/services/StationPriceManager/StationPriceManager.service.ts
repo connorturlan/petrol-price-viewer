@@ -404,7 +404,7 @@ export async function getSectors(): Promise<MapSector[]> {
   try {
     const res = await fetch(`${ENDPOINT}${defaults.SECTORS_API_V1}`);
     if (res.status != 200) {
-      window.alert("site data not found.");
+      window.alert("sector data not found.");
       return [];
     }
     sectors = await res.json();
