@@ -14,6 +14,7 @@ export const SHOW_WELCOME = !(
   import.meta.env.VITE_LOCAL_SHOW_WELCOME == "FALSE"
 );
 
-export const GEOCODING_API = "https://nominatim.fueltool.com.au/search";
-// import.meta.env.VITE_GEOCODING_API ||
-// `https://nominatim.fueltool.com.au/search`;
+// export const GEOCODING_API = "https://nominatim.fueltool.com.au/search";
+export const GEOCODING_API =
+  import.meta.env.VITE_GEOCODING_API ||
+  `https://nominatim.openstreetmap.org/search`;

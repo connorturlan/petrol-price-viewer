@@ -137,7 +137,7 @@ const LocationLookup = ({ onSelectCallback, placeholder, initialValue }) => {
             <button enabled={locationEnabled} onClick={handleCurrentLocation}>
               Use Current Location
             </button>
-            <button>Pick on Map</button>
+            {/* <button>Pick on Map</button> */}
           </div>
           <p>Suggestions</p>
           {showAddressList && (
