@@ -279,6 +279,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     } else {
       updateClusterWithLowestPrice(stationLayer.current.getSource());
     }
+    stationLayer.current?.getSource()?.changed();
   };
 
   const drawCircle = (coord, radius) => {
