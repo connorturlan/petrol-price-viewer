@@ -67,7 +67,12 @@ import { updateAllStations } from "../../services/StationPriceManager/StationPri
 import { FitMapToExtent, MapMoveTo, UseSub } from "../../utils/pubsub";
 import { getCookie } from "../../utils/cookies";
 import { getDistance, getLength } from "ol/sphere";
-import { customStyle } from "./styles";
+import {
+  customStyle,
+  stationDefaultStyle,
+  stationMinimalStyle,
+  stationRoundelStyle,
+} from "./styles";
 import { red } from "@mui/material/colors";
 import Stroke from "ol/style/Stroke";
 import Fill from "ol/style/Fill";
@@ -119,6 +124,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   const [filter, setFilter] = useState({});
 
   const stationLayer = useRef(undefined);
+  const stationLayerDefault = useRef(undefined);
+  const stationLayerMinimal = useRef(undefined);
+  const stationLayerRoundel = useRef(undefined);
+  const stationLayerPinPrick = useRef(undefined);
   const drawingLayer = useRef(undefined);
   const markerLayer = useRef(undefined);
   const waypointLayer = useRef(undefined);
@@ -126,7 +135,11 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   const [layers, setLayers] = useState([]);
 
   const setupMapLayers = async () => {
-    stationLayer.current = createStationLayer([], darkMode);
+    stationLayer.current = createStationLayer(
+      [],
+      darkMode,
+      stationMinimalStyle
+    );
     drawingLayer.current = new VectorLayer({
       source: new VectorSource(),
       style: new Style({
@@ -173,11 +186,56 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     });
     source.addFeatures(features);
 
+    const layers = [
+      stationLayerDefault,
+      stationLayerMinimal,
+      stationLayerRoundel,
+      stationLayerPinPrick,
+    ];
+    const styles = [
+      stationDefaultStyle,
+      stationMinimalStyle,
+      stationRoundelStyle,
+      stationDefaultStyle,
+    ];
+    layers.forEach((layer, index) => {
+      console.log("adding to layer", index);
+      const newLayer = new VectorLayer({
+        source: new VectorSource({}),
+        style: styles.at(index),
+      });
+
+      let point = new Point(
+        fromLonLat([MAP_CENTER[0] + index / 100, MAP_CENTER[1]])
+      );
+      if (index == 2) {
+        point = new Circle(
+          fromLonLat([MAP_CENTER[0] + index / 100, MAP_CENTER[1]]),
+          20
+        );
+      }
+      console.log(point.getCoordinates());
+      const feature = new Feature({
+        geometry: point,
+        id: -1,
+        BrandID: 1,
+        price: 198.9,
+        SiteId: -1,
+      });
+      const source = newLayer.getSource();
+      source.addFeature(feature);
+      layer.current = newLayer;
+    });
+
     setLayers([
       drawingLayer.current,
       // debugLayer.current,
       waypointLayer.current,
       stationLayer.current,
+      // stationLayerDefault.current,
+      // stationLayerMinimal.current,
+      // stationLayerRoundel.current,
+      // stationLayerPinPrick.current,
       markerLayer.current,
     ]);
   };
@@ -242,8 +300,26 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     source.clear();
 
     const filteredstations = allStations.filter(
-      (station) => station.Price && station.Price < 9999
+      (station) =>
+        station &&
+        station.Price &&
+        station.Price < 9999 &&
+        containsCoordinate(
+          visibleBounds,
+          fromLonLat([station.Lng, station.Lat])
+        )
     );
+    console.log(filteredstations);
+
+    let min, max;
+    console.log(filteredstations.at(0), filteredstations.length);
+    min = filteredstations.at(0)?.Price || 0;
+    max = filteredstations.at(0)?.Price || 0;
+    filteredstations.forEach((station) => {
+      min = Math.min(min, station.Price);
+      max = Math.max(max, station.Price);
+    });
+    console.log("mM:", min, max);
 
     const features = filteredstations.map((station) => {
       const coord = fromLonLat([station.Lng, station.Lat], PROJECTION);
@@ -256,11 +332,14 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         price = station.Price || 0;
       }
 
+      const normalisedRange = (station.Price - max) / (min - max);
+
       return new Feature({
         coord,
         geometry: point,
         ...station,
         price: price || "loading...",
+        normalisedRange,
       });
     });
     source.addFeatures(features);
@@ -283,6 +362,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   };
 
   const drawCircle = (coord, radius) => {
+    if (!coord || !radius) return;
     const point = new Circle(coord, radius);
     const feature = new Feature({ geometry: point });
     const source = drawingLayer.current.getSource();

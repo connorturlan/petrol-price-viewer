@@ -36,9 +36,10 @@ const DEBUG = false;
 const FeatureText = [
   // 0 - standard
   {
+    // textStyle: "0 1em sans-serif",
     textStyle: "normal 1em sans-serif",
-    textFill: "#333",
-    textOutline: "#eee",
+    // textFill: "#333",
+    textOutline: "#111d",
     backgroundFill: "",
     backgroudOutline: "#22222240",
     iconHeight: 32,
@@ -46,8 +47,8 @@ const FeatureText = [
   // 1 - lowest
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#333",
-    textOutline: "#fffb00",
+    textFill: "#111",
+    textOutline: "#fffb00ff",
     backgroundFill: "",
     backgroudOutline: "#ff7b00ff",
     iconHeight: 64,
@@ -55,7 +56,7 @@ const FeatureText = [
   // 2 - on route
   {
     textStyle: "normal 1em sans-serif",
-    textFill: "#333",
+    // textFill: "#333",
     textOutline: "#b8dfffbb",
     backgroundFill: "",
     backgroudOutline: "#038cfcbb",
@@ -64,7 +65,7 @@ const FeatureText = [
   // 3 - lowest & on route
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#333",
+    // textFill: "#333",
     textOutline: "#b8fffbbb",
     backgroundFill: "",
     backgroudOutline: "#03f4fcbb",
@@ -73,7 +74,7 @@ const FeatureText = [
   // 4 - in range
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#333",
+    // textFill: "#333",
     textOutline: "#71b671ff",
     backgroundFill: "",
     backgroudOutline: "#97f79740",
@@ -91,7 +92,7 @@ const FeatureText = [
   // 6 - on route & in range
   {
     textStyle: "normal 1em sans-serif",
-    textFill: "#333",
+    // textFill: "#333",
     textOutline: "#b8dfffbb",
     backgroundFill: "",
     backgroudOutline: "#038cfcbb",
@@ -122,9 +123,12 @@ isInRange: ${isInRange}
 isOnRoute: ${isOnRoute}`
       : `${feature.get("price") || 0} +${feature.get("features").length}`;
   } else {
-    return feature.get("features")?.length <= 1
-      ? `${feature.get("price") || 0}`
-      : `${feature.get("price") || 0} +${feature.get("features").length}`;
+    return `${feature.get("price") || 0}${
+      feature.get("features")?.length <= 1 ? "*" : ""
+    }`;
+    // return feature.get("features")?.length <= 1
+    //   ? `${feature.get("price") || 0}`
+    //   : `${feature.get("price") || 0} +${feature.get("features").length}`;
   }
 };
 
@@ -174,6 +178,174 @@ export function stationStyle(feature: FeatureLike): StyleLike {
         lineCap: "round",
       }),
       padding: [-8, 0, -8, 0],
+      text: text,
+    }),
+    zIndex: styleIndex,
+  });
+}
+
+export function stationDefaultStyle(feature: FeatureLike): StyleLike {
+  const isCluster = !!feature.get("features");
+  const isLowest = Boolean(feature.get("isLowest"));
+  const isFiltered = Boolean(feature.get("lowestInRange"));
+  const isOnRoute = Boolean(feature.get("isOnRoute"));
+
+  let text = "";
+  if (isCluster) {
+    text = getClusterText(feature) || "this is a test";
+  } else {
+    text = getFeatureText(feature) || "this is a test";
+  }
+
+  const styleIndex =
+    (isLowest ? 1 : 0) + (isOnRoute ? 2 : 0) + (isFiltered ? 4 : 0);
+  const style = FeatureText.at(styleIndex);
+
+  const iconSrc = getImageFromStationDetails(feature);
+
+  return new Style({
+    image: new Icon({
+      anchor: [0.5, 1],
+      src: iconSrc,
+      height: style?.iconHeight,
+    }),
+    text: new Text({
+      offsetY: 16,
+      font: style?.textStyle,
+      fill: new Fill({
+        color: style?.textFill,
+      }),
+      stroke: new Stroke({
+        color: style?.textOutline,
+        width: 8,
+      }),
+      backgroundStroke: new Stroke({
+        color: style?.backgroudOutline,
+        width: 16,
+        lineJoin: "round",
+        lineCap: "round",
+      }),
+      padding: [-8, 0, -8, 0],
+      text: text,
+    }),
+    zIndex: styleIndex,
+  });
+}
+
+const lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
+
+function getScaledColour(v: number): string {
+  // const a = "rgba(255, 80, 80, 1)"
+  // const b = "rgba(133, 255, 133, 1)"
+  const R = lerp(255, 80, v);
+  const G = lerp(80, 255, v);
+  const B = 80;
+  return `rgb(${R}, ${G}, ${B})`;
+}
+
+export function stationMinimalStyle(feature: FeatureLike): StyleLike {
+  const isCluster = !!feature.get("features");
+  const isLowest = Boolean(feature.get("isLowest"));
+  const isFiltered = Boolean(feature.get("lowestInRange"));
+  const isOnRoute = Boolean(feature.get("isOnRoute"));
+  const normalisedRange =
+    Number(feature.get("normalisedRange")) || Math.random();
+
+  let text = "";
+  if (isCluster) {
+    text = getClusterText(feature) || "this is a test";
+  } else {
+    text = getFeatureText(feature) || "this is a test";
+  }
+
+  const styleIndex =
+    (isLowest ? 1 : 0) + (isOnRoute ? 2 : 0) + (isFiltered ? 4 : 0);
+  const style = FeatureText.at(styleIndex);
+
+  const iconSrc = getImageFromStationDetails(feature);
+  return new Style({
+    image: new Icon({
+      anchor: [0.5, 1],
+      src: iconSrc,
+      height: 32, //style?.iconHeight,
+      // color: "red",
+    }),
+    text: new Text({
+      offsetY: -4,
+      textAlign: "center",
+      font: "normal 0.8em sans-serif",
+      fill: new Fill({
+        color: style?.textFill || getScaledColour(normalisedRange),
+        // color: "#85ff85ff",
+        // color: style?.textFill,
+      }),
+      stroke: new Stroke({
+        color: style?.textOutline,
+        // color: "#000000ff",
+        width: 4,
+      }),
+      padding: [0, 10, 0, 10],
+      text: text,
+    }),
+    zIndex: styleIndex,
+  });
+}
+
+export function stationRoundelStyle(feature: FeatureLike): StyleLike {
+  const isCluster = !!feature.get("features");
+  const isLowest = Boolean(feature.get("isLowest"));
+  const isFiltered = Boolean(feature.get("lowestInRange"));
+  const isOnRoute = Boolean(feature.get("isOnRoute"));
+  const colorScale = Boolean(feature.get("colorScale"));
+
+  let text = "";
+  if (isCluster) {
+    text = getClusterText(feature) || "this is a test";
+  } else {
+    text = getFeatureText(feature) || "this is a test";
+  }
+
+  const styleIndex =
+    (isLowest ? 1 : 0) + (isOnRoute ? 2 : 0) + (isFiltered ? 4 : 0);
+  const style = FeatureText.at(styleIndex);
+
+  const iconSrc = getImageFromStationDetails(feature);
+  const center = feature.get("coord");
+
+  return new Style({
+    image: new Icon({
+      anchor: [0.5, 1],
+      src: iconSrc,
+      height: style?.iconHeight,
+    }),
+    fill: new Fill({
+      color: style?.textFill,
+    }),
+    stroke: new Stroke({
+      color: style?.textOutline,
+      width: 3,
+    }),
+    text: new Text({
+      // offsetY: -12,
+      textAlign: "center",
+      font: "normal 0.8em sans-serif",
+      fill: new Fill({
+        color: style?.textFill,
+      }),
+      // stroke: new Stroke({
+      //   color: style?.textOutline,
+      //   width: 3,
+      // }),
+      backgroundFill: new Fill({
+        color: style?.textOutline,
+      }),
+      backgroundStroke: new Stroke({
+        color: style?.backgroudOutline,
+        width: 2,
+        lineJoin: "round",
+        lineCap: "round",
+      }),
+      padding: [0, 10, 0, 10],
       text: text,
     }),
     zIndex: styleIndex,

@@ -13,17 +13,20 @@ import Style from "ol/style/Style";
 import { UseSub } from "../../utils/pubsub";
 import { duration } from "@mui/material";
 
+// https://gist.github.com/bokub/dd85ffe1368bb10396f871111dff7201 - free map tiles
 const lightMapLayers = [
-  "https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}",
+  "https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
   "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
   "https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}.png",
   "https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png",
   "http://c.tile.opentopomap.org/{z}/{x}/{y}.png",
+  "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
+  "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
 ];
 
 const mapLayer = new TileLayer({
   source: new XYZ({
-    url: lightMapLayers.at(0),
+    url: lightMapLayers.at(5),
     transition: 0,
   }),
 });
