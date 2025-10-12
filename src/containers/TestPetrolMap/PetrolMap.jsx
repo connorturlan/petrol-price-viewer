@@ -308,7 +308,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
           visibleBounds,
           fromLonLat([station.Lng, station.Lat])
         ) &&
-        station.SiteId != 61402476
+        station.SiteId != 61402476 // ignore "BP Seymours Toyota"
     );
     console.log(filteredstations);
 
