@@ -307,7 +307,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         containsCoordinate(
           visibleBounds,
           fromLonLat([station.Lng, station.Lat])
-        )
+        ) &&
+        station.SiteId != 61402476
     );
     console.log(filteredstations);
 

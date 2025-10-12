@@ -39,7 +39,7 @@ const FeatureText = [
     // textStyle: "0 1em sans-serif",
     textStyle: "normal 1em sans-serif",
     // textFill: "#333",
-    textOutline: "#111d",
+    textOutline: "rgba(255, 255, 255, 0.96)",
     backgroundFill: "",
     backgroudOutline: "#22222240",
     iconHeight: 32,
@@ -124,7 +124,7 @@ isOnRoute: ${isOnRoute}`
       : `${feature.get("price") || 0} +${feature.get("features").length}`;
   } else {
     return `${feature.get("price") || 0}${
-      feature.get("features")?.length <= 1 ? "*" : ""
+      feature.get("features")?.length <= 1 ? "" : "*"
     }`;
     // return feature.get("features")?.length <= 1
     //   ? `${feature.get("price") || 0}`
@@ -233,13 +233,37 @@ export function stationDefaultStyle(feature: FeatureLike): StyleLike {
 }
 
 const lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
+const plerp = (x: number, y: number, a: number, b: number) =>
+  lerp(x, y, Math.floor((a * b ** 2) / b) / b);
 
 function getScaledColour(v: number): string {
   // const a = "rgba(255, 80, 80, 1)"
   // const b = "rgba(133, 255, 133, 1)"
-  const R = lerp(255, 80, v);
-  const G = lerp(80, 255, v);
-  const B = 80;
+
+  const a = "rgba(255, 20, 20, 1)";
+  const b = "rgba(240, 255, 240, 1)";
+  // default
+  const R = lerp(255, 20, v);
+  const G = lerp(20, 180, v);
+  const B = 20;
+  return `rgb(${R}, ${G}, ${B})`;
+}
+
+function getScaledIconColour(v: number): string {
+  // const a = "rgba(255, 80, 80, 1)"
+  // const b = "rgba(133, 255, 133, 1)"
+
+  const a = "rgba(255, 20, 20, 1)";
+  const b = "rgba(240, 255, 240, 1)";
+  const steps = 5;
+  // default
+  // const R = plerp(255, 20, v, steps);
+  // const G = plerp(20, 180, v, steps);
+  // const B = plerp(20, 180, v, steps);
+
+  const R = plerp(255, 220, v, steps);
+  const G = plerp(220, 255, v, steps);
+  const B = 220;
   return `rgb(${R}, ${G}, ${B})`;
 }
 
@@ -263,19 +287,21 @@ export function stationMinimalStyle(feature: FeatureLike): StyleLike {
   const style = FeatureText.at(styleIndex);
 
   const iconSrc = getImageFromStationDetails(feature);
+  const textColour = getScaledColour(normalisedRange);
+  const iconColour = getScaledIconColour(normalisedRange);
   return new Style({
     image: new Icon({
       anchor: [0.5, 1],
       src: iconSrc,
       height: 32, //style?.iconHeight,
-      // color: "red",
+      // color: iconColour,
     }),
     text: new Text({
       offsetY: -4,
       textAlign: "center",
       font: "normal 0.8em sans-serif",
       fill: new Fill({
-        color: style?.textFill || getScaledColour(normalisedRange),
+        color: style?.textFill || textColour,
         // color: "#85ff85ff",
         // color: style?.textFill,
       }),

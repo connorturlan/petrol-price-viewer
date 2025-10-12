@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import styles from "./StationModal.module.scss";
 import { AppContext } from "../../contexts/AppContext";
 import { ENDPOINT } from "../../utils/defaults";
-import { ObjectIsEmpty } from "../../utils/utils";
+import { getImageFromStationBrandId, ObjectIsEmpty } from "../../utils/utils";
 import { getFuelTypeName } from "../../utils/fueltypes";
 import LoadingSplash from "../LoadingSplash/LoadingSplash";
 
@@ -61,6 +61,7 @@ function StationModal() {
 
   const date = new Date(siteDetails.LastUpdated);
   const datestring = `${date.toLocaleString()}`;
+  const imageSrc = getImageFromStationBrandId(siteDetails.BrandID);
 
   return ObjectIsEmpty(siteDetails) ? (
     <LoadingSplash />
@@ -75,6 +76,7 @@ function StationModal() {
         <button onClick={hideModal}>X</button>
         <div className={styles.StationModal_Container}>
           <div className={styles.StationModal_Title}>
+            <img src={imageSrc} alt="" srcset="" />
             <h2>{siteDetails.Name}</h2>
           </div>
           <div className={styles.StationModal_Prices}>{getSitePrices()}</div>

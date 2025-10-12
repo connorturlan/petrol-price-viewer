@@ -95,7 +95,7 @@ function App() {
 
       <div className={styles.App_Layout}>
         <Toolbox>
-          <LoginControl />
+          {/* <LoginControl /> */}
           <LocationSelector />
           <FuelSelector />
           <StationFilter />
