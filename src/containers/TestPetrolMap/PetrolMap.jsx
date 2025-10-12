@@ -310,7 +310,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         ) &&
         station.SiteId != 61402476 // ignore "BP Seymours Toyota"
     );
-    console.log(filteredstations);
+    updateStations(filteredstations);
 
     let min, max;
     console.log(filteredstations.at(0), filteredstations.length);
@@ -383,7 +383,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     } else {
       setPricesLoading(false);
       updateStationsLayer();
-      updateStations(allStations);
+      // updateStations(allStations);
     }
     drawCircle(fromLonLat(center, PROJECTION));
   }, [allStations, visibleBounds]);
