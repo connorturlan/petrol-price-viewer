@@ -4,6 +4,9 @@
     flex-direction: column;
     gap: 4px;
     padding: 4px;
+    width: calc(100% - 16px);
+    max-width: 30em;
+    margin: 8px;
   }
 
   &_Searchbar {

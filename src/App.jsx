@@ -23,6 +23,7 @@ import StationFilter from "./components/StationFilter/StationFilter";
 import LocationSelector from "./components/LocationSelector/LocationSelector";
 import { fromLonLat } from "ol/proj";
 import { PROJECTION } from "./utils/defaults";
+import AppMenu from "./containers/AppMenu/AppMenu";
 
 function App() {
   // set intial state
@@ -93,9 +94,9 @@ function App() {
 
       <StationModal />
 
-      <div className={styles.App_Layout}>
+      {/* <div className={styles.App_Layout}>
+        <LoginControl />
         <Toolbox>
-          {/* <LoginControl /> */}
           <LocationSelector />
           <FuelSelector />
           <StationFilter />
@@ -122,6 +123,14 @@ function App() {
           <RoutePlanner />
           <SettingsModal />
         </Toolbox>
+        <AppMenu />
+        <PetrolMap
+          fuelType={fuelType}
+          updateStations={setMapFeatures}
+        ></PetrolMap>
+      </div> */}
+      <div className={styles.App_Container}>
+        <AppMenu />
         <PetrolMap
           fuelType={fuelType}
           updateStations={setMapFeatures}

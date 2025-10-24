@@ -5,7 +5,12 @@ import { getCoordinatesWithAddressQuery } from "../../utils/navigation";
 import { ObjectIsEmpty } from "../../utils/utils";
 import AddressPicker from "../AddressPicker/AddressPicker";
 
-const LocationLookup = ({ onSelectCallback, placeholder, initialValue }) => {
+const LocationLookup = ({
+  onSelectCallback,
+  onFocusCallback,
+  placeholder,
+  initialValue,
+}) => {
   const { loginState, POI } = useContext(UserContext);
 
   const [isFocused, setFocus] = useState(false);
@@ -98,6 +103,10 @@ const LocationLookup = ({ onSelectCallback, placeholder, initialValue }) => {
       );
     });
 
+  useEffect(() => {
+    if (onFocusCallback) onFocusCallback(isFocused);
+  }, [isFocused]);
+
   return (
     <div className={styles.LocationLookup_Container}>
       <div className={`${styles.LocationLookup_Searchbar}`}>
@@ -124,7 +133,7 @@ const LocationLookup = ({ onSelectCallback, placeholder, initialValue }) => {
         />
         <div
           className={`${styles.LocationLookup_Focusbar} ${
-            isFocused
+            isFocused || showAddressList
               ? styles.LocationLookup_Focusbar_Show
               : styles.LocationLookup_Focusbar_Hide
           }`}
