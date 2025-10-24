@@ -110,6 +110,15 @@ const LocationLookup = ({
   return (
     <div className={styles.LocationLookup_Container}>
       <div className={`${styles.LocationLookup_Searchbar}`}>
+        {isFocused && (
+          <button
+            onClick={() => {
+              setFocus(false);
+            }}
+          >
+            x
+          </button>
+        )}
         <input
           className={styles.LocationLookup_Search}
           type="text"
@@ -125,11 +134,11 @@ const LocationLookup = ({
           onFocus={() => {
             setFocus(true);
           }}
-          onBlur={() => {
-            setTimeout(() => {
-              setFocus(false);
-            }, 100);
-          }}
+          // onBlur={() => {
+          //   setTimeout(() => {
+          //     setFocus(false);
+          //   }, 100);
+          // }}
         />
         <div
           className={`${styles.LocationLookup_Focusbar} ${
