@@ -39,6 +39,8 @@ function App() {
     darkMode,
   } = useContext(AppContext);
 
+  const publisher = usePub();
+
   const handleFuelChange = (event) => {
     setFuelType(event.target.value);
   };
@@ -76,6 +78,9 @@ function App() {
       className={`${styles.App} ${
         darkMode ? styles.App__Dark : styles.App__Light
       }`}
+      onClick={(event) => {
+        publisher("GlobalMouseDown", event);
+      }}
     >
       <WelcomeSplash />
 
@@ -131,6 +136,33 @@ function App() {
       </div> */}
       <div className={styles.App_Container}>
         <AppMenu />
+        <Toolbox>
+          {/* <LocationSelector /> */}
+          <FuelSelector />
+          {/* <StationFilter /> */}
+          <PriceList>
+            {mapFeatures
+              .filter((station) => station.Price && station.Price < 9999)
+              .sort((a, b) => a.Price - b.Price)
+              .map((feature) => (
+                <PriceListItem
+                  key={feature.SiteId}
+                  name={feature.Name}
+                  price={((feature.Price || 0) / 10).toFixed(1)}
+                  image={getImageFromStationBrandId(feature.BrandID)}
+                  showDetails={() => {
+                    MapMoveTo({
+                      coord: fromLonLat([feature.Lng, feature.Lat], PROJECTION),
+                    });
+                    selectSite(feature.SiteId);
+                  }}
+                />
+              ))}
+          </PriceList>
+          <GraphModal />
+          <SettingsModal />
+        </Toolbox>
+
         <PetrolMap
           fuelType={fuelType}
           updateStations={setMapFeatures}

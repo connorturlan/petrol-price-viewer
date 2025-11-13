@@ -4,6 +4,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { getCoordinatesWithAddressQuery } from "../../utils/navigation";
 import { ObjectIsEmpty } from "../../utils/utils";
 import AddressPicker from "../AddressPicker/AddressPicker";
+import { usePub, UseSub } from "../../utils/pubsub";
 
 const LocationLookup = ({
   onSelectCallback,
@@ -14,6 +15,7 @@ const LocationLookup = ({
   const { loginState, POI } = useContext(UserContext);
 
   const [isFocused, setFocus] = useState(false);
+  const [isHidden, setHidden] = useState(true);
   const [searchText, setSearchText] = useState(initialValue || "");
   useEffect(() => {
     setSearchText(initialValue);
@@ -29,7 +31,8 @@ const LocationLookup = ({
     setAddressList([]);
     toggleAddressList(false);
     setSearchText(name);
-    onSelectCallback(location);
+    setFocus(false);
+    onSelectCallback(name, location);
   };
 
   const lookup = async (address, isOrigin) => {
@@ -50,12 +53,14 @@ const LocationLookup = ({
     if (addressData.length > 1) {
       // window.alert(`multiple addresses found for ${address}`);
       toggleAddressList(true);
+      setFocus(true);
       setAddressList(addressData);
       setAddressListCallback(() => {
         return (selectedAddress) => {
           toggleAddressList(false);
           console.log(address, selectedAddress);
           setWaypoint(address, selectedAddress);
+          setFocus(false);
         };
       });
       return true;
@@ -88,87 +93,92 @@ const LocationLookup = ({
     });
   };
 
-  const savedLocations =
-    loginState &&
-    Object.keys(POI).map((poi) => {
-      return (
-        <button
-          key={poi}
-          onClick={() => {
-            handleLocationChange(poi, POI[poi]);
-          }}
-        >
-          {poi}
-        </button>
-      );
-    });
+  const savedLocations = loginState
+    ? Object.keys(POI).map((poi) => {
+        return {
+          display_name: poi,
+          ...poi,
+        };
+      })
+    : [];
 
   useEffect(() => {
     if (onFocusCallback) onFocusCallback(isFocused);
   }, [isFocused]);
 
+  const savedLocationCallback = (index) => {
+    return (selectedAddress) => {
+      toggleAddressList(false);
+      console.log(address, selectedAddress);
+      setWaypoint(address, selectedAddress);
+      setFocus(false);
+    };
+  };
+
+  UseSub("GlobalMouseDown", (event) => {
+    setFocus(false);
+  });
+
   return (
-    <div className={styles.LocationLookup_Container}>
-      <div className={`${styles.LocationLookup_Searchbar}`}>
-        {isFocused && (
-          <button
-            onClick={() => {
-              setFocus(false);
-            }}
-          >
-            x
+    // <div className={styles.LocationLookup_Container}>
+    <div
+      className={`${styles.LocationLookup_Searchbar}`}
+      onClick={(event) => {
+        setFocus(true);
+        setHidden(false);
+        event.stopPropagation();
+      }}
+    >
+      <input
+        className={styles.LocationLookup_Search}
+        type="text"
+        placeholder={placeholder || "Search"}
+        value={searchText}
+        disabled={lookupInProgess}
+        onChange={(e) => {
+          setSearchText(e.target.value);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") lookup(searchText, true);
+        }}
+      />
+      <div
+        className={`${styles.LocationLookup_Focusbar} ${
+          !isHidden && isFocused
+            ? styles.LocationLookup_Focusbar_Show
+            : styles.LocationLookup_Focusbar_Hide
+        } ${isHidden && styles.LocationLookup_Focusbar_Hidden}`}
+        onAnimationEnd={() => {
+          if (!isFocused) setHidden(true);
+        }}
+      >
+        <div>
+          <button enabled={locationEnabled} onClick={handleCurrentLocation}>
+            Use Current Location
           </button>
-        )}
-        <input
-          className={styles.LocationLookup_Search}
-          type="text"
-          placeholder={placeholder || "Search"}
-          value={searchText}
-          disabled={lookupInProgess}
-          onChange={(e) => {
-            setSearchText(e.target.value);
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") lookup(searchText, true);
-          }}
-          onFocus={() => {
-            setFocus(true);
-          }}
-          // onBlur={() => {
-          //   setTimeout(() => {
-          //     setFocus(false);
-          //   }, 100);
-          // }}
-        />
-        <div
-          className={`${styles.LocationLookup_Focusbar} ${
-            isFocused || showAddressList
-              ? styles.LocationLookup_Focusbar_Show
-              : styles.LocationLookup_Focusbar_Hide
-          }`}
-          // style={{
-          //   display:
-          //     isFocused || showAddressList || lookupInProgess ? "flex" : "none",
-          // }}
-        >
-          <div>
-            <button enabled={locationEnabled} onClick={handleCurrentLocation}>
-              Use Current Location
-            </button>
-            {/* <button>Pick on Map</button> */}
-          </div>
-          <p>Suggestions</p>
-          {showAddressList && (
+          <button>Pick on Map</button>
+        </div>
+        {addressList.length > 0 && (
+          <>
+            <p>Suggestions</p>
             <AddressPicker
               addresses={addressList}
               onSelect={addressListCallback}
             />
-          )}
-          <p>Saved</p>
-          {savedLocations}
-        </div>
+          </>
+        )}
+        {savedLocations.length > 0 && (
+          <>
+            <p>Preview</p>
+            <AddressPicker
+              addresses={addressList}
+              onSelect={addressListCallback}
+            />
+          </>
+        )}
       </div>
     </div>
+    // </div>
   );
 };
 

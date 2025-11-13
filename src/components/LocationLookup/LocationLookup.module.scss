@@ -2,17 +2,22 @@
   &_Container {
     display: flex;
     flex-direction: column;
+    justify-self: start;
     gap: 4px;
-    padding: 4px;
     width: calc(100% - 16px);
     max-width: 30em;
-    margin: 8px;
+    min-height: 18px;
   }
 
   &_Searchbar {
     display: flex;
     flex-direction: column;
+    justify-self: center;
     gap: 4px;
+    width: calc(100% - 16px);
+    max-width: 30em;
+    min-height: 18px;
+    grid-column: 2;
 
     // outline: 1px solid #333;
     box-shadow: 0 0 2px #00000033, 0 -1px 0 #00000005;
@@ -20,15 +25,24 @@
     overflow: hidden;
     padding: 8px;
 
-    background-color: white;
+    background-color: #ffffffe0;
+
+    font-size: 0.8em;
+    & * {
+      text-align: start;
+    }
 
     & input {
       border: none;
-      background-color: white;
+      // background-color: white;
     }
 
     & input:focus {
       outline: none;
+    }
+
+    &_Focused {
+      z-index: 25;
     }
   }
 
@@ -40,7 +54,7 @@
     position: relative;
     &_Show,
     &_Hide {
-      animation-duration: 1s;
+      animation-duration: 0.2s;
     }
 
     &_Show {
@@ -51,6 +65,10 @@
 
     &_Hide {
       animation-name: slide-out;
+    }
+
+    &_Hidden {
+      opacity: 0;
       display: none;
     }
   }
@@ -70,11 +88,8 @@
 @keyframes slide-out {
   from {
     opacity: 1;
-    height: 100%;
   }
   to {
-    display: none;
     opacity: 0;
-    height: 0%;
   }
 }

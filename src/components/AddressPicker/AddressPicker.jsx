@@ -10,7 +10,7 @@ const AddressPicker = ({ addresses, onSelect }) => {
         return (
           <button
             className={styles.AddressPicker_Button}
-            key={address.place_id}
+            key={address.place_id || index}
             onClick={handleSelect}
             value={index}
           >
