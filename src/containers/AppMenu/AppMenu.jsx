@@ -73,10 +73,6 @@ const AppMenu = (props) => {
         initialValue={originValue}
         onSelectCallback={handleStartChange}
       />
-      {/* functions hamburger menu */}
-      {/* <div>
-        <button className={`${styles.AppMenu_Hamburger}`}>=</button>
-      </div> */}
       {/* swap button */}
       {!ObjectIsEmpty(origin) && (
         <button
@@ -100,10 +96,6 @@ const AppMenu = (props) => {
           onSelectCallback={handleEndChange}
         />
       )}
-      {/* go button */}
-      {/* <div>
-        <button className={`${styles.AppMenu_Hamburger}`}>go</button>
-      </div> */}
     </div>
   );
 };

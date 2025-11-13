@@ -134,9 +134,9 @@ const StationFilter = () => {
         <div>
           <h3>Within Range</h3>
 
-          <div>
+          {/* <div>
             <LocationLookup onSelectCallback={setOrigin} />
-          </div>
+          </div> */}
           <div className={styles.StationFilter_Range}>
             <input
               className={styles.StationFilter_RangeInput}

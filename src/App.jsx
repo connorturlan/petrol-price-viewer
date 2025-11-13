@@ -139,7 +139,7 @@ function App() {
         <Toolbox>
           {/* <LocationSelector /> */}
           <FuelSelector />
-          {/* <StationFilter /> */}
+          <StationFilter />
           <PriceList>
             {mapFeatures
               .filter((station) => station.Price && station.Price < 9999)

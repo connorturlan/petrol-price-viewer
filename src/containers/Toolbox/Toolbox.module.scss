@@ -1,7 +1,9 @@
 @use "../../styles/templates";
 @use "../../styles/palette";
 
-$ToolboxWidth: 70px;
+$gap: 8px;
+$elementSize: 32px;
+$ToolboxWidth: calc($elementSize + 2 * $gap);
 
 .Toolbox {
   // display: flex;
@@ -11,26 +13,27 @@ $ToolboxWidth: 70px;
 
   display: grid;
   grid-template-columns: $ToolboxWidth min-content;
-  grid-auto-rows: $ToolboxWidth;
+  grid-auto-rows: $elementSize;
+  gap: $gap;
   justify-content: center;
   align-content: start;
-  @include templates.modal_border;
+  // @include templates.modal_border;
   border-radius: 0;
   min-width: $ToolboxWidth;
   padding: 0;
 
   overflow-x: hidden;
   overflow-y: auto;
-  z-index: 20;
-  position: relative;
+  z-index: 100;
+  position: absolute;
 
   height: auto;
-  top: 0;
+  top: $gap;
   bottom: 0;
 
   &_Container {
     z-index: 30;
-    background-color: palette.$background;
+    // background-color: palette.$background;
   }
 
   &_Container__Show {
@@ -71,8 +74,8 @@ $ToolboxWidth: 70px;
 
   &_Show {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: $gap;
+    left: $gap;
 
     border-radius: 0 0 8px 0;
 
@@ -82,7 +85,27 @@ $ToolboxWidth: 70px;
 
     &:hover {
       opacity: 100%;
-      box-shadow: 0px 4px 8px #00000060;
+      // box-shadow: 0px 4px 8px #00000060;
+    }
+  }
+
+  &_Hamburger {
+    box-shadow: 0 0 2px #00000033, 0 -1px 0 #00000005;
+    border: none;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 4px;
+    width: $elementSize;
+    height: $elementSize;
+    justify-self: center;
+
+    background-color: white;
+
+    & img {
+      padding: 0;
+      margin: 0;
+      width: 16px;
+      height: 16px;
     }
   }
 }

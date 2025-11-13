@@ -2,7 +2,7 @@
 @use "../../styles/palette";
 @use "../Toolbox/Toolbox.module.scss";
 
-$ModalWidth: 300px;
+$ModalWidth: 100vw;
 
 .ToolboxModal {
   &_Container {
@@ -51,7 +51,10 @@ $ModalWidth: 300px;
   }
 
   &_Show,
-  &_Button {
+  &_Button,
+  &_Hamburger {
+    grid-column-start: 1;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -72,8 +75,27 @@ $ModalWidth: 300px;
     }
   }
 
+  &_Hamburger {
+    box-shadow: 0 0 2px #00000033, 0 -1px 0 #00000005;
+    border: none;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 4px;
+    width: 32px;
+    height: 32px;
+    justify-self: center;
+
+    background-color: white;
+
+    & img {
+      padding: 0;
+      margin: 0;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
   &_Show {
-    background-color: var(--background);
     grid-column-start: 1;
   }
 

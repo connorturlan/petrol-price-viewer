@@ -32,13 +32,21 @@ const ToolboxModal = ({ children, summary }) => {
   return (
     <>
       <button
-        className={`${styles.ToolboxModal_Show} ${
+        className={`${styles.ToolboxModal_Hamburger} ${
           visible ? styles.ToolboxModal_Visible : styles.ToolboxModal_Hidden
         }`}
         onClick={toggleModal}
       >
         {summary}
       </button>
+      {/* <button
+        className={`${styles.ToolboxModal_Show} ${
+          visible ? styles.ToolboxModal_Visible : styles.ToolboxModal_Hidden
+        }`}
+        onClick={toggleModal}
+      >
+        {summary}
+      </button> */}
       {containerVisible && (
         <div
           className={`${styles.ToolboxModal_Container} ${

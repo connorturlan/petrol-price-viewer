@@ -26,7 +26,10 @@ const Toolbox = ({ children }) => {
         }}
         hidden={!showContainer}
       >
-        <button className={styles.Toolbox_Hide} onClick={handleHide}>
+        <button
+          className={styles.Toolbox_Hide + " " + styles.Toolbox_Hamburger}
+          onClick={handleHide}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
@@ -42,7 +45,7 @@ const Toolbox = ({ children }) => {
       </div>
       {!shown && (
         <button
-          className={styles.Toolbox_Show}
+          className={styles.Toolbox_Show + " " + styles.Toolbox_Hamburger}
           onClick={() => {
             setVisibility(true);
             setContainerVisibility(true);
