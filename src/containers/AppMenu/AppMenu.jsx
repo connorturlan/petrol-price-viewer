@@ -11,7 +11,7 @@ const AppMenu = (props) => {
 
   const [previousAddresses, setPreviousAddresses] = useState([]);
 
-  const [isMinimised, setMinimised] = useState(true);
+  const [showNavigation, setNavigation] = useState(true);
 
   const [start, setStart] = useState(undefined);
   const [end, setEnd] = useState(undefined);
@@ -53,6 +53,10 @@ const AppMenu = (props) => {
     setEndValue(tempValue);
   };
 
+  const toggleNavigation = () => {
+    setNavigation(!showNavigation);
+  };
+
   const handleStartChange = (name, location) => {
     console.log("start location change to", location);
     setOriginValue(name);
@@ -73,8 +77,23 @@ const AppMenu = (props) => {
         initialValue={originValue}
         onSelectCallback={handleStartChange}
       />
-      {/* swap button */}
+      {/* toggle navigation button */}
       {!ObjectIsEmpty(origin) && (
+        <button
+          className={`${styles.AppMenu_Hamburger} ${styles.AppMenu_Hamburger_Navigation}`}
+          onClick={toggleNavigation}
+        >
+          <img
+            src="route_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+            className={styles.AppMenu_Hamburger_SwapImage}
+            alt="Show"
+            srcSet=""
+            title="Show route planner"
+          />
+        </button>
+      )}
+      {/* swap button */}
+      {!ObjectIsEmpty(origin) && showNavigation && (
         <button
           className={`${styles.AppMenu_Hamburger} ${styles.AppMenu_Hamburger_Swap}`}
           onClick={swapLocations}
@@ -89,7 +108,7 @@ const AppMenu = (props) => {
         </button>
       )}
       {/* destination searchbar */}
-      {!ObjectIsEmpty(origin) && (
+      {!ObjectIsEmpty(origin) && showNavigation && (
         <LocationLookup
           placeholder="destination"
           initialValue={endValue}

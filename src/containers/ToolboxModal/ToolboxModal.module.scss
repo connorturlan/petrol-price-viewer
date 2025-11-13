@@ -12,10 +12,12 @@ $ModalWidth: 100vw;
     align-items: center;
 
     position: fixed;
-    height: 100vh;
+    bottom: 0;
+    height: fit-content;
+    max-height: 40vh;
     width: $ModalWidth;
-    max-width: calc(100vw - Toolbox.$ToolboxWidth);
-    // background-color: rgba(0, 0, 0, 0.4);
+    // max-width: calc(100vw - Toolbox.$ToolboxWidth);
+    background-color: rgba(0, 0, 0, 0.4);
 
     gap: 8px;
 
@@ -40,7 +42,7 @@ $ModalWidth: 100vw;
 
     &__Show {
       animation-name: slide-in;
-      left: Toolbox.$ToolboxWidth;
+      left: 0;
     }
 
     &__Hide {
@@ -120,14 +122,14 @@ $ModalWidth: 100vw;
     // margin-right: -$ModalWidth;
   }
   100% {
-    left: Toolbox.$ToolboxWidth;
+    left: 0;
     // margin-right: 0px;
   }
 }
 
 @keyframes slide-out {
   from {
-    left: Toolbox.$ToolboxWidth;
+    left: 0;
     margin-right: 0px;
   }
   to {

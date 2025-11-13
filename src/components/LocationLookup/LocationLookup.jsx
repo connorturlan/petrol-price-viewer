@@ -17,6 +17,7 @@ const LocationLookup = ({
   const [isFocused, setFocus] = useState(false);
   const [isHidden, setHidden] = useState(true);
   const [searchText, setSearchText] = useState(initialValue || "");
+
   useEffect(() => {
     setSearchText(initialValue);
   }, [initialValue]);
@@ -42,8 +43,6 @@ const LocationLookup = ({
     setLookupProgress(true);
     const addressData = await getCoordinatesWithAddressQuery(address);
     setLookupProgress(false);
-    // setTimeout(() => {
-    // }, 2_000);
 
     if (ObjectIsEmpty(addressData) || addressData.length <= 0) {
       window.alert(`no address found for ${address}`);
@@ -58,9 +57,7 @@ const LocationLookup = ({
       setAddressListCallback(() => {
         return (selectedAddress) => {
           toggleAddressList(false);
-          console.log(address, selectedAddress);
           setWaypoint(address, selectedAddress);
-          setFocus(false);
         };
       });
       return true;
@@ -74,6 +71,7 @@ const LocationLookup = ({
   };
 
   const setWaypoint = (query, addressData) => {
+    console.log(query, addressData);
     handleLocationChange(query, {
       Name: query,
       Lat: parseFloat(addressData.lon),
