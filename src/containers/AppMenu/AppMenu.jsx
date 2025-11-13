@@ -78,9 +78,14 @@ const AppMenu = (props) => {
         onSelectCallback={handleStartChange}
       />
       {/* toggle navigation button */}
-      {!ObjectIsEmpty(origin) && (
+      {
         <button
-          className={`${styles.AppMenu_Hamburger} ${styles.AppMenu_Hamburger_Navigation}`}
+          className={`${styles.AppMenu_Hamburger} ${
+            styles.AppMenu_Hamburger_Navigation
+          } ${
+            ObjectIsEmpty(origin) ||
+            (!showNavigation && styles.AppMenu_Hamburger_Navigation__Shy)
+          }`}
           onClick={toggleNavigation}
         >
           <img
@@ -91,6 +96,14 @@ const AppMenu = (props) => {
             title="Show route planner"
           />
         </button>
+      }
+      {/* destination searchbar */}
+      {!ObjectIsEmpty(origin) && showNavigation && (
+        <LocationLookup
+          placeholder="destination"
+          initialValue={endValue}
+          onSelectCallback={handleEndChange}
+        />
       )}
       {/* swap button */}
       {!ObjectIsEmpty(origin) && showNavigation && (
@@ -106,14 +119,6 @@ const AppMenu = (props) => {
             title="Show route planner"
           />
         </button>
-      )}
-      {/* destination searchbar */}
-      {!ObjectIsEmpty(origin) && showNavigation && (
-        <LocationLookup
-          placeholder="destination"
-          initialValue={endValue}
-          onSelectCallback={handleEndChange}
-        />
       )}
     </div>
   );

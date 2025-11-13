@@ -38,11 +38,24 @@
     background-color: white;
 
     &_Swap {
-      grid-column: 2;
+      grid-column: 3;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    &_Navigation {
+      grid-column: 3;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      justify-self: start;
+
+      &__Shy {
+        opacity: 40%;
+      }
     }
 
     &_SwapImage {
