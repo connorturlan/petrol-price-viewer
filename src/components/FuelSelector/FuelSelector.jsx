@@ -30,11 +30,11 @@ const FuelSelector = () => {
           <img
             src="local_gas_station_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
             className={styles.FuelSelector_Image}
-            alt="Show"
+            alt="Fuel"
             srcSet=""
             title="Show fuel type planner"
           />
-          <p>Fuel</p>
+          {/* <p>Fuel</p> */}
         </>
       }
     >

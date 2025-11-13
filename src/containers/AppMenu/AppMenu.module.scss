@@ -29,7 +29,7 @@
     justify-self: center;
     box-shadow: 0 0 2px #00000033, 0 -1px 0 #00000005;
     border: none;
-    border-radius: 16px;
+    border-radius: 50%;
     overflow: hidden;
     padding: 4px;
     width: 32px;
@@ -48,8 +48,8 @@
     &_SwapImage {
       padding: 0;
       margin: 0;
-      width: 16px;
-      height: 16px;
+      width: 24px;
+      height: 24px;
     }
   }
 

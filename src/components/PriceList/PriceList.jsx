@@ -11,11 +11,11 @@ function PriceList({ children }) {
           <img
             src="list_24dp_FILL0_wght400_GRAD0_opsz24.svg"
             className={styles.PriceList_Image}
-            alt="Show"
+            alt="List"
             srcSet=""
             title="Show price list"
           />
-          <p>List</p>
+          {/* <p>List</p> */}
         </>
       }
     >

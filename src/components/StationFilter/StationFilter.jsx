@@ -116,11 +116,11 @@ const StationFilter = () => {
           <img
             src="filter_alt_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
             className={styles.StationFilter_Image}
-            alt="Show"
+            alt="Filter"
             srcSet=""
             title="Show fuel type planner"
           />
-          <p>Filter</p>
+          {/* <p>Filter</p> */}
         </>
       }
     >

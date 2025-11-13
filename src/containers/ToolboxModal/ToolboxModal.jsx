@@ -64,7 +64,13 @@ const ToolboxModal = ({ children, summary }) => {
               setVisible(false);
             }}
           >
-            Hide
+            <img
+              src="close_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+              className={styles.Toolbox_Image}
+              alt="Hide"
+              srcSet=""
+              title="Hide"
+            />
           </button>
           {children}
         </div>
