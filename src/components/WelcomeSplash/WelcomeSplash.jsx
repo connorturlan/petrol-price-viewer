@@ -1,29 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./WelcomeSplash.module.scss";
 import { getCookie, setCookie } from "../../utils/cookies";
-import { AdvertisingProvider, AdvertisingSlot } from "react-advertising";
 import { SHOW_WELCOME } from "../../utils/defaults";
-
-// const config = {
-//   slots: [
-//     {
-//       path: "/19968336/header-bid-tag-0",
-//       id: "banner-ad",
-//       sizes: [
-//         [600, 200],
-//         [600, 300],
-//       ],
-//       bids: [
-//         {
-//           bidder: "appnexus",
-//           params: {
-//             placementId: "10433394",
-//           },
-//         },
-//       ],
-//     },
-//   ],
-// };
 
 const COUNTDOWN_TIME = 2;
 
@@ -57,7 +35,6 @@ const WelcomeSplash = (props) => {
 
   return (
     visible && (
-      // <AdvertisingProvider config={config}>
       <div
         className={styles.WelcomeSplash_Container}
         onClick={() => {
@@ -78,17 +55,33 @@ const WelcomeSplash = (props) => {
           </p>
           <p>
             Fuel Tool is provided as a free service for viewing petrol prices
-            across Australia, but it is not free to run. If you would like to
-            support me you can support this project and many others at:
+            and electric charging stations across South Australia, but it is not
+            free to run.
           </p>
-          <a
-            className={styles.WelcomeSplash_Image}
-            href="https://buymeacoffee.com/connorturlan"
-            target="_blank"
-          >
-            <img src="white-button.png" alt="buy me a coffee" srcset="" />
-          </a>
-          <b>
+          <p>Your support is voluntary. Thank you for using Fuel Tool!</p>
+          <div className={styles.WelcomeSplash_Donations}>
+            <a
+              className={styles.WelcomeSplash_Image}
+              href="https://buymeacoffee.com/connorturlan"
+              target="_blank"
+            >
+              <img src="white-button.png" alt="buy me a coffee" srcset="" />
+            </a>
+            <a
+              className={styles.WelcomeSplash_Image}
+              href="https://ko-fi.com/R6R51OF0CS"
+              target="_blank"
+            >
+              <img
+                height="36"
+                style={{ border: "0px", height: "36px" }}
+                src="https://storage.ko-fi.com/cdn/brandasset/v2/support_me_on_kofi_beige.png"
+                border="0"
+                alt="Buy Me a Coffee at ko-fi.com"
+              />
+            </a>
+          </div>
+          {/* <b>
             <a href="mailto://info@fueltool.com.au?subject=[Inquiry] Fuel Tool Advertisement">
               I'm interested in advertising!
             </a>
@@ -97,13 +90,12 @@ const WelcomeSplash = (props) => {
             <a href="mailto://info@fueltool.com.au?subject=[Inquiry] Fuel Tool Sponsorship">
               I'm interested in sponsoring!
             </a>
-          </b>
+          </b> */}
           <b>
             <a href="mailto://support@fueltool.com.au?subject=[Issue] Fuel Tool">
-              I'm having issues?
+              Contact Support
             </a>
           </b>
-          <p>Thank you for using Fuel Tool!</p>
           <b>{countdown > 0 ? `Loading...` : "Touch anywhere to hide"}.</b>
         </div>
       </div>
