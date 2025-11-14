@@ -79,6 +79,7 @@ import Fill from "ol/style/Fill";
 import Text from "ol/style/Text";
 import { toRadians } from "ol/math";
 import FeatureFormat from "ol/format/Feature";
+import { createExtent } from "ol/centerconstraint";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -262,6 +263,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const getSitePrices = async () => {
     if (!allStations || allStations.length <= 0) {
+      console.log("bludging");
       return;
     }
 
@@ -316,14 +318,12 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     updateStations(filteredstations);
 
     let min, max;
-    console.log(filteredstations.at(0), filteredstations.length);
     min = filteredstations.at(0)?.Price || 0;
     max = filteredstations.at(0)?.Price || 0;
     filteredstations.forEach((station) => {
       min = Math.min(min, station.Price);
       max = Math.max(max, station.Price);
     });
-    console.log("mM:", min, max);
 
     const features = filteredstations.map((station) => {
       const coord = fromLonLat([station.Lng, station.Lat], PROJECTION);
@@ -348,7 +348,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     });
     source.addFeatures(features);
 
-    source.changed();
+    // source.changed();
 
     console.debug(`[STATIONS] added ${filteredstations.length} stations.`);
 
@@ -560,14 +560,32 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         return insideBounds;
       })
       .map((sector) => sector.get("id"));
-    source.changed();
 
-    const uniqueSet = new Set(sectors);
+    const allSectors = await getSectors();
+    const filteredSectors = allSectors
+      .filter((sector) => {
+        const tl = fromLonLat(sector.tl);
+        const br = fromLonLat(sector.br);
+        const geom = fromExtent([...tl, ...br]);
+        const extent = geom.getExtent();
+        const insideBounds = intersects(extent, bounds);
+        return insideBounds;
+      })
+      .map((sector) => sector.id);
+
+    const uniqueSet = new Set(filteredSectors);
     const uniqueArray = [...uniqueSet];
+    const sectorData = await getPricesFromSectors(uniqueArray);
 
-    await getPricesFromSectors(uniqueArray);
+    console.log(
+      "all stations: ",
+      bounds,
+      allSectors,
+      filteredSectors,
+      sectorData
+    );
 
-    await getSitePrices();
+    getAllSites();
   };
 
   const onInit = (map) => {
@@ -576,8 +594,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const extent = map.getView().calculateExtent(map.getSize());
     setVisibleBounds(extent);
 
-    updateMapClusterValues();
     updateInViewSectors(extent);
+    updateMapClusterValues();
   };
 
   const onMove = (event, map) => {
@@ -586,8 +604,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const extent = map.getView().calculateExtent(map.getSize());
     setVisibleBounds(extent);
 
-    updateMapClusterValues();
     updateInViewSectors(extent);
+    updateMapClusterValues();
   };
 
   const onClick = (event, map) => {

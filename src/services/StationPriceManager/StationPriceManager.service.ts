@@ -455,7 +455,7 @@ export async function getPricesFromSectors(
   }
 
   console.log(
-    `${cached.length} cached, and ${uncached.length} uncached sectors found. ${sectors.length} sectors found.`
+    `[SECTORS] ${cached.length} cached, and ${uncached.length} uncached sectors found. ${sectors.length} sectors found.`
   );
 
   return sectors;
