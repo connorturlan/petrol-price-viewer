@@ -48,17 +48,18 @@ const WelcomeSplash = (props) => {
             e.stopPropagation();
           }}
         >
-          <h2 className={styles.WelcomeSplash_Title}>Fuel Tool</h2>
+          <h2 className={styles.WelcomeSplash_Title}>Welcome to Fuel Tool!</h2>
           <p>
-            Welcome to Fuel Tool! Your handy tool for saving money on your
-            petrol bill.
+            We're really glad you're here. Fuel Tool is designed to help you
+            save money on your petrol bill and make it easier to find petrol
+            prices and electric charging stations across South Australia.
           </p>
           <p>
-            Fuel Tool is provided as a free service for viewing petrol prices
-            and electric charging stations across South Australia, but it is not
-            free to run.
+            Fuel Tool is free for everyone to use, but it does take time and
+            resources to keep it running. If you choose to support it, that
+            means a lot — and if not, we're just happy you're using it.
           </p>
-          <p>Your support is voluntary. Thank you for using Fuel Tool!</p>
+          <p>Thanks for being part of the Fuel Tool community!</p>
           <div className={styles.WelcomeSplash_Donations}>
             <a
               className={styles.WelcomeSplash_Image}
