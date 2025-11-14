@@ -18,7 +18,7 @@ import { capitalize, getImageFromStationBrandId } from "./utils/utils";
 import Toolbox from "./containers/Toolbox/Toolbox";
 import FuelSelector from "./components/FuelSelector/FuelSelector";
 import ToolboxTester from "./components/ToolboxTester/ToolboxTester";
-import { MapMoveTo, usePub } from "./utils/pubsub";
+import { MapMoveTo, usePub, UseSub } from "./utils/pubsub";
 import StationFilter from "./components/StationFilter/StationFilter";
 import LocationSelector from "./components/LocationSelector/LocationSelector";
 import { fromLonLat } from "ol/proj";
@@ -33,6 +33,7 @@ function App() {
     clickMode,
     setClickMode,
     clickModeOptions,
+    setClickModeOptions,
     selectSite,
     fuelType,
     setFuelType,
@@ -56,6 +57,8 @@ function App() {
         return "Placing Work...";
       case 3:
         return `Placing ${capitalize(clickModeOptions.poi_name)}`;
+      case 4:
+        return `Choosing Current Location`;
     }
   };
 
@@ -72,6 +75,11 @@ function App() {
     console.debug("[MODE] setting mode options", clickModeOptions);
     localStorage.setItem("clickModeOptions", JSON.stringify(clickModeOptions));
   }, [clickModeOptions]);
+
+  UseSub("SetClickMode", (event) => {
+    setClickMode(event.mode);
+    setClickModeOptions(event.options);
+  });
 
   return (
     <div

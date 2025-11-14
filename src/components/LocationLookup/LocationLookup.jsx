@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useId, useState } from "react";
 import styles from "./LocationLookup.module.scss";
 import { UserContext } from "../../contexts/UserContext";
 import { getCoordinatesWithAddressQuery } from "../../utils/navigation";
 import { ObjectIsEmpty } from "../../utils/utils";
 import AddressPicker from "../AddressPicker/AddressPicker";
 import { usePub, UseSub } from "../../utils/pubsub";
+import { MODES } from "../../containers/TestPetrolMap/PetrolMap";
 
 const LocationLookup = ({
   onSelectCallback,
@@ -26,6 +27,9 @@ const LocationLookup = ({
   const [addressList, setAddressList] = useState([]);
   const [addressListCallback, setAddressListCallback] = useState(() => {});
   const [lookupInProgess, setLookupProgress] = useState(false);
+
+  const publisher = usePub();
+  const id = useId();
 
   const handleLocationChange = (name, location) => {
     console.log("location change to", location);
@@ -91,6 +95,23 @@ const LocationLookup = ({
     });
   };
 
+  const handlePickLocation = () => {
+    publisher("SetClickMode", {
+      mode: MODES.PICK_LOCATION,
+      options: { id },
+    });
+  };
+
+  UseSub("MapClicked", (event) => {
+    if (event.options.id != id) return;
+    console.log(event);
+    handleLocationChange("Custom", {
+      Name: "Custom",
+      Lat: parseFloat(event.coord.at(0)),
+      Lng: parseFloat(event.coord.at(1)),
+    });
+  });
+
   const savedLocations = loginState
     ? Object.keys(POI).map((poi) => {
         return {
@@ -154,7 +175,7 @@ const LocationLookup = ({
           <button enabled={locationEnabled} onClick={handleCurrentLocation}>
             Use Current Location
           </button>
-          <button>Pick on Map</button>
+          <button onClick={handlePickLocation}>Pick on Map</button>
         </div>
         {addressList.length > 0 && (
           <>

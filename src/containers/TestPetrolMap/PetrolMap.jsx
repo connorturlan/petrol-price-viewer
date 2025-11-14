@@ -64,7 +64,7 @@ import {
 } from "../../services/StationPriceManager/StationPriceManager.service";
 import Style, { createDefaultStyle } from "ol/style/Style";
 import { updateAllStations } from "../../services/StationPriceManager/StationPriceManager.service";
-import { FitMapToExtent, MapMoveTo, UseSub } from "../../utils/pubsub";
+import { FitMapToExtent, MapMoveTo, usePub, UseSub } from "../../utils/pubsub";
 import { getCookie } from "../../utils/cookies";
 import { getDistance, getLength } from "ol/sphere";
 import {
@@ -85,6 +85,7 @@ export const MODES = Object.freeze({
   ADD_HOME: 1,
   ADD_WORK: 2,
   ADD_POI: 3,
+  PICK_LOCATION: 4,
 });
 
 const MAP_CENTER = getCookie("mapCenter")
@@ -133,6 +134,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   const waypointLayer = useRef(undefined);
   const debugLayer = useRef(undefined);
   const [layers, setLayers] = useState([]);
+
+  const publisher = usePub();
 
   const setupMapLayers = async () => {
     stationLayer.current = createStationLayer(
@@ -643,6 +646,12 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       setCustomLocation(profile, clickModeOptions.poi_name, clickedCoord);
       setClickMode(MODES.DEFAULT);
       // triggerReload(true);
+    } else {
+      publisher("MapClicked", {
+        coord: clickedCoord,
+        options: clickModeOptions,
+      });
+      setClickMode(MODES.DEFAULT);
     }
   };
 
