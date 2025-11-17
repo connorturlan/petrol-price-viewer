@@ -56,8 +56,8 @@ const FeatureText = [
   // 2 - on route
   {
     textStyle: "normal 1em sans-serif",
-    // textFill: "#333",
-    textOutline: "#b8dfffbb",
+    textFill: "#ffffff",
+    textOutline: "#038cfcbb",
     backgroundFill: "",
     backgroudOutline: "#038cfcbb",
     iconHeight: 48,
@@ -65,16 +65,16 @@ const FeatureText = [
   // 3 - lowest & on route
   {
     textStyle: "normal 1.2em sans-serif",
-    // textFill: "#333",
-    textOutline: "#b8fffbbb",
+    textFill: "#111",
+    textOutline: "#fffb00ff",
     backgroundFill: "",
-    backgroudOutline: "#03f4fcbb",
+    backgroudOutline: "#ff7b00ff",
     iconHeight: 64,
   },
   // 4 - in range
   {
     textStyle: "normal 1.2em sans-serif",
-    // textFill: "#333",
+    textFill: "#111",
     textOutline: "#71b671ff",
     backgroundFill: "",
     backgroudOutline: "#97f79740",
@@ -83,28 +83,28 @@ const FeatureText = [
   // 5 - lowest & in range
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#333",
-    textOutline: "#a6ff00ff",
+    textFill: "#111",
+    textOutline: "#fffb00ff",
     backgroundFill: "",
-    backgroudOutline: "#2dcf63ff",
+    backgroudOutline: "#ff7b00ff",
     iconHeight: 64,
   },
   // 6 - on route & in range
   {
-    textStyle: "normal 1em sans-serif",
-    // textFill: "#333",
-    textOutline: "#b8dfffbb",
+    textStyle: "normal 1.2em sans-serif",
+    textFill: "#111",
+    textOutline: "#71b671ff",
     backgroundFill: "",
-    backgroudOutline: "#038cfcbb",
-    iconHeight: 48,
+    backgroudOutline: "#97f79740",
+    iconHeight: 32,
   },
   // 7 - lowest & on route & in range
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#333",
-    textOutline: "#b8fffbbb",
+    textFill: "#111",
+    textOutline: "#fffb00ff",
     backgroundFill: "",
-    backgroudOutline: "#03f4fcbb",
+    backgroudOutline: "#ff7b00ff",
     iconHeight: 64,
   },
 ];
