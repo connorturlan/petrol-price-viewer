@@ -57,9 +57,9 @@ const FeatureText = [
   {
     textStyle: "normal 1em sans-serif",
     textFill: "#ffffff",
-    textOutline: "#038cfcbb",
+    textOutline: "#038cfc",
     backgroundFill: "",
-    backgroudOutline: "#038cfcbb",
+    backgroudOutline: "#038cfc",
     iconHeight: 48,
   },
   // 3 - lowest & on route

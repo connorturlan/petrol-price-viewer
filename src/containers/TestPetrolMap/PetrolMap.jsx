@@ -488,12 +488,17 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       `[ROUTING] ${stationsOnRoute.length} points added of ${routes.length} routes`
     );
 
-    const lowestFeatures = getLowestStationsFromArray(stationsOnRoute);
-    const lowestIds = lowestFeatures.map((feature) => feature.SiteId);
+    const lowestFeatures = getLowestStationsFromArray(
+      stationsOnRoute,
+      fuelType
+    );
+    const lowestIds = lowestFeatures.map((feature) => feature.SiteID);
 
     const updatedStations = allStations.map((station) => {
-      return { ...station, isOnRoute: lowestIds.includes(station.SiteId) };
+      return { ...station, isOnRoute: lowestIds.includes(station.SiteID) };
     });
+
+    console.log(lowestFeatures, lowestIds, stationsOnRoute);
 
     setAllStations(updatedStations);
     setLoadingRoutes(false);
