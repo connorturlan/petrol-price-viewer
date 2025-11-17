@@ -400,9 +400,16 @@ function getFuelPricesFromSectors(
 }
 
 function getSectorsFromCache(): MapSector[] {
+  const fetched = Number(localStorage.getItem("_sectors"));
+  if (fetched > Date.now()) {
+    return [];
+  }
+
   // try the cache first!
   const json = localStorage.getItem("sectors");
-  if (!json || json == "") return [];
+  if (!json || json == "") {
+    return [];
+  }
 
   return JSON.parse(json);
 }
@@ -410,6 +417,10 @@ function getSectorsFromCache(): MapSector[] {
 function updateSectorsInCache(sectors: MapSector[]) {
   // try the cache first!
   const json = JSON.stringify(sectors);
+  localStorage.setItem(
+    "_sectors",
+    String(Date.now() + defaults.STATIONS_TIME_TO_LIVE)
+  );
   localStorage.setItem("sectors", json);
 }
 
@@ -417,7 +428,9 @@ export async function getSectors(): Promise<MapSector[]> {
   let sectors: MapSector[];
 
   const maybeSectors = getSectorsFromCache();
-  if (maybeSectors.length > 0) return maybeSectors;
+  if (maybeSectors.length > 0) {
+    return maybeSectors;
+  }
 
   try {
     const res = await fetch(`${ENDPOINT}${defaults.SECTORS_API_V1}`);
