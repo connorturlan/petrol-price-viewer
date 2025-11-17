@@ -61,6 +61,7 @@ import {
   getFuelPrices,
   getPricesFromSectors,
   getSectors,
+  getStationsFromSectors,
 } from "../../services/StationPriceManager/StationPriceManager.service";
 import Style, { createDefaultStyle } from "ol/style/Style";
 import { updateAllStations } from "../../services/StationPriceManager/StationPriceManager.service";
@@ -80,6 +81,7 @@ import Text from "ol/style/Text";
 import { toRadians } from "ol/math";
 import FeatureFormat from "ol/format/Feature";
 import { createExtent } from "ol/centerconstraint";
+import { getSectorsInRange } from "./mapUtilities";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -244,6 +246,34 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     ]);
   };
 
+  const getInitialStations = async (bounds) => {
+    if (loadingStations) return;
+    setStationLoading(true);
+    const allSectors = await getSectors();
+    const sectorsInViewIds = await getSectorsInRange(bounds, allSectors);
+    const stationsInView = await getStationsFromSectors(sectorsInViewIds);
+    setAllStations(stationsInView);
+    setStationLoading(false);
+  };
+
+  const getUpdatedStations = async (bounds) => {
+    setStationLoading(true);
+    const allSectors = await getSectors();
+    const sectorsInViewIds = await getSectorsInRange(bounds, allSectors);
+    const stationsInView = await getStationsFromSectors(sectorsInViewIds);
+
+    const stationIds = allStations.map((station) => station.SiteID);
+    const newStationsInView = stationsInView.filter(
+      (newStation) => !stationIds.includes(newStation.SiteID)
+    );
+    const newStations = [...allStations, ...newStationsInView];
+
+    setAllStations(newStations);
+    setStationLoading(false);
+  };
+
+  const updateStationsOnMap = (stations) => {};
+
   const getAllSites = async () => {
     setStationLoading(true);
     const newStations = await updateAllStations();
@@ -307,22 +337,23 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const filteredstations = allStations.filter(
       (station) =>
         station &&
-        station.Price &&
-        station.Price < 9999 &&
-        containsCoordinate(
-          visibleBounds,
-          fromLonLat([station.Lng, station.Lat])
-        ) &&
+        station.FuelTypes.get(fuelType)?.Price &&
+        // station.FuelTypes.get(fuelType) < 9999 &&
+        // station.Price < 9999 &&
+        // containsCoordinate(
+        //   visibleBounds,
+        //   fromLonLat([station.Lng, station.Lat])
+        // ) &&
         station.SiteId != 61402476 // ignore "BP Seymours Toyota"
     );
     updateStations(filteredstations);
 
     let min, max;
-    min = filteredstations.at(0)?.Price || 0;
-    max = filteredstations.at(0)?.Price || 0;
+    min = filteredstations.at(0)?.FuelTypes.get(fuelType)?.Price || 0;
+    max = filteredstations.at(0)?.FuelTypes.get(fuelType)?.Price || 0;
     filteredstations.forEach((station) => {
-      min = Math.min(min, station.Price);
-      max = Math.max(max, station.Price);
+      min = Math.min(min, station.FuelTypes.get(fuelType)?.Price);
+      max = Math.max(max, station.FuelTypes.get(fuelType)?.Price);
     });
 
     const features = filteredstations.map((station) => {
@@ -331,12 +362,13 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
       let price;
       if (fuelType < 10_000) {
-        price = ((station.Price || 0) / 10).toFixed(1);
+        price = ((station.FuelTypes.get(fuelType)?.Price || 0) / 10).toFixed(1);
       } else {
-        price = station.Price || 0;
+        price = station.FuelTypes.get(fuelType)?.Price || 0;
       }
 
-      const normalisedRange = (station.Price - max) / (min - max);
+      const normalisedRange =
+        (station.FuelTypes.get(fuelType)?.Price - max) / (min - max);
 
       return new Feature({
         coord,
@@ -374,31 +406,25 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     return point;
   };
 
-  useEffect(() => {
-    setupMapLayers();
-    getAllSites();
-  }, []);
-
-  useEffect(() => {
-    if (!loadingPrices) {
-      setPricesLoading(true);
-      getSitePrices();
-    } else {
-      setPricesLoading(false);
-      updateStationsLayer();
-      // updateStations(allStations);
-    }
-    drawCircle(fromLonLat(center, PROJECTION));
-  }, [allStations, visibleBounds]);
-
   // useEffect(() => {
   //   if (!loadingPrices) {
   //     setPricesLoading(true);
   //     getSitePrices();
   //   } else {
   //     setPricesLoading(false);
+  //     updateStationsLayer();
+  //     // updateStations(allStations);
   //   }
-  // }, [visibleBounds]);
+  //   drawCircle(fromLonLat(center, PROJECTION));
+  // }, [allStations, visibleBounds]);
+
+  useEffect(() => {
+    getUpdatedStations(visibleBounds);
+  }, [visibleBounds]);
+
+  useEffect(() => {
+    updateStationsLayer();
+  }, [allStations, visibleBounds]);
 
   const updateMarkerLayer = () => {
     const source = markerLayer.current.getSource();
@@ -525,16 +551,22 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     console.debug(`[FILTER] ${stationsInRange.length} stations in range`);
 
-    const lowestStation = getLowestStationsFromArray(stationsInRange);
-    const lowestPrice = lowestStation.at(0).Price;
+    if (stationsInRange.length <= 0) return;
+
+    const lowestStation = getLowestStationsFromArray(stationsInRange, fuelType);
+    const lowestPrice = lowestStation.at(0).FuelTypes.get(fuelType)?.Price;
     // console.log(lowestStation, lowestPrice);
 
     const updatedLowestStations = updatedInRangeStations.map((station) => {
       return {
         ...station,
-        lowestInRange: station.inRange && station.Price <= lowestPrice,
+        lowestInRange:
+          station.inRange &&
+          station.FuelTypes.get(fuelType)?.Price <= lowestPrice,
       };
     });
+
+    console.log(updatedLowestStations, allStations);
 
     setAllStations(updatedLowestStations);
   };
@@ -561,31 +593,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       })
       .map((sector) => sector.get("id"));
 
-    const allSectors = await getSectors();
-    const filteredSectors = allSectors
-      .filter((sector) => {
-        const tl = fromLonLat(sector.tl);
-        const br = fromLonLat(sector.br);
-        const geom = fromExtent([...tl, ...br]);
-        const extent = geom.getExtent();
-        const insideBounds = intersects(extent, bounds);
-        return insideBounds;
-      })
-      .map((sector) => sector.id);
-
-    const uniqueSet = new Set(filteredSectors);
-    const uniqueArray = [...uniqueSet];
+    const uniqueArray = await getSectorsInRange(bounds);
     const sectorData = await getPricesFromSectors(uniqueArray);
 
-    console.log(
-      "all stations: ",
-      bounds,
-      allSectors,
-      filteredSectors,
-      sectorData
-    );
-
-    getAllSites();
+    // getAllSites();
   };
 
   const onInit = (map) => {
@@ -594,7 +605,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const extent = map.getView().calculateExtent(map.getSize());
     setVisibleBounds(extent);
 
-    updateInViewSectors(extent);
+    setupMapLayers();
+    getInitialStations(extent);
+
+    // updateInViewSectors(extent);
     updateMapClusterValues();
   };
 
@@ -604,7 +618,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const extent = map.getView().calculateExtent(map.getSize());
     setVisibleBounds(extent);
 
-    updateInViewSectors(extent);
+    // updateInViewSectors(extent);
     updateMapClusterValues();
   };
 

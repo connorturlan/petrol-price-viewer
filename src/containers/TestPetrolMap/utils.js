@@ -282,11 +282,15 @@ export const setStationsOnRoute = (layer, onRoute) => {
 
 export const getLowestStationsFromArray = (
   stationsOnRoute,
+  fuelType,
   number = ROUTING_STATION_COUNT
 ) => {
   const lowestPrices = stationsOnRoute
-    .filter((station) => station.Price)
-    .sort((a, b) => a.Price - b.Price);
+    .filter((station) => station.FuelTypes.get(fuelType)?.Price)
+    .sort(
+      (a, b) =>
+        a.FuelTypes.get(fuelType)?.Price - b.FuelTypes.get(fuelType)?.Price
+    );
   const lowestStations = lowestPrices.slice(0, number);
   return lowestStations;
 };

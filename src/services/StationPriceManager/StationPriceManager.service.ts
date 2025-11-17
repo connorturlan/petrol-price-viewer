@@ -41,9 +41,9 @@ export async function updateAllStations() {
   const oldStationIds = oldStations.map((station) => station.SiteId);
   const newStations = await getAllStationsFromAPI(oldStationIds);
   const stations = [
-    // ...oldStations,
-    // ...newStations.filter((newStation) => oldStations.includes(newStation)),
-    ...newStations,
+    ...oldStations,
+    ...newStations.filter((newStation) => oldStations.includes(newStation)),
+    // ...newStations,
   ];
   updateStationsCache(stations);
 
@@ -413,7 +413,7 @@ export async function getSectors(): Promise<MapSector[]> {
     return [];
   }
 
-  return sectors;
+  return sectors || [];
 }
 
 export async function getPricesFromSectors(
@@ -459,4 +459,55 @@ export async function getPricesFromSectors(
   );
 
   return sectors;
+}
+
+export async function getStationsFromSectors(
+  SectorIDs: number[]
+): Promise<StationDetails[]> {
+  const newSectors: MapSector[] = [];
+  const sectors: MapSector[] = [];
+
+  // get sectors from cache.
+  const cached = SectorIDs.map((sectorID) =>
+    SectorDictionary.get(sectorID)
+  ).filter((sector) => sector != undefined);
+  sectors.push(...cached);
+
+  // get sectors from api.
+  const uncached = SectorIDs.filter(
+    (sectorID) => !SectorDictionary.has(sectorID)
+  );
+  if (uncached.length > 0) {
+    try {
+      const res = await fetch(
+        `${ENDPOINT}${defaults.SECTORS_API_V1}?id=${uncached.join(",")}`
+      );
+      if (res.status != 200) {
+        window.alert("sector data not found.");
+        return [];
+      }
+      newSectors.push(...(await res.json()));
+      newSectors.forEach((sector) => (sector.ft = Date.now()));
+      // update cache.
+      addSectorsToSectorStationMap(newSectors);
+
+      // update sectors.
+      sectors.push(...newSectors);
+    } catch (error) {
+      console.error(`error while fetching sectors: ${error}`);
+      return [];
+    }
+  }
+
+  console.log(
+    `[SECTORS] ${cached.length} cached, and ${uncached.length} uncached sectors found. ${sectors.length} sectors found.`
+  );
+
+  const stations = sectors.reduce((reduced, sector) => {
+    const values = Object.values(sector.st.s || {}).map(remapStationDetails);
+    reduced.push(...values);
+    return reduced;
+  }, [] as StationDetails[]);
+
+  return stations;
 }
