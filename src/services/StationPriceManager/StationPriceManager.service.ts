@@ -419,7 +419,7 @@ function updateSectorsInCache(sectors: MapSector[]) {
   const json = JSON.stringify(sectors);
   localStorage.setItem(
     "_sectors",
-    String(Date.now() + defaults.STATIONS_TIME_TO_LIVE)
+    String(Date.now() + defaults.SECTORS_TIME_TO_LIVE)
   );
   localStorage.setItem("sectors", json);
 }
