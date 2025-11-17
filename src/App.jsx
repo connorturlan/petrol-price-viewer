@@ -150,13 +150,23 @@ function App() {
           <StationFilter />
           <PriceList>
             {mapFeatures
-              .filter((station) => station.Price && station.Price < 9999)
-              .sort((a, b) => a.Price - b.Price)
+              .filter(
+                (station) =>
+                  station.FuelTypes.get(fuelType)?.Price &&
+                  station.FuelTypes.get(fuelType)?.Price < 9999
+              )
+              .sort(
+                (a, b) =>
+                  a.FuelTypes.get(fuelType)?.Price -
+                  b.FuelTypes.get(fuelType)?.Price
+              )
               .map((feature) => (
                 <PriceListItem
                   key={feature.SiteId}
                   name={feature.Name}
-                  price={((feature.Price || 0) / 10).toFixed(1)}
+                  price={(
+                    (feature.FuelTypes.get(fuelType)?.Price || 0) / 10
+                  ).toFixed(1)}
                   image={getImageFromStationBrandId(feature.BrandID)}
                   showDetails={() => {
                     MapMoveTo({
