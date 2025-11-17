@@ -340,29 +340,28 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const source = clusterSource.getSource();
     source.clear();
 
-    const filteredstations = allStations.filter(
+    const filteredStations = allStations.filter(
       (station) =>
         station &&
         station.FuelTypes.get(fuelType)?.Price &&
-        // station.FuelTypes.get(fuelType) < 9999 &&
-        // station.Price < 9999 &&
+        station.FuelTypes.get(fuelType)?.Price < 9999 &&
         // containsCoordinate(
         //   visibleBounds,
         //   fromLonLat([station.Lng, station.Lat])
         // ) &&
         station.SiteID != 61402476 // ignore "BP Seymours Toyota"
     );
-    updateStations(filteredstations);
+    updateStations(filteredStations);
 
     let min, max;
-    min = filteredstations.at(0)?.FuelTypes.get(fuelType)?.Price || 0;
-    max = filteredstations.at(0)?.FuelTypes.get(fuelType)?.Price || 0;
-    filteredstations.forEach((station) => {
+    min = filteredStations.at(0)?.FuelTypes.get(fuelType)?.Price || 0;
+    max = filteredStations.at(0)?.FuelTypes.get(fuelType)?.Price || 0;
+    filteredStations.forEach((station) => {
       min = Math.min(min, station.FuelTypes.get(fuelType)?.Price);
       max = Math.max(max, station.FuelTypes.get(fuelType)?.Price);
     });
 
-    const features = filteredstations.map((station) => {
+    const features = filteredStations.map((station) => {
       const coord = fromLonLat([station.Lng, station.Lat], PROJECTION);
       const point = new Point(coord);
 
@@ -388,7 +387,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     // source.changed();
 
-    console.debug(`[STATIONS] added ${filteredstations.length} stations.`);
+    console.debug(`[STATIONS] added ${filteredStations.length} stations.`);
 
     updateMapClusterValues();
   };
