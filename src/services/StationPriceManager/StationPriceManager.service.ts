@@ -399,8 +399,26 @@ function getFuelPricesFromSectors(
   return prices;
 }
 
+function getSectorsFromCache(): MapSector[] {
+  // try the cache first!
+  const json = localStorage.getItem("sectors");
+  if (!json || json == "") return [];
+
+  return JSON.parse(json);
+}
+
+function updateSectorsInCache(sectors: MapSector[]) {
+  // try the cache first!
+  const json = JSON.stringify(sectors);
+  localStorage.setItem("sectors", json);
+}
+
 export async function getSectors(): Promise<MapSector[]> {
   let sectors: MapSector[];
+
+  const maybeSectors = getSectorsFromCache();
+  if (maybeSectors.length > 0) return maybeSectors;
+
   try {
     const res = await fetch(`${ENDPOINT}${defaults.SECTORS_API_V1}`);
     if (res.status != 200) {
@@ -412,6 +430,8 @@ export async function getSectors(): Promise<MapSector[]> {
     console.error(`error while fetching sectors: ${error}`);
     return [];
   }
+
+  updateSectorsInCache(sectors);
 
   return sectors || [];
 }
