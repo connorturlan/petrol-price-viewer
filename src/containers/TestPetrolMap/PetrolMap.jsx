@@ -226,7 +226,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         id: -1,
         BrandID: 1,
         price: 198.9,
-        SiteId: -1,
+        SiteID: -1,
       });
       const source = newLayer.getSource();
       source.addFeature(feature);
@@ -262,11 +262,17 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const sectorsInViewIds = await getSectorsInRange(bounds, allSectors);
     const stationsInView = await getStationsFromSectors(sectorsInViewIds);
 
-    const stationIds = allStations.map((station) => station.SiteID);
-    const newStationsInView = stationsInView.filter(
-      (newStation) => !stationIds.includes(newStation.SiteID)
+    const stationIdsInView = stationsInView.map((station) => station.SiteID);
+    const allStationsInView = allStations.filter(
+      (station) => !stationIdsInView.includes(station.SiteID)
     );
-    const newStations = [...allStations, ...newStationsInView];
+
+    const stationIds = allStationsInView.map((station) => station.SiteID);
+    const newStationsInView = stationsInView.filter(
+      (station) => !stationIds.includes(station.SiteID)
+    );
+
+    const newStations = [...allStationsInView, ...newStationsInView];
 
     setAllStations(newStations);
     setStationLoading(false);
@@ -304,15 +310,15 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       )
     );
 
-    const stationIds = stationsInView.map((station) => station.SiteId);
+    const stationIds = stationsInView.map((station) => station.SiteID);
 
     const fuelPrices = await getFuelPrices(fuelType, stationIds);
 
     const index = Object.keys(fuelPrices);
     const updatedStations = allStations
       .map((station) => {
-        if (index.includes(`${station.SiteId}`)) {
-          station.Price = fuelPrices[`${station.SiteId}`];
+        if (index.includes(`${station.SiteID}`)) {
+          station.Price = fuelPrices[`${station.SiteID}`];
         }
 
         return station;
@@ -344,7 +350,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         //   visibleBounds,
         //   fromLonLat([station.Lng, station.Lat])
         // ) &&
-        station.SiteId != 61402476 // ignore "BP Seymours Toyota"
+        station.SiteID != 61402476 // ignore "BP Seymours Toyota"
     );
     updateStations(filteredstations);
 
@@ -424,6 +430,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   useEffect(() => {
     updateStationsLayer();
+    updateMapClusterValues();
   }, [allStations, visibleBounds]);
 
   const updateMarkerLayer = () => {
@@ -550,7 +557,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         stationsInRange.push(station);
       }
 
-      // console.log(station.SiteId, filterCenter, coord, distance, inRange);
+      // console.log(station.SiteID, filterCenter, coord, distance, inRange);
       return { ...station, inRange };
     });
 
@@ -614,7 +621,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     getInitialStations(extent);
 
     // updateInViewSectors(extent);
-    updateMapClusterValues();
+    // updateMapClusterValues();
   };
 
   const onMove = (event, map) => {
@@ -624,7 +631,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setVisibleBounds(extent);
 
     // updateInViewSectors(extent);
-    updateMapClusterValues();
+    // updateMapClusterValues();
   };
 
   const onClick = (event, map) => {
@@ -637,10 +644,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     if (clickMode == MODES.DEFAULT) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
-        if (feature.get("SiteId") !== undefined) {
+        if (feature.get("SiteID") !== undefined) {
           MapMoveTo({ coord: feature.get("coord") });
-          selectSite(feature.get("SiteId"));
-          console.log(feature.get("SiteId"));
+          selectSite(feature.get("SiteID"));
+          console.log(feature.get("SiteID"));
           return;
         }
 

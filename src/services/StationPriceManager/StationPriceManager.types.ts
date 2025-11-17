@@ -1,6 +1,6 @@
 export interface StationInterface {
   Fetched: number;
-  SiteId: number;
+  SiteID: number;
 }
 
 export type FuelPrice = {

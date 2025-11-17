@@ -287,7 +287,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         coord,
         geometry: point,
         ...feature,
-        siteid: feature.SiteId,
+        siteid: feature.SiteID,
         name: feature.Name,
         price: price || "loading...",
         placeid: feature.GPI,
@@ -375,15 +375,15 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       containsCoordinate(visibleBounds, [station.Lng, station.Lat])
     );
 
-    const stationIds = stationsInView.map((station) => station.SiteId);
+    const stationIds = stationsInView.map((station) => station.SiteID);
 
     const fuelPrices = await getFuelPrices(fuelType, stationIds);
 
     const index = Object.keys(fuelPrices);
     const filteredStations = stationsInView
       .map((station) => {
-        if (index.includes(`${station.SiteId}`)) {
-          station.Price = fuelPrices[`${station.SiteId}`];
+        if (index.includes(`${station.SiteID}`)) {
+          station.Price = fuelPrices[`${station.SiteID}`];
         }
 
         return station;

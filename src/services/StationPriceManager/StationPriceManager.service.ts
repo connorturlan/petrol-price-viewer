@@ -38,7 +38,7 @@ export async function updateAllStations() {
   readInProgress = true;
 
   const oldStations = getAllStationsFromCache();
-  const oldStationIds = oldStations.map((station) => station.SiteId);
+  const oldStationIds = oldStations.map((station) => station.SiteID);
   const newStations = await getAllStationsFromAPI(oldStationIds);
   const stations = [
     ...oldStations,
@@ -153,13 +153,13 @@ export async function getFuelPrices(
   const filteredCachedPrices = allCachedPrices.filter(
     (price) =>
       price.Type == petrolType &&
-      stationIDs.some((siteId) => siteId == price.SiteId)
+      stationIDs.some((siteId) => siteId == price.SiteID)
   );
   console.debug(
     `[PRICES] ${filteredCachedPrices.length} matching sites found in cache`
   );
 
-  const cachedPricesIds = filteredCachedPrices.map((price) => price.SiteId);
+  const cachedPricesIds = filteredCachedPrices.map((price) => price.SiteID);
   const missingPriceIds = stationIDs.filter(
     (siteId) => !cachedPricesIds.some((cachedSiteId) => cachedSiteId == siteId)
   );
@@ -193,7 +193,7 @@ export async function getFuelPrices(
 function uncachePrices(prices: any[]): any {
   const allPrices = {};
   prices.forEach((price) => {
-    allPrices[price.SiteId] = price.Price;
+    allPrices[price.SiteID] = price.Price;
   });
   return allPrices;
 }
@@ -210,7 +210,7 @@ function cachePrices(prices: any): any[] {
   const pack = Array.from(Object.entries(prices)).map((entry) => {
     const [siteId, price] = entry;
     return {
-      SiteId: siteId,
+      SiteID: siteId,
       Price: price,
       Type: petrolType,
       Fetched: Date.now() + defaults.PRICES_TIME_TO_LIVE,

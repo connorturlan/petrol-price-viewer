@@ -119,7 +119,7 @@ function App() {
               .sort((a, b) => a.Price - b.Price)
               .map((feature) => (
                 <PriceListItem
-                  key={feature.SiteId}
+                  key={feature.SiteID}
                   name={feature.Name}
                   price={((feature.Price || 0) / 10).toFixed(1)}
                   image={getImageFromStationBrandId(feature.BrandID)}
@@ -127,7 +127,7 @@ function App() {
                     MapMoveTo({
                       coord: fromLonLat([feature.Lng, feature.Lat], PROJECTION),
                     });
-                    selectSite(feature.SiteId);
+                    selectSite(feature.SiteID);
                   }}
                 />
               ))}
@@ -162,7 +162,7 @@ function App() {
               )
               .map((feature) => (
                 <PriceListItem
-                  key={feature.SiteId}
+                  key={feature.SiteID}
                   name={feature.Name}
                   price={(
                     (feature.FuelTypes.get(fuelType)?.Price || 0) / 10
@@ -172,7 +172,7 @@ function App() {
                     MapMoveTo({
                       coord: fromLonLat([feature.Lng, feature.Lat], PROJECTION),
                     });
-                    selectSite(feature.SiteId);
+                    selectSite(feature.SiteID);
                   }}
                 />
               ))}
@@ -199,11 +199,11 @@ function App() {
             .sort((a, b) => a.Price - b.Price)
             .map((feature) => (
               <PriceListItem
-                key={feature.SiteId}
+                key={feature.SiteID}
                 name={feature.Name}
                 price={((feature.Price || 0) / 10).toFixed(1)}
                 showDetails={() => {
-                  selectSite(feature.SiteId);
+                  selectSite(feature.SiteID);
                 }}
               />
             ))}

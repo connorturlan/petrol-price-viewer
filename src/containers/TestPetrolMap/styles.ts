@@ -117,7 +117,7 @@ const getClusterText = (feature: FeatureLike): string => {
 
     return feature.get("features")?.length <= 1
       ? `${feature.get("price") || 0}
-SiteId: ${feature.get("SiteId")}
+SiteID: ${feature.get("SiteID")}
 isLowest: ${isLowest}
 isInRange: ${isInRange}
 isOnRoute: ${isOnRoute}`

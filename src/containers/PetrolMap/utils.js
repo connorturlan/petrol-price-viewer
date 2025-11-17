@@ -51,7 +51,7 @@ export const updateLowestPrices = async (layer, stations, fuelType) => {
 
     return new Feature({
       geometry: point,
-      siteid: station.SiteId,
+      siteid: station.SiteID,
       name: station.Name,
       price: price || "loading...",
       placeid: station.GPI,
@@ -258,7 +258,7 @@ export const setStationsOnRoute = (layer, onRoute) => {
 
     return new Feature({
       geometry: point,
-      siteid: site.SiteId,
+      siteid: site.SiteID,
       name: site.Name,
       price: price || "loading...",
       placeid: site.GPI,
