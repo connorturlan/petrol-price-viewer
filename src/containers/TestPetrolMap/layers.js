@@ -25,11 +25,7 @@ import { getDebugBoundingPath } from "./utils";
 import zIndex from "@mui/material/styles/zIndex";
 import Cluster from "ol/source/Cluster.js";
 
-export const createStationLayer = (
-  onRouteStations,
-  darkMode,
-  styleOverride = stationStyle
-) => {
+export const createStationLayer = (styleOverride = stationStyle) => {
   const initialSource = new VectorSource();
 
   const clusterSource = new Cluster({

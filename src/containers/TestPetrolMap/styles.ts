@@ -137,10 +137,6 @@ const getFeatureText = (feature: FeatureLike): string => {
 };
 
 export function stationStyle(feature: FeatureLike): StyleLike {
-  const isHidden = Boolean(feature.get("isHidden"));
-
-  if (isHidden) return new Style();
-
   const isCluster = !!feature.get("features");
   const isLowest = Boolean(feature.get("isLowest"));
   const isFiltered = Boolean(feature.get("lowestInRange"));
@@ -170,6 +166,57 @@ export function stationStyle(feature: FeatureLike): StyleLike {
       font: style?.textStyle,
       fill: new Fill({
         color: style?.textFill,
+      }),
+      stroke: new Stroke({
+        color: style?.textOutline,
+        width: 8,
+      }),
+      backgroundStroke: new Stroke({
+        color: style?.backgroudOutline,
+        width: 16,
+        lineJoin: "round",
+        lineCap: "round",
+      }),
+      padding: [-8, 0, -8, 0],
+      text: text,
+    }),
+    zIndex: styleIndex,
+  });
+}
+
+export function hybridStationStyle(
+  feature: FeatureLike,
+  darkMode: boolean
+): StyleLike {
+  const isCluster = !!feature.get("features");
+  const isLowest = Boolean(feature.get("isLowest"));
+  const isFiltered = Boolean(feature.get("lowestInRange"));
+  const isOnRoute = Boolean(feature.get("isOnRoute"));
+
+  let text = "";
+  if (isCluster) {
+    text = getClusterText(feature);
+  } else {
+    text = getFeatureText(feature);
+  }
+
+  const styleIndex =
+    (isLowest ? 1 : 0) + (isOnRoute ? 2 : 0) + (isFiltered ? 4 : 0);
+  const style = FeatureText.at(styleIndex);
+
+  const iconSrc = getImageFromStationDetails(feature);
+
+  return new Style({
+    image: new Icon({
+      anchor: [0.5, 1],
+      src: iconSrc,
+      height: style?.iconHeight,
+    }),
+    text: new Text({
+      offsetY: 16,
+      font: style?.textStyle,
+      fill: new Fill({
+        color: !darkMode ? style?.textFill : "#222",
       }),
       stroke: new Stroke({
         color: style?.textOutline,
@@ -311,6 +358,58 @@ export function stationMinimalStyle(feature: FeatureLike): StyleLike {
       }),
       stroke: new Stroke({
         color: style?.textOutline,
+        // color: "#000000ff",
+        width: 4,
+      }),
+      padding: [0, 10, 0, 10],
+      text: text,
+    }),
+    zIndex: styleIndex,
+  });
+}
+
+export function stationMinimalHybridStyle(
+  feature: FeatureLike,
+  darkMode: boolean
+): StyleLike {
+  const isCluster = !!feature.get("features");
+  const isLowest = Boolean(feature.get("isLowest"));
+  const isFiltered = Boolean(feature.get("lowestInRange"));
+  const isOnRoute = Boolean(feature.get("isOnRoute"));
+  const normalisedRange =
+    Number(feature.get("normalisedRange")) || Math.random();
+
+  let text = "";
+  if (isCluster) {
+    text = getClusterText(feature) || "this is a test";
+  } else {
+    text = getFeatureText(feature) || "this is a test";
+  }
+
+  const styleIndex =
+    (isLowest ? 1 : 0) + (isOnRoute ? 2 : 0) + (isFiltered ? 4 : 0);
+  const style = FeatureText.at(styleIndex);
+
+  const iconSrc = getImageFromStationDetails(feature);
+  const textColour = getScaledColour(normalisedRange);
+  const iconColour = getScaledIconColour(normalisedRange);
+  return new Style({
+    image: new Icon({
+      anchor: [0.5, 1],
+      src: iconSrc,
+      height: 32, //style?.iconHeight,
+      // color: iconColour,
+    }),
+    text: new Text({
+      offsetY: -4,
+      textAlign: "center",
+      font: "normal 0.8em sans-serif",
+      fill: new Fill({
+        color: style?.textFill || textColour,
+        // color: style?.textFill,
+      }),
+      stroke: new Stroke({
+        color: !darkMode ? style?.textOutline : "#222",
         // color: "#000000ff",
         width: 4,
       }),

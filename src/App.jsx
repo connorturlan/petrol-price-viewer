@@ -39,6 +39,7 @@ function App() {
     fuelType,
     setFuelType,
     darkMode,
+    setDarkMode,
   } = useContext(AppContext);
 
   const publisher = usePub();
@@ -179,6 +180,11 @@ function App() {
               ))}
           </PriceList>
           <GraphModal />
+          {/* <button
+            onClick={() => {
+              setDarkMode(!darkMode);
+            }}
+          ></button> */}
           <SettingsModal />
         </Toolbox>
 

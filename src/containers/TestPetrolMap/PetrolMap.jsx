@@ -71,6 +71,7 @@ import { getDistance, getLength } from "ol/sphere";
 import {
   customStyle,
   stationDefaultStyle,
+  stationMinimalHybridStyle,
   stationMinimalStyle,
   stationRoundelStyle,
 } from "./styles";
@@ -141,11 +142,9 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
   const publisher = usePub();
 
   const setupMapLayers = async () => {
-    stationLayer.current = createStationLayer(
-      [],
-      darkMode,
-      stationMinimalStyle
-    );
+    stationLayer.current = createStationLayer((feature) => {
+      return stationMinimalHybridStyle(feature, darkMode);
+    });
     drawingLayer.current = new VectorLayer({
       source: new VectorSource(),
       style: new Style({
@@ -511,6 +510,12 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
     // resetFuelPrices();
     updateMapClusterValues();
   }, [fuelType]);
+
+  useEffect(() => {
+    stationLayer.current = createStationLayer((feature) => {
+      return stationMinimalHybridStyle(feature, darkMode);
+    });
+  }, [darkMode]);
 
   useEffect(() => {
     updateWaypointLayer();

@@ -33,7 +33,7 @@ const mapLayer = new TileLayer({
 
 const darkMapLayer = new TileLayer({
   source: new XYZ({
-    url: "https://api.maptiler.com/maps/streets-v2-dark/256/{z}/{x}/{y}.png?key=xENXsVIdAZcfTT1E5DpW",
+    url: lightMapLayers.at(6),
     transition: 0,
   }),
 });
