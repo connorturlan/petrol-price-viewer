@@ -34,7 +34,7 @@
 
     & input {
       border: none;
-      // background-color: white;
+      background: none;
     }
 
     & input:focus {
@@ -43,7 +43,6 @@
 
     &_Focused {
       z-index: 25;
-      background-color: #ffffff;
     }
   }
 
@@ -88,7 +87,7 @@
     gap: 4px;
 
     border: none;
-    background-color: var(--background);
+    // background-color: var(--background);
     border-radius: 8px;
   }
 }
