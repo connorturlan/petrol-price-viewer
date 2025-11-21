@@ -514,7 +514,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     updateMapClusterValues();
   }, [routes, fuelType]);
 
-  const handleFilter = () => {
+  const handleDistanceFilter = (stations = []) => {
     if (!filter || !filter.center) return;
 
     console.log("[FILTER] getting features within range");
@@ -535,7 +535,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     const stationsInRange = [];
 
-    const updatedInRangeStations = allStations.map((station) => {
+    const updatedInRangeStations = stations.map((station) => {
       const coord = fromLonLat([station.Lng, station.Lat], PROJECTION);
       const distance = getDistance(
         [filter.center.Lat, filter.center.Lng],
@@ -572,7 +572,15 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     console.log(updatedLowestStations, allStations);
 
-    setAllStations(updatedLowestStations);
+    return updatedLowestStations;
+  };
+
+  const handleFilter = () => {
+    let stations = allStations.slice();
+
+    stations = handleDistanceFilter(stations);
+
+    setAllStations(stations);
   };
 
   useEffect(() => {
@@ -580,7 +588,11 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   }, [filter]);
 
   UseSub("UpdateDistanceFilter", (data) => {
-    setFilter(data);
+    setFilter({ filter, ...data });
+  });
+
+  UseSub("UpdateStationFilter", (data) => {
+    setFilter({ filter, ...data });
   });
 
   const updateInViewSectors = async (bounds) => {

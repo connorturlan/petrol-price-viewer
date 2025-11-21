@@ -74,7 +74,7 @@ const FeatureText = [
   // 4 - in range
   {
     textStyle: "normal 1.2em sans-serif",
-    textFill: "#111",
+    textFill: "#ffffff",
     textOutline: "#71b671ff",
     backgroundFill: "",
     backgroudOutline: "#97f79740",
