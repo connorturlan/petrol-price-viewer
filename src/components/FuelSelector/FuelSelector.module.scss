@@ -2,6 +2,8 @@
 
 .FuelSelector {
   &_Body {
+    max-width: 400px;
+    margin: 8px;
   }
 
   &_Lookup {
@@ -36,8 +38,10 @@
   }
 
   &_Grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
     gap: 4px;
     padding: 12px;
     max-height: 100%;

@@ -2,7 +2,8 @@
 
 .StationFilter {
   &_Body {
-    width: 400px;
+    max-width: 400px;
+    margin: 8px;
   }
 
   &_Lookup {
