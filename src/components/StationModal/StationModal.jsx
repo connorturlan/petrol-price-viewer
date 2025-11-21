@@ -82,7 +82,8 @@ function StationModal() {
           <div className={styles.StationModal_Prices}>{getSitePrices()}</div>
           <p></p>
           <a
-            href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
+            // href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
+            href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.Name}`}
             target="_blank"
             className={styles.StationModal_Maps}
           >
