@@ -137,6 +137,10 @@ const getFeatureText = (feature: FeatureLike): string => {
 };
 
 export function stationStyle(feature: FeatureLike): StyleLike {
+  const isHidden = Boolean(feature.get("isHidden"));
+
+  if (isHidden) return new Style();
+
   const isCluster = !!feature.get("features");
   const isLowest = Boolean(feature.get("isLowest"));
   const isFiltered = Boolean(feature.get("lowestInRange"));

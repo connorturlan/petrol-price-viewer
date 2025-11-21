@@ -185,7 +185,7 @@
     display: grid;
     grid-template-columns: 4fr 1fr;
     justify-content: space-around;
-    padding: 12px;
+    padding: 0 12px;
 
     &Input {
       width: 100%;
@@ -194,6 +194,54 @@
     &Label {
       width: 100%;
       text-align: right;
+    }
+  }
+
+  &_Brand {
+    display: grid;
+    grid-template-columns: 1fr 6fr;
+    justify-content: space-around;
+    padding: 0 12px;
+
+    &Image {
+      display: inline-block;
+      height: 64px;
+      padding: 2px;
+
+      // outline: 1px solid #71b671;
+      background-color: #71b671;
+      border-radius: 16px;
+
+      &__Hidden {
+        filter: grayscale(80%);
+        outline: none;
+        background: none;
+      }
+
+      &_Text {
+        position: relative;
+        // top: -3em;
+        margin: -3em;
+        font-size: 0.6em;
+        text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white,
+          1px 1px 0 white;
+      }
+    }
+
+    &_Reset {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &Selector {
+      display: flex;
+      overflow: auto;
+      white-space: nowrap;
+      padding: 8px;
+      background-color: #00000030;
+      border-radius: 8px;
+      gap: 1px;
     }
   }
 }

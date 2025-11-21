@@ -6,12 +6,16 @@ import Modal from "../../containers/Modal/Modal";
 import ToolboxModal from "../../containers/ToolboxModal/ToolboxModal";
 import { usePub } from "../../utils/pubsub";
 import { RouteContext } from "../../contexts/RouteContext";
-import { ObjectIsEmpty } from "../../utils/utils";
+import {
+  getImageFromStationBrandId,
+  getNameFromStationBrandId,
+  ObjectIsEmpty,
+} from "../../utils/utils";
 import { UserContext } from "../../contexts/UserContext";
 import { getCoordinatesWithAddressQuery } from "../../utils/navigation";
 import LocationLookup from "../LocationLookup/LocationLookup";
 
-const StationFilter = () => {
+const StationFilter = ({ stationData }) => {
   const publisher = usePub();
 
   const { origin, setOrigin, getOrigin } = useContext(RouteContext);
@@ -107,7 +111,38 @@ const StationFilter = () => {
     });
   };
 
-  useEffect(updateFilter, [customOrigin]);
+  // useEffect(updateFilter, [customOrigin]);
+
+  const [filteredBrands, setFilteredBrands] = useState([]);
+
+  const toggleBrandInFilter = (brandID) => {
+    const newFilter = filteredBrands.slice();
+
+    if (filteredBrands.includes(brandID)) {
+      console.log(`[FILTER] removing brand id ${brandID} to filter.`);
+      const index = newFilter.indexOf(brandID);
+      newFilter.splice(index, 1);
+    } else {
+      console.log(`[FILTER] adding brand id ${brandID} to filter.`);
+      newFilter.push(brandID);
+    }
+
+    setFilteredBrands(newFilter);
+  };
+
+  const clearBrandFilter = () => {
+    setFilteredBrands([]);
+  };
+
+  useEffect(() => {
+    publisher("UpdateStationFilter", {
+      brandIDs: filteredBrands,
+    });
+  }, [filteredBrands]);
+
+  const filteredSectors = stationData?.map((sector) => sector.BrandID || 0);
+  const uniqueSet = new Set(filteredSectors);
+  const brandIDs = [...uniqueSet];
 
   return (
     <ToolboxModal
@@ -144,6 +179,40 @@ const StationFilter = () => {
               max={20}
             ></input>
             <p className={styles.StationFilter_RangeLabel}>{distance} km</p>
+          </div>
+          <h3>Filter By Brand</h3>
+          <div className={styles.StationFilter_Brand}>
+            <div className={styles.StationFilter_Brand_Reset}>
+              <img
+                src="close_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                onClick={clearBrandFilter}
+              />
+            </div>
+            <div className={styles.StationFilter_BrandSelector}>
+              {brandIDs.map((brandID) => {
+                const imageSource = getImageFromStationBrandId(brandID);
+                return (
+                  <div>
+                    <img
+                      key={brandID}
+                      className={`${styles.StationFilter_BrandImage} ${
+                        !filteredBrands.includes(brandID) &&
+                        styles.StationFilter_BrandImage__Hidden
+                      }`}
+                      src={imageSource}
+                      onClick={() => {
+                        toggleBrandInFilter(brandID);
+                      }}
+                    ></img>
+                    {imageSource === "red-pin.svg" && (
+                      <p className={styles.StationFilter_BrandImage_Text}>
+                        {getNameFromStationBrandId(brandID)}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
         <div className={styles.StationFilter_Grid}></div>

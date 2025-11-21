@@ -95,7 +95,7 @@ const MAP_CENTER = getCookie("mapCenter")
   ? JSON.parse(getCookie("mapCenter")) || [138.599503, -34.92123]
   : [138.599503, -34.92123];
 
-const PetrolMap = ({ fuelType, updateStations }) => {
+const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
   const { setClickMode, clickModeOptions, selectSite, darkMode } =
     useContext(AppContext);
   const {
@@ -269,7 +269,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
     const newStations = [...allStations, ...newStationsInView];
 
-    setAllStations(newStations);
+    const filteredStations = runFilters(newStations);
+
+    setAllStations(filteredStations);
     setStationLoading(false);
   };
 
@@ -340,6 +342,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
         station &&
         station.FuelTypes.get(fuelType)?.Price &&
         station.FuelTypes.get(fuelType)?.Price < 9999 &&
+        !station.isHidden &&
         // containsCoordinate(
         //   visibleBounds,
         //   fromLonLat([station.Lng, station.Lat])
@@ -423,6 +426,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   useEffect(() => {
     updateStationsLayer();
     updateMapClusterValues();
+    updateStationData(allStations);
   }, [allStations]);
 
   const updateMarkerLayer = () => {
@@ -515,7 +519,10 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   }, [routes, fuelType]);
 
   const handleDistanceFilter = (stations = []) => {
-    if (!filter || !filter.center) return;
+    if (!filter || !filter.center) return stations;
+    console.log(
+      `[FILTER] handling distance filter for ${stations.length} stations`
+    );
 
     console.log("[FILTER] getting features within range");
 
@@ -575,11 +582,36 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     return updatedLowestStations;
   };
 
-  const handleFilter = () => {
-    let stations = allStations.slice();
+  const isStationBrandFiltered = (brandID) => {
+    return filter && filter.brandIDs && filter.brandIDs.length > 0
+      ? filter.brandIDs.includes(brandID)
+      : true;
+  };
+
+  const handleBrandFilter = (stations = []) => {
+    console.log(
+      `[FILTER] handling brand filter for ${stations.length} stations`
+    );
+    const newStations = stations.map((station) => {
+      return {
+        ...station,
+        isHidden: !isStationBrandFiltered(station.BrandID),
+      };
+    });
+    return newStations;
+  };
+
+  const runFilters = (stations = []) => {
+    stations = stations.slice();
 
     stations = handleDistanceFilter(stations);
+    stations = handleBrandFilter(stations);
 
+    return stations;
+  };
+
+  const handleFilter = () => {
+    let stations = runFilters(allStations);
     setAllStations(stations);
   };
 

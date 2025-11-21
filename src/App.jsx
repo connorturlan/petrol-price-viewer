@@ -28,6 +28,7 @@ import AppMenu from "./containers/AppMenu/AppMenu";
 function App() {
   // set intial state
   const [mapFeatures, setMapFeatures] = useState([]);
+  const [stationData, setStationData] = useState([]);
   const [warningVisible, setWarning] = useState(false);
   const {
     clickMode,
@@ -147,7 +148,7 @@ function App() {
         <Toolbox>
           {/* <LocationSelector /> */}
           <FuelSelector />
-          <StationFilter />
+          <StationFilter stationData={stationData} />
           <PriceList>
             {mapFeatures
               .filter(
@@ -184,6 +185,7 @@ function App() {
         <PetrolMap
           fuelType={fuelType}
           updateStations={setMapFeatures}
+          updateStationData={setStationData}
         ></PetrolMap>
       </div>
 

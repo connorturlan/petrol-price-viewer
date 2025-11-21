@@ -44,6 +44,13 @@ export const getImageFromStationBrandId = (brandId) => {
   return brandIdMap[brandId].image || "red-pin.svg";
 };
 
+export const getNameFromStationBrandId = (brandId) => {
+  if (!brandIdMap) constructBrandMaps();
+  if (!brandId) return "red-pin.svg";
+  if (!brandIdMap[brandId]) return "red-pin.svg";
+  return brandIdMap[brandId].name || "unknown";
+};
+
 export const getImageFromStationName = (name) => {
   if (!brandNameMap) constructBrandMaps();
   if (!name) return "red-pin.svg";
