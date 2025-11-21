@@ -120,7 +120,6 @@ const StationFilter = () => {
             srcSet=""
             title="Show fuel type planner"
           />
-          {/* <p>Filter</p> */}
         </>
       }
     >
@@ -133,10 +132,6 @@ const StationFilter = () => {
         <h2 className={styles.StationFilter_Title}>Filter Stations</h2>
         <div>
           <h3>Within Range</h3>
-
-          {/* <div>
-            <LocationLookup onSelectCallback={setOrigin} />
-          </div> */}
           <div className={styles.StationFilter_Range}>
             <input
               className={styles.StationFilter_RangeInput}
@@ -148,72 +143,8 @@ const StationFilter = () => {
               min={1}
               max={20}
             ></input>
-            <p>{distance} km</p>
+            <p className={styles.StationFilter_RangeLabel}>{distance} km</p>
           </div>
-          {/* <div className={styles.RoutePlanner_List}>
-            <input
-              type="text"
-              id="custom-origin"
-              name="custom-origin"
-              autoComplete="on"
-              className={`${
-                lookupInProgess && styles.RoutePlanner_Lookup__Loading
-              }`}
-              disabled={lookupInProgess}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") lookupOrigin(event);
-              }}
-              onBlur={lookupOrigin}
-              placeholder="e.g. 52 Wallaby Way, Sydney NSW 2000"
-              value={customOriginInput}
-              onChange={(e) => {
-                updateState(e, setCustomOriginInput);
-                // completeOrigin(e.target.value);
-              }}
-            ></input>
-            <div className={styles.RoutePlanner_AddressList}>
-              {showAddressList && (
-                <AddressPicker
-                  addresses={addressList}
-                  onSelect={addressListCallback}
-                />
-              )}
-            </div>
-            {loginState && (
-              <>
-                <div className={styles.RoutePlanner_ColumnHeading}>
-                  <h3>Origin</h3>
-                  <p>
-                    <i>{ObjectIsEmpty(origin) ? "" : origin.Name}</i>
-                  </p>
-                </div>
-                {Object.keys(POI).map((poi) => {
-                  return (
-                    <button
-                      key={poi}
-                      onClick={() => {
-                        setCustomOrigin("");
-                        if (isPointSelected(poi, origin)) {
-                          setOrigin({});
-                        } else {
-                          setOrigin(POI[poi]);
-                        }
-                      }}
-                      className={
-                        styles.RoutePlanner_Button +
-                        " " +
-                        (isPointSelected(poi, origin)
-                          ? styles.RoutePlanner_Point__Selected
-                          : "")
-                      }
-                    >
-                      {poi}
-                    </button>
-                  );
-                })}
-              </>
-            )}
-          </div> */}
         </div>
         <div className={styles.StationFilter_Grid}></div>
       </div>
