@@ -257,6 +257,10 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
 
   const getUpdatedStations = async (bounds) => {
     setStationLoading(true);
+    setTimeout(() => {
+      setStationLoading(false);
+    }, 10_000);
+
     const allSectors = await getSectors();
     const sectorsInViewIds = await getSectorsInRange(bounds, allSectors);
     const stationsInView = await getStationsFromSectors(sectorsInViewIds);
@@ -482,6 +486,10 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
 
   const updateOnRouteStations = async () => {
     setLoadingRoutes(true);
+    setTimeout(() => {
+      setLoadingRoutes(false);
+    }, 10_000);
+
     const stationsOnRoute = routes.flatMap((route) => {
       return getFeaturesAvailableOnRoute(route, allStations);
     });
