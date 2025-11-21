@@ -262,17 +262,12 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     const sectorsInViewIds = await getSectorsInRange(bounds, allSectors);
     const stationsInView = await getStationsFromSectors(sectorsInViewIds);
 
-    const stationIdsInView = stationsInView.map((station) => station.SiteID);
-    const allStationsInView = allStations.filter(
-      (station) => !stationIdsInView.includes(station.SiteID)
-    );
-
-    const stationIds = allStationsInView.map((station) => station.SiteID);
+    const stationIds = allStations.map((station) => station.SiteID);
     const newStationsInView = stationsInView.filter(
       (station) => !stationIds.includes(station.SiteID)
     );
 
-    const newStations = [...allStationsInView, ...newStationsInView];
+    const newStations = [...allStations, ...newStationsInView];
 
     setAllStations(newStations);
     setStationLoading(false);
@@ -388,8 +383,6 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     // source.changed();
 
     console.debug(`[STATIONS] added ${filteredStations.length} stations.`);
-
-    updateMapClusterValues();
   };
 
   const updateMapClusterValues = () => {
@@ -430,7 +423,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   useEffect(() => {
     updateStationsLayer();
     updateMapClusterValues();
-  }, [allStations, visibleBounds]);
+  }, [allStations]);
 
   const updateMarkerLayer = () => {
     const source = markerLayer.current.getSource();
