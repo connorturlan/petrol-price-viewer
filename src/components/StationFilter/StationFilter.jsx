@@ -1,10 +1,10 @@
 import styles from "./StationFilter.module.scss";
 import fueltypes from "../../assets/fueltypes.json";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useId, useState } from "react";
 import { AppContext } from "../../contexts/AppContext";
 import Modal from "../../containers/Modal/Modal";
 import ToolboxModal from "../../containers/ToolboxModal/ToolboxModal";
-import { usePub } from "../../utils/pubsub";
+import { usePub, UseSub } from "../../utils/pubsub";
 import { RouteContext } from "../../contexts/RouteContext";
 import {
   getImageFromStationBrandId,
@@ -14,6 +14,7 @@ import {
 import { UserContext } from "../../contexts/UserContext";
 import { getCoordinatesWithAddressQuery } from "../../utils/navigation";
 import LocationLookup from "../LocationLookup/LocationLookup";
+import { MODES } from "../../containers/TestPetrolMap/PetrolMap";
 
 const StationFilter = ({ stationData }) => {
   const publisher = usePub();
@@ -144,6 +145,25 @@ const StationFilter = ({ stationData }) => {
   const uniqueSet = new Set(filteredSectors);
   const brandIDs = [...uniqueSet];
 
+  const id = useId();
+
+  const handlePickLocation = () => {
+    publisher("SetClickMode", {
+      mode: MODES.PICK_LOCATION,
+      options: { id },
+    });
+  };
+
+  UseSub("MapClicked", (event) => {
+    if (event.options.id != id) return;
+    console.log(event);
+    setOrigin({
+      Name: "Custom Location",
+      Lat: parseFloat(event.coord.at(0)),
+      Lng: parseFloat(event.coord.at(1)),
+    });
+  });
+
   return (
     <ToolboxModal
       summary={
@@ -168,6 +188,12 @@ const StationFilter = ({ stationData }) => {
         <div>
           <h3>Within Range</h3>
           <div className={styles.StationFilter_Range}>
+            <div className={styles.StationFilter_Brand_Reset}>
+              <img
+                src="globe_location_pin_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                onClick={handlePickLocation}
+              />
+            </div>
             <input
               className={styles.StationFilter_RangeInput}
               type="range"

@@ -184,7 +184,7 @@
 
   &_Range {
     display: grid;
-    grid-template-columns: 4fr 1fr;
+    grid-template-columns: 1fr 4fr 1fr;
     justify-content: space-around;
     padding: 0 12px;
 
@@ -200,7 +200,7 @@
 
   &_Brand {
     display: grid;
-    grid-template-columns: 1fr 6fr;
+    grid-template-columns: 1fr 5fr;
     justify-content: space-around;
     padding: 0 12px;
 

@@ -87,8 +87,8 @@ const LocationLookup = ({
   const locationEnabled = "geolocation" in navigator;
   const handleCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
-      handleLocationChange("Current", {
-        Name: "Current",
+      handleLocationChange("Current Location", {
+        Name: "Current Location",
         Lat: parseFloat(position.coords.longitude),
         Lng: parseFloat(position.coords.latitude),
       });
@@ -105,8 +105,8 @@ const LocationLookup = ({
   UseSub("MapClicked", (event) => {
     if (event.options.id != id) return;
     console.log(event);
-    handleLocationChange("Custom", {
-      Name: "Custom",
+    handleLocationChange("Custom Location", {
+      Name: "Custom Location",
       Lat: parseFloat(event.coord.at(0)),
       Lng: parseFloat(event.coord.at(1)),
     });
@@ -171,11 +171,22 @@ const LocationLookup = ({
           if (!isFocused) setHidden(true);
         }}
       >
-        <div>
-          <button enabled={locationEnabled} onClick={handleCurrentLocation}>
-            Use Current Location
+        <div className={`${styles.LocationLookup_Iconbar}`}>
+          <button
+            className={`${styles.LocationLookup_Icon}`}
+            enabled={locationEnabled}
+            onClick={handleCurrentLocation}
+          >
+            <img src="my_location_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
+            <p>use my location</p>
           </button>
-          <button onClick={handlePickLocation}>Pick on Map</button>
+          <button
+            className={`${styles.LocationLookup_Icon}`}
+            onClick={handlePickLocation}
+          >
+            <img src="globe_location_pin_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
+            <p>select on map</p>
+          </button>
         </div>
         {addressList.length > 0 && (
           <>
