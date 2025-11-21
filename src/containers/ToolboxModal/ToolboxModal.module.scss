@@ -17,11 +17,10 @@ $ModalWidth: 100vw;
     max-height: 40vh;
     width: $ModalWidth;
     // max-width: calc(100vw - Toolbox.$ToolboxWidth);
-    background-color: rgba(0, 0, 0, 0.4);
 
     gap: 8px;
 
-    background-color: var(--background);
+    background-color: #f6f6f670;
     color: var(--text);
 
     grid-column-start: 3;
