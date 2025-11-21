@@ -534,12 +534,11 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
 
     const source = drawingLayer.current.getSource();
     source.clear();
+
     const circle = drawCircle(
       filterCenter,
       filterDistance * (0.9 / Math.abs(Math.cos(toRadians(filter.center.Lat))))
     );
-    FitMapToExtent(circle.getExtent());
-
     const stationsInRange = [];
 
     const updatedInRangeStations = stations.map((station) => {
@@ -621,6 +620,17 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
 
   UseSub("UpdateDistanceFilter", (data) => {
     setFilter({ filter, ...data });
+
+    if (!data || !data.center) return;
+
+    const filterCenter = fromLonLat(
+      [data.center.Lat, data.center.Lng],
+      PROJECTION
+    );
+    const filterDistance = data.distance;
+
+    const circle = new Circle(filterCenter, filterDistance);
+    FitMapToExtent(circle.getExtent());
   });
 
   UseSub("UpdateStationFilter", (data) => {
