@@ -694,6 +694,8 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
           MapMoveTo({ coord: feature.get("coord") });
           selectSite(feature.get("SiteID"));
           console.log(feature.get("SiteID"));
+          console.log(`[MAP] station clicked: ${feature.get("SiteID")}`);
+          publisher("ToolboxModalHide", -1);
           return;
         }
 

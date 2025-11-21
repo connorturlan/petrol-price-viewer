@@ -26,6 +26,7 @@ const ToolboxModal = ({ children, summary }) => {
   };
 
   UseSub("ToolboxModalHide", (data) => {
+    console.log("hide!");
     if (data != refId) setVisible(false);
   });
 

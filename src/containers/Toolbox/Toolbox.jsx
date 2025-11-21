@@ -9,8 +9,8 @@ const Toolbox = ({ children }) => {
 
   const handleHide = () => {
     setVisibility(false);
-    const hideModals = usePub();
-    hideModals("ToolboxModalHide");
+    const publisher = usePub();
+    publisher("ToolboxModalHide");
   };
 
   return (
