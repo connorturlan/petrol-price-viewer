@@ -175,6 +175,7 @@ function App() {
                       coord: fromLonLat([feature.Lng, feature.Lat], PROJECTION),
                     });
                     selectSite(feature.SiteID);
+                    publisher("ToolboxModalHide", -1);
                   }}
                 />
               ))}
