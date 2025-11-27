@@ -401,7 +401,8 @@ function getFuelPricesFromSectors(
 
 function getSectorsFromCache(): MapSector[] {
   const fetched = Number(localStorage.getItem("_sectors"));
-  if (fetched > Date.now()) {
+  if (Date.now() > fetched) {
+    console.log("[SECTORS] cache is out of date");
     return [];
   }
 
