@@ -9,8 +9,7 @@ const LoadingSplash = ({ fadeIn }) => {
         (fadeIn ? styles.LoadingSplash__FadeIn : styles.LoadingSplash__FadeOut)
       }
     >
-      {fadeIn && <div className={styles.lds_dual_ring}></div>}
-      <p>loading...</p>
+      <div className={styles.lds_dual_ring} hidden={!fadeIn}></div>
     </div>
   );
 };
