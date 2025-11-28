@@ -1,0 +1,34 @@
+$elementSize: 48px;
+
+.CurrentLocation {
+  &_Container {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 8px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 10;
+    box-shadow: 0 0 2px #00000033, 0 -1px 0 #00000005;
+    border: none;
+    border-radius: 50%;
+
+    width: $elementSize;
+    height: $elementSize;
+    background-color: white;
+  }
+
+  &_Button {
+    padding: 0;
+    margin: 0;
+    width: calc($elementSize - 8px);
+    height: calc($elementSize - 8px);
+
+    &__Disabled {
+      opacity: 20%;
+    }
+  }
+}

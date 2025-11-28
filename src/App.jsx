@@ -24,6 +24,7 @@ import LocationSelector from "./components/LocationSelector/LocationSelector";
 import { fromLonLat } from "ol/proj";
 import { PROJECTION } from "./utils/defaults";
 import AppMenu from "./containers/AppMenu/AppMenu";
+import CurrentLocation from "./components/CurrentLocation/CurrentLocation";
 
 function App() {
   // set intial state
@@ -188,6 +189,7 @@ function App() {
           ></button> */}
           <SettingsModal />
         </Toolbox>
+        <CurrentLocation />
 
         <PetrolMap
           fuelType={fuelType}

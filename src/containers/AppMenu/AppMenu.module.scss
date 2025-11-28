@@ -1,3 +1,5 @@
+$elementSize: 48px;
+
 .AppMenu {
   display: grid;
   width: calc(100vw - 16px);
@@ -12,8 +14,8 @@
   justify-content: center;
   align-items: start;
 
-  grid-template-columns: 32px 1fr 32px;
-  grid-auto-rows: 32px;
+  grid-template-columns: 56px 1fr $elementSize;
+  grid-auto-rows: $elementSize;
 
   overflow-y: show;
 
@@ -32,8 +34,8 @@
     border-radius: 50%;
     overflow: hidden;
     padding: 4px;
-    width: 32px;
-    height: 32px;
+    width: $elementSize;
+    height: $elementSize;
 
     background-color: white;
 
@@ -61,8 +63,8 @@
     &_SwapImage {
       padding: 0;
       margin: 0;
-      width: 24px;
-      height: 24px;
+      width: calc($elementSize - 8px);
+      height: calc($elementSize - 8px);
     }
   }
 

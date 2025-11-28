@@ -2,7 +2,7 @@
 @use "../../styles/palette";
 
 $gap: 8px;
-$elementSize: 32px;
+$elementSize: 48px;
 $ToolboxWidth: calc($elementSize + 2 * $gap);
 
 .Toolbox {
@@ -104,8 +104,8 @@ $ToolboxWidth: calc($elementSize + 2 * $gap);
     & img {
       padding: 0;
       margin: 0;
-      width: 24px;
-      height: 24px;
+      width: calc($elementSize - 8px);
+      height: calc($elementSize - 8px);
     }
   }
 }
