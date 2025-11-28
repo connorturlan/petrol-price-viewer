@@ -6,6 +6,7 @@ import { ObjectIsEmpty } from "../../utils/utils";
 import AddressPicker from "../AddressPicker/AddressPicker";
 import { usePub, UseSub } from "../../utils/pubsub";
 import { MODES } from "../../containers/TestPetrolMap/PetrolMap";
+import LoaderWheel from "../LoaderWheel/LoaderWheel";
 
 const LocationLookup = ({
   onSelectCallback,
@@ -26,7 +27,7 @@ const LocationLookup = ({
   const [showAddressList, toggleAddressList] = useState(false);
   const [addressList, setAddressList] = useState([]);
   const [addressListCallback, setAddressListCallback] = useState(() => {});
-  const [lookupInProgess, setLookupProgress] = useState(false);
+  const [lookupInProgress, setLookupProgress] = useState(false);
 
   const publisher = usePub();
   const id = useId();
@@ -41,7 +42,7 @@ const LocationLookup = ({
   };
 
   const lookup = async (address, isOrigin) => {
-    if (lookupInProgess) return;
+    if (lookupInProgress) return;
     if (!address) return;
 
     setLookupProgress(true);
@@ -148,19 +149,23 @@ const LocationLookup = ({
         event.stopPropagation();
       }}
     >
-      <input
-        className={styles.LocationLookup_Search}
-        type="text"
-        placeholder={placeholder || "Search"}
-        value={searchText}
-        disabled={lookupInProgess}
-        onChange={(e) => {
-          setSearchText(e.target.value);
-        }}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") lookup(searchText, true);
-        }}
-      />
+      <div className={styles.LocationLookup_Search_Container}>
+        <input
+          className={styles.LocationLookup_Search}
+          type="text"
+          placeholder={placeholder || "Search"}
+          value={searchText}
+          disabled={lookupInProgress}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") lookup(searchText, true);
+          }}
+        />
+        <LoaderWheel hidden={!lookupInProgress} />
+        {/* <LoaderWheel /> */}
+      </div>
       <div
         className={`${styles.LocationLookup_Focusbar} ${
           !isHidden && isFocused
@@ -171,7 +176,11 @@ const LocationLookup = ({
           if (!isFocused) setHidden(true);
         }}
       >
-        <div className={`${styles.LocationLookup_Iconbar}`}>
+        <div
+          className={`${styles.LocationLookup_Iconbar} ${
+            lookupInProgress && styles.LocationLookup_Iconbar__Hidden
+          }`}
+        >
           <button
             className={`${styles.LocationLookup_Icon}`}
             enabled={locationEnabled}

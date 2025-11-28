@@ -1,3 +1,4 @@
+import LoaderWheel from "../LoaderWheel/LoaderWheel";
 import styles from "./LoadingSplash.module.scss";
 
 const LoadingSplash = ({ fadeIn }) => {
@@ -9,7 +10,7 @@ const LoadingSplash = ({ fadeIn }) => {
         (fadeIn ? styles.LoadingSplash__FadeIn : styles.LoadingSplash__FadeOut)
       }
     >
-      <div className={styles.lds_dual_ring} hidden={!fadeIn}></div>
+      <LoaderWheel hidden={!fadeIn} />
     </div>
   );
 };

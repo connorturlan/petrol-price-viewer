@@ -3,10 +3,11 @@
   justify-content: flex-end;
   align-items: start;
   flex-direction: column;
+  padding: 8px;
 
   position: fixed;
-  width: 100vw;
-  height: 100vh;
+  width: calc(100vw - 16px);
+  height: calc(100vh - 16px);
 
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.4);
