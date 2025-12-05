@@ -29,8 +29,8 @@ export const createStationLayer = (styleOverride = stationStyle) => {
   const initialSource = new VectorSource();
 
   const clusterSource = new Cluster({
-    distance: 50,
-    minDistance: 0,
+    distance: 64,
+    minDistance: 128,
     source: initialSource,
   });
 

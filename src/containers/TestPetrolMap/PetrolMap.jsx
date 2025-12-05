@@ -336,10 +336,6 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
     // may be null on first render
     if (!allStations || allStations.length <= 0) return;
 
-    const clusterSource = stationLayer.current.getSource();
-    const source = clusterSource.getSource();
-    source.clear();
-
     const filteredStations = allStations.filter(
       (station) =>
         station &&
@@ -384,9 +380,12 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
         normalisedRange,
       });
     });
-    source.addFeatures(features);
 
-    // source.changed();
+    const clusterSource = stationLayer.current.getSource();
+    clusterSource.clear();
+    const source = clusterSource.getSource();
+    source.clear();
+    source.addFeatures(features);
 
     console.debug(`[STATIONS] added ${filteredStations.length} stations.`);
   };
@@ -398,7 +397,7 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
     } else {
       updateClusterWithLowestPrice(stationLayer.current.getSource());
     }
-    stationLayer.current?.getSource()?.changed();
+    // stationLayer.current?.getSource()?.changed();
   };
 
   const drawCircle = (coord, radius) => {
@@ -688,9 +687,6 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
 
     const extent = map.getView().calculateExtent(map.getSize());
     setVisibleBounds(extent);
-
-    // updateInViewSectors(extent);
-    // updateMapClusterValues();
   };
 
   const onClick = (event, map) => {

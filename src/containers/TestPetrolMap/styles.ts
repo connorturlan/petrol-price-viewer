@@ -372,6 +372,11 @@ export function stationMinimalHybridStyle(
   feature: FeatureLike,
   darkMode: boolean
 ): StyleLike {
+  // if the price is zero we can assume the station is nil.
+  if (!feature.get("price") || feature.get("price") == 0) {
+    return new Style({});
+  }
+
   const isCluster = !!feature.get("features");
   const isLowest = Boolean(feature.get("isLowest"));
   const isFiltered = Boolean(feature.get("lowestInRange"));
@@ -397,7 +402,7 @@ export function stationMinimalHybridStyle(
     image: new Icon({
       anchor: [0.5, 1],
       src: iconSrc,
-      height: 32, //style?.iconHeight,
+      height: 48, //style?.iconHeight,
       // color: iconColour,
     }),
     text: new Text({
