@@ -21,6 +21,8 @@ const filters: any = {
   // },
 };
 
+var requestInProgress = false;
+
 var petrolType = 0;
 
 var readInProgress = false;
@@ -408,7 +410,7 @@ function getSectorsFromCache(): MapSector[] {
 
   // try the cache first!
   const json = localStorage.getItem("sectors");
-  if (!json || json == "") {
+  if (!json || json == "" || json == "undefined") {
     return [];
   }
 
@@ -425,14 +427,10 @@ function updateSectorsInCache(sectors: MapSector[]) {
   localStorage.setItem("sectors", json);
 }
 
-export async function getSectors(): Promise<MapSector[]> {
+async function getSectorFromAPI(): Promise<MapSector[]> {
   let sectors: MapSector[];
-
-  const maybeSectors = getSectorsFromCache();
-  if (maybeSectors.length > 0) {
-    return maybeSectors;
-  }
-
+  requestInProgress = true;
+  console.log("[SECTORS] starting request, setting wait...");
   try {
     const res = await fetch(`${ENDPOINT}${defaults.SECTORS_API_V1}`);
     if (res.status != 200) {
@@ -444,10 +442,29 @@ export async function getSectors(): Promise<MapSector[]> {
     console.error(`error while fetching sectors: ${error}`);
     return [];
   }
-
-  updateSectorsInCache(sectors);
-
+  requestInProgress = false;
+  console.log("[SECTORS] ending request, done...");
   return sectors || [];
+}
+
+export async function getSectors(): Promise<MapSector[]> {
+  if (requestInProgress) {
+    console.log("[SECTORS] request in progress, waiting...");
+    return new Promise((res, rej) => {
+      setTimeout(() => {
+        res(getSectors());
+      }, 2_000);
+    });
+  }
+
+  const maybeSectors = getSectorsFromCache();
+  if (maybeSectors.length > 0) {
+    return maybeSectors;
+  }
+
+  const sectors = await getSectorFromAPI();
+  updateSectorsInCache(sectors);
+  return sectors;
 }
 
 export async function getPricesFromSectors(
