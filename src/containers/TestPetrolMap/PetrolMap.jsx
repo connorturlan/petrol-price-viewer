@@ -342,10 +342,10 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
         station.FuelTypes.get(fuelType)?.Price &&
         station.FuelTypes.get(fuelType)?.Price < 9999 &&
         !station.isHidden &&
-        // containsCoordinate(
-        //   visibleBounds,
-        //   fromLonLat([station.Lng, station.Lat])
-        // ) &&
+        containsCoordinate(
+          visibleBounds,
+          fromLonLat([station.Lng, station.Lat])
+        ) &&
         station.SiteID != 61402476 // ignore "BP Seymours Toyota"
     );
     updateStations(filteredStations);
