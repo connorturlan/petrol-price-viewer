@@ -423,6 +423,7 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
 
   useEffect(() => {
     getUpdatedStations(visibleBounds);
+    handleFilter();
   }, [visibleBounds]);
 
   useEffect(() => {

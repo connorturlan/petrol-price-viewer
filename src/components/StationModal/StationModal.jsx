@@ -83,9 +83,12 @@ function StationModal() {
           <p></p>
           <a
             // href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
-            href={`https://www.google.com/maps/place/?q=place_id:${encodeURI(
-              siteDetails.Name
-            )}`}
+            // href={`https://www.google.com/maps/place/?q=place_id:${encodeURI(
+            //   siteDetails.Name
+            // )}`}
+            href={`https://www.google.com/maps/search/?api=1&query_place_id=${encodeURI(
+              siteDetails.GPI
+            )}&query=${siteDetails.Lat},${siteDetails.Lng}`}
             target="_blank"
             className={styles.StationModal_Maps}
           >
@@ -95,7 +98,25 @@ function StationModal() {
               srcSet=""
               title="Navigate"
             />
-            <p>Open Maps</p>
+            <p>Open using Google Maps</p>
+          </a>
+          <a
+            // href={`https://maps.apple.com/search?map=transit&coordinate=${
+            //   siteDetails.Lat
+            // },${siteDetails.Lng}&query=${encodeURI(siteDetails.Name)}`}
+            href={`https://maps.apple.com/search?map=transit&coordinate=${
+              siteDetails.Lat
+            },${siteDetails.Lng}&query=${encodeURI(siteDetails.Name)}`}
+            target="_blank"
+            className={styles.StationModal_Maps}
+          >
+            <img
+              src="explore_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+              alt="Navigate"
+              srcSet=""
+              title="Navigate"
+            />
+            <p>Open using Apple Maps</p>
           </a>
           <p>Last updated: {datestring || "Date Error"}</p>
         </div>
