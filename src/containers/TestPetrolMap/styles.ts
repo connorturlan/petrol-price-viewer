@@ -408,7 +408,7 @@ export function stationMinimalHybridStyle(
     text: new Text({
       offsetY: -4,
       textAlign: "center",
-      font: "normal 0.8em sans-serif",
+      font: "normal 0.8rem sans-serif",
       fill: new Fill({
         color: style?.textFill || textColour,
         // color: style?.textFill,

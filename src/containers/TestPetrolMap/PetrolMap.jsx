@@ -455,18 +455,17 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
   useEffect(() => {
     const points = [];
 
-    if (!ObjectIsEmpty(origin))
+    if (!ObjectIsEmpty(origin)) {
       points.push(convertCoord([origin.Lat, origin.Lng]));
-    if (!ObjectIsEmpty(dest)) points.push(convertCoord([dest.Lat, dest.Lng]));
-
+    }
+    if (!ObjectIsEmpty(dest)) {
+      points.push(convertCoord([dest.Lat, dest.Lng]));
+    }
     if (points.length <= 0) return;
 
     const extent = boundingExtent(points);
-
     FitMapToExtent(extent);
-  }, [origin, dest]);
 
-  useEffect(() => {
     const getRoutes = async () => {
       const newRoutes = await getRoutesBetweenPoints(origin, dest);
       setRoutes(newRoutes || []);
@@ -475,13 +474,30 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
 
     setLoadingRoutes(true);
     setTimeout(getRoutes, 800);
-    // getRoutes();
   }, [origin, dest]);
+
+  const addPointToRoute = (waypoint) => {
+    if (ObjectIsEmpty(waypoint)) {
+      return;
+    }
+
+    const center = fromLonLat([waypoint.Lat, waypoint.Lng], PROJECTION);
+    const point = new Circle(
+      center,
+      100 * (0.9 / Math.abs(Math.cos(toRadians(waypoint.Lat))))
+    );
+    const feature = new Feature({ geometry: point });
+
+    const source = waypointLayer.current.getSource();
+    source.addFeature(feature);
+  };
 
   const updateWaypointLayer = () => {
     const source = waypointLayer.current.getSource();
     source.clear();
     addRoutes(source, routes);
+    addPointToRoute(origin);
+    addPointToRoute(dest);
   };
 
   const updateOnRouteStations = async () => {
