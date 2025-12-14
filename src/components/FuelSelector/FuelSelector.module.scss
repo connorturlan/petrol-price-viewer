@@ -4,6 +4,8 @@
   &_Body {
     max-width: 400px;
     margin: 8px;
+    background: var(--background);
+    border-radius: 8px;
   }
 
   &_Lookup {
@@ -24,6 +26,8 @@
     &_Text {
       text-align: center;
       grid-column: span 2;
+      background: var(--background);
+      border-radius: 8px;
     }
   }
 

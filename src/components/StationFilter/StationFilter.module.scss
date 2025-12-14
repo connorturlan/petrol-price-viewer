@@ -4,6 +4,8 @@
   &_Body {
     max-width: 400px;
     margin: 8px;
+    background: var(--background);
+    border-radius: 8px;
   }
 
   &_Lookup {
