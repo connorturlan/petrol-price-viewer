@@ -66,12 +66,7 @@ const GraphModal = () => {
         }}
       >
         <h2 className={styles.GraphModal_Title}>Historical Prices</h2>
-        <div
-          className={styles.GraphModal_List}
-          onClick={() => {
-            setVisible(false);
-          }}
-        >
+        <div className={styles.GraphModal_List}>
           <p>Cents per Litre</p>
           {data && data.datasets && (
             <>
@@ -119,6 +114,10 @@ const GraphModal = () => {
               />
             </>
           )}
+          <p>
+            Price data is an average of all stations within the greater Adelaide
+            metro region.
+          </p>
         </div>
       </div>
     </ToolboxModal>
