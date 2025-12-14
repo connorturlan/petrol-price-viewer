@@ -486,7 +486,10 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
       center,
       100 * (0.9 / Math.abs(Math.cos(toRadians(waypoint.Lat))))
     );
-    const feature = new Feature({ geometry: point });
+    const feature = new Feature({
+      geometry: point,
+      text: waypoint.Name || "Waypoint",
+    });
 
     const source = waypointLayer.current.getSource();
     source.addFeature(feature);

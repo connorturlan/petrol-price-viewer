@@ -70,6 +70,25 @@ export const getLowestFeature = (features) => {
   return lowestPrice;
 };
 
+export const containsPriorityFeature = (features) => {
+  if (!features) return false;
+  return features.some(
+    (feature) =>
+      Boolean(feature.get("isLowest")) ||
+      Boolean(feature.get("isOnRoute")) ||
+      Boolean(feature.get("lowestInRange"))
+  );
+};
+
+export const isPriorityFeature = (feature) => {
+  if (!feature) return false;
+  return (
+    Boolean(feature.get("isLowest")) ||
+    Boolean(feature.get("isOnRoute")) ||
+    Boolean(feature.get("lowestInRange"))
+  );
+};
+
 const getPriority = (feature) => {
   const isLowest = Boolean(feature.get("isLowest"));
   const isOnRoute = Boolean(feature.get("isOnRoute"));

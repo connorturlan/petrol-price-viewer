@@ -21,7 +21,11 @@ import Stroke from "ol/style/Stroke";
 import Icon from "ol/style/Icon";
 import Style from "ol/style/Style";
 import { getPointsOfInterest } from "../../utils/api";
-import { getDebugBoundingPath } from "./utils";
+import {
+  containsPriorityFeature,
+  getDebugBoundingPath,
+  isPriorityFeature,
+} from "./utils";
 import zIndex from "@mui/material/styles/zIndex";
 import Cluster from "ol/source/Cluster.js";
 
@@ -29,9 +33,12 @@ export const createStationLayer = (styleOverride = stationStyle) => {
   const initialSource = new VectorSource();
 
   const clusterSource = new Cluster({
-    distance: 90,
+    distance: 0,
     // minDistance: 200,
     source: initialSource,
+    // geometryFunction: (feature) => {
+    //   return isPriorityFeature(feature) ? null : feature.getGeometry();
+    // },
   });
 
   return new VectorLayer({
@@ -195,23 +202,6 @@ export const createWaypointLayer = (routes) => {
 
   return new VectorLayer({
     source: source,
-    style: (feature, resolution) => {
-      {
-        if (feature === undefined) return waypointStyle;
-        const extent = feature.getGeometry().getExtent();
-
-        const pointResolution = getPointResolution(
-          PROJECTION,
-          resolution,
-          extent
-        );
-        // const stroke = waypointStyle.getStroke();
-        // Resolution = number of meters for a pixel (at least for EPSG 3857)
-        // stroke.setWidth(20 / pointResolution);
-        // waypointStyle.setStroke(stroke);
-
-        return waypointStyle;
-      }
-    },
+    style: waypointStyle,
   });
 };

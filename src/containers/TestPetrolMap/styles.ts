@@ -677,26 +677,31 @@ export const customStyle = new Style({
   }),
 });
 
-export const waypointStyle = new Style({
-  zIndex: 1,
-  stroke: new Stroke({ color: "#038cfcbb", width: 8 }),
-  fill: new Fill({
-    color: "#a0ebff60",
-  }),
-  text: new Text({
-    offsetY: 12,
-    font: "bold 12pt sans-serif",
+export const waypointStyle = (feature: FeatureLike) => {
+  return new Style({
+    image: new Icon({
+      anchor: [0.5, 1],
+      src: "red-pin.svg",
+      height: 40,
+    }),
+    zIndex: 1,
+    stroke: new Stroke({ color: "#038cfcbb", width: 8 }),
     fill: new Fill({
-      color: "#555",
+      color: "#a0ebff60",
     }),
-    backgroundFill: new Fill({
-      color: "#EEE",
+    text: new Text({
+      offsetY: -4,
+      textAlign: "center",
+      font: "normal 1rem sans-serif",
+      fill: new Fill({
+        color: "#ffffff",
+      }),
+      stroke: new Stroke({
+        color: "#038cfc",
+        width: 4,
+      }),
+      padding: [0, 10, 0, 10],
+      text: `${feature.get("text") || ""}`,
     }),
-    backgroundStroke: new Stroke({
-      color: "#555",
-      width: 1,
-      lineCap: "butt",
-    }),
-    padding: [2, 4, 2, 4],
-  }),
-});
+  });
+};
