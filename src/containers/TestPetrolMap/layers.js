@@ -33,12 +33,24 @@ export const createStationLayer = (styleOverride = stationStyle) => {
   const initialSource = new VectorSource();
 
   const clusterSource = new Cluster({
-    distance: 0,
-    // minDistance: 200,
+    distance: 60,
+    minDistance: 60,
     source: initialSource,
     // geometryFunction: (feature) => {
     //   return isPriorityFeature(feature) ? null : feature.getGeometry();
     // },
+    createCluster: (_, features) => {
+      console.log(features);
+      features.sort((a, b) => a.get("BrandID") - b.get("BrandID"));
+      const lowest = features.reduce((low, curr) => {
+        return low.get("price") < curr.get("price") ? low : curr;
+      }, features.at(0));
+
+      return new Feature({
+        geometry: lowest.getGeometry(),
+        features: features,
+      });
+    },
   });
 
   return new VectorLayer({
