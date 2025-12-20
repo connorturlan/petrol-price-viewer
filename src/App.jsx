@@ -25,6 +25,7 @@ import { fromLonLat } from "ol/proj";
 import { PROJECTION } from "./utils/defaults";
 import AppMenu from "./containers/AppMenu/AppMenu";
 import CurrentLocation from "./components/CurrentLocation/CurrentLocation";
+import { formatFuelPrice } from "./containers/TestPetrolMap/utils";
 
 function App() {
   // set intial state
@@ -86,9 +87,8 @@ function App() {
 
   return (
     <div
-      className={`${styles.App} ${
-        darkMode ? styles.App__Dark : styles.App__Light
-      }`}
+      className={`${styles.App} ${darkMode ? styles.App__Dark : styles.App__Light
+        }`}
       onClick={(event) => {
         publisher("GlobalMouseDown", event);
       }}
@@ -159,17 +159,18 @@ function App() {
                   station.FuelTypes.get(fuelType)?.Price < 9999
               )
               .sort(
-                (a, b) =>
+                (a, b) => fuelType < 10_000 ?
                   a.FuelTypes.get(fuelType)?.Price -
-                  b.FuelTypes.get(fuelType)?.Price
+                  b.FuelTypes.get(fuelType)?.Price :
+                  b.FuelTypes.get(fuelType)?.Price -
+                  a.FuelTypes.get(fuelType)?.Price
+
               )
               .map((feature) => (
                 <PriceListItem
                   key={feature.SiteID}
                   name={feature.Name}
-                  price={(
-                    (feature.FuelTypes.get(fuelType)?.Price || 0) / 10
-                  ).toFixed(1)}
+                  price={formatFuelPrice(fuelType, feature.FuelTypes.get(fuelType)?.Price || 0)}
                   image={getImageFromStationBrandId(feature.BrandID)}
                   showDetails={() => {
                     MapMoveTo({
