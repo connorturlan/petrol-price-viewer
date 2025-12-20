@@ -34,6 +34,7 @@ import {
   createWaypointLayer,
 } from "./layers";
 import {
+  formatFuelPrice,
   getCorners,
   getFeaturesAvailableOnRoute,
   getFeaturesOnRoute,
@@ -336,6 +337,8 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
     // may be null on first render
     if (!allStations || allStations.length <= 0) return;
 
+    console.log(`[STATIONS] ${allStations.length} stations exist, ${allStations.filter(station=>station.FuelTypes.get(fuelType)).length} stations with fuel type ${fuelType} exist`)
+
     const filteredStations = allStations.filter(
       (station) =>
         station &&
@@ -361,13 +364,7 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
     const features = filteredStations.map((station) => {
       const coord = fromLonLat([station.Lng, station.Lat], PROJECTION);
       const point = new Point(coord);
-
-      let price;
-      if (fuelType < 10_000) {
-        price = ((station.FuelTypes.get(fuelType)?.Price || 0) / 10).toFixed(1);
-      } else {
-        price = station.FuelTypes.get(fuelType)?.Price || 0;
-      }
+      const price = formatFuelPrice(fuelType, station.FuelTypes.get(fuelType)?.Price)
 
       const normalisedRange =
         (station.FuelTypes.get(fuelType)?.Price - max) / (min - max);
@@ -377,7 +374,7 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
         geometry: point,
         ...station,
         price: price || "loading...",
-        normalisedRange,
+        normalisedRange: fuelType < 10_000 ? normalisedRange : 1,
       });
     });
 
