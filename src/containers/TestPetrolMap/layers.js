@@ -33,8 +33,10 @@ export const createStationLayer = (styleOverride = stationStyle) => {
   const initialSource = new VectorSource();
 
   const clusterSource = new Cluster({
-    distance: 60,
-    minDistance: 60,
+    // distance: 60,
+    // minDistance: 60,
+    distance: 0,
+    minDistance: 0,
     source: initialSource,
     // geometryFunction: (feature) => {
     //   return isPriorityFeature(feature) ? null : feature.getGeometry();
