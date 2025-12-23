@@ -332,3 +332,7 @@ export const setDebugBoundsForRoute = (layer, route) => {
   // show some of the lowest prices.
   source.addFeatures(features);
 };
+
+export function formatFuelPrice(fuelType, price) {
+      return fuelType < 10_000 ? (price / 10).toFixed(1) : price;
+}

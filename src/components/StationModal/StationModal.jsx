@@ -5,6 +5,7 @@ import { ENDPOINT } from "../../utils/defaults";
 import { getImageFromStationBrandId, ObjectIsEmpty } from "../../utils/utils";
 import { getFuelTypeName } from "../../utils/fueltypes";
 import LoadingSplash from "../LoadingSplash/LoadingSplash";
+import { formatFuelPrice } from "../../containers/TestPetrolMap/utils";
 
 function StationModal() {
   const { siteId, unselectSite, fuelType } = useContext(AppContext);
@@ -41,7 +42,7 @@ function StationModal() {
       return (
         <div className={className} key={record.FuelId}>
           <p>{getFuelTypeName(record.FuelId)}</p>
-          <p>{((record.Price || 0) / 10).toFixed(1)}</p>
+          <p>{formatFuelPrice(record.FuelId, record.Price)}</p>
         </div>
       );
     });
