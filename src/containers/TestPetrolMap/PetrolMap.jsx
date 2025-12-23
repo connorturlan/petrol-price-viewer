@@ -337,7 +337,11 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
     // may be null on first render
     if (!allStations || allStations.length <= 0) return;
 
-    console.log(`[STATIONS] ${allStations.length} stations exist, ${allStations.filter(station=>station.FuelTypes.get(fuelType)).length} stations with fuel type ${fuelType} exist`)
+    console.log(
+      `[STATIONS] ${allStations.length} stations exist, ${
+        allStations.filter((station) => station.FuelTypes.get(fuelType)).length
+      } stations with fuel type ${fuelType} exist`
+    );
 
     const filteredStations = allStations.filter(
       (station) =>
@@ -364,7 +368,10 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
     const features = filteredStations.map((station) => {
       const coord = fromLonLat([station.Lng, station.Lat], PROJECTION);
       const point = new Point(coord);
-      const price = formatFuelPrice(fuelType, station.FuelTypes.get(fuelType)?.Price)
+      const price = formatFuelPrice(
+        fuelType,
+        station.FuelTypes.get(fuelType)?.Price
+      );
 
       const normalisedRange =
         (station.FuelTypes.get(fuelType)?.Price - max) / (min - max);
@@ -715,40 +722,57 @@ const PetrolMap = ({ fuelType, updateStations, updateStationData }) => {
     const clickedCoord = transform(event.coordinate, PROJECTION, "EPSG:4326");
 
     if (clickMode == MODES.DEFAULT) {
+      let minFeature = undefined;
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
-        if (feature.get("SiteID") !== undefined) {
-          MapMoveTo({ coord: feature.get("coord") });
-          selectSite(feature.get("SiteID"));
-          console.log(feature.get("SiteID"));
-          console.log(`[MAP] station clicked: ${feature.get("SiteID")}`);
-          publisher("ToolboxModalHide", -1);
+        if (!minFeature) {
+          minFeature = feature;
           return;
         }
 
-        if (ObjectIsEmpty(profile)) return;
-
-        switch (feature.get("type")) {
-          case "poi":
-            const poi = getPOIs();
-            if (!poi[feature.get("name")]) {
-              console.warn(
-                `[MAP,POI] poi ${feature.get("name")} doesn't exist in the POIs`
-              );
-              break;
-            }
-
-            if (!getOrigin()) {
-              console.debug(`[MAP,POI] setting poi as origin`);
-              setOrigin(poi[feature.get("name")]);
-            }
-
-            if (getOrigin()) {
-              console.debug("[MAP,POI] setting poi as destination.");
-              setDest(poi[feature.get("name")]);
-            }
-            break;
+        if (feature.get("price") < minFeature.get("price")) {
+          minFeature = feature;
+          return;
         }
       });
+
+      if (!minFeature) {
+        return;
+      }
+
+      if (minFeature.get("SiteID") !== undefined) {
+        MapMoveTo({ coord: minFeature.get("coord") });
+        selectSite(minFeature.get("SiteID"));
+        console.log(minFeature.get("SiteID"));
+        console.log(`[MAP] station clicked: ${minFeature.get("SiteID")}`);
+        publisher("ToolboxModalHide", -1);
+        return;
+      }
+
+      if (ObjectIsEmpty(profile)) return;
+
+      switch (minFeature.get("type")) {
+        case "poi":
+          const poi = getPOIs();
+          if (!poi[minFeature.get("name")]) {
+            console.warn(
+              `[MAP,POI] poi ${minFeature.get(
+                "name"
+              )} doesn't exist in the POIs`
+            );
+            break;
+          }
+
+          if (!getOrigin()) {
+            console.debug(`[MAP,POI] setting poi as origin`);
+            setOrigin(poi[minFeature.get("name")]);
+          }
+
+          if (getOrigin()) {
+            console.debug("[MAP,POI] setting poi as destination.");
+            setDest(poi[minFeature.get("name")]);
+          }
+          break;
+      }
     } else if (clickMode == MODES.ADD_HOME) {
       // post the new home.
       setHome(profile, clickedCoord);
