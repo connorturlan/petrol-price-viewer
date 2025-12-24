@@ -26,6 +26,7 @@ function PriceList({ children }) {
         }}
       >
         <h2 className={styles.PriceList_Title}>Price List</h2>
+        <p>Show the cheapest stations within your current view.</p>
         <div
           className={styles.PriceList_List}
           onClick={() => {
