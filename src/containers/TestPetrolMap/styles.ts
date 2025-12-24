@@ -123,9 +123,8 @@ isInRange: ${isInRange}
 isOnRoute: ${isOnRoute}`
       : `${feature.get("price") || 0} +${feature.get("features").length}`;
   } else {
-    return `${feature.get("price") || 0}${
-      feature.get("features")?.length <= 1 ? "" : "*"
-    }`;
+    return `${feature.get("price") || 0}${feature.get("features")?.length <= 1 ? "" : "*"
+      }`;
     // return feature.get("features")?.length <= 1
     //   ? `${feature.get("price") || 0}`
     //   : `${feature.get("price") || 0} +${feature.get("features").length}`;
@@ -421,7 +420,7 @@ export function stationMinimalHybridStyle(
       padding: [0, 10, 0, 10],
       text: text,
     }),
-    zIndex: styleIndex,
+    zIndex: (styleIndex * 100) - (feature.get('price') / 10),
   });
 }
 
@@ -506,23 +505,23 @@ export function _stationStyle(feature: FeatureLike): StyleLike {
   const backgroundColor = isLowest ? "darkorange" : "#555";
   const textOutline = isLowest
     ? new Stroke({
-        color: "#fffb00",
-        width: 4,
-        miterLimit: 10,
-      })
+      color: "#fffb00",
+      width: 4,
+      miterLimit: 10,
+    })
     : new Stroke({
-        color: "#eee",
-        width: 8,
-        lineCap: "butt",
-      });
+      color: "#eee",
+      width: 8,
+      lineCap: "butt",
+    });
 
   const iconSrc = getImageFromStationDetails(feature);
   const iconHeight = isLowest ? 64 : 48;
   const strokeColor = isLowest
     ? "#22222220"
     : isOnRoute
-    ? "#22222220"
-    : "#22222220";
+      ? "#22222220"
+      : "#22222220";
 
   return new Style({
     image: new Icon({
