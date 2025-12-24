@@ -194,17 +194,23 @@ const StationFilter = ({ stationData }) => {
                 onClick={handlePickLocation}
               />
             </div>
-            <input
-              className={styles.StationFilter_RangeInput}
-              type="range"
-              value={distance}
-              onChange={handleDistanceChange}
-              onMouseUp={updateFilter}
-              onTouchEnd={updateFilter}
-              min={1}
-              max={20}
-            ></input>
-            <p className={styles.StationFilter_RangeLabel}>{distance} km</p>
+            {ObjectIsEmpty(origin) ? (
+              <p>Select a starting point first.</p>
+            ) : (
+              <>
+                <input
+                  className={styles.StationFilter_RangeInput}
+                  type="range"
+                  value={distance}
+                  onChange={handleDistanceChange}
+                  onMouseUp={updateFilter}
+                  onTouchEnd={updateFilter}
+                  min={1}
+                  max={20}
+                ></input>
+                <p className={styles.StationFilter_RangeLabel}>{distance} km</p>
+              </>
+            )}
           </div>
           <h3>Filter By Brand</h3>
           <div className={styles.StationFilter_Brand}>
