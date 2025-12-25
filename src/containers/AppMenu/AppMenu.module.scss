@@ -1,0 +1,118 @@
+$elementSize: 48px;
+
+.AppMenu {
+  display: grid;
+  width: calc(100vw - 16px);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  padding: 8px;
+  gap: 8px;
+
+  justify-content: center;
+  align-items: start;
+
+  grid-template-columns: 56px 1fr $elementSize;
+  grid-auto-rows: $elementSize;
+
+  overflow-y: show;
+
+  // background-color: rgba(255, 255, 255, 0.5);
+
+  &_Minimised {
+    height: fit-content;
+    background: none;
+    opacity: 0.8;
+  }
+
+  &_Hamburger {
+    justify-self: center;
+    box-shadow: 0 0 2px #00000033, 0 -1px 0 #00000005;
+    border: none;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 4px;
+    width: $elementSize;
+    height: $elementSize;
+
+    background-color: white;
+
+    &_Swap {
+      grid-column: 3;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &_Navigation {
+      grid-column: 3;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      justify-self: start;
+
+      &__Shy {
+        opacity: 40%;
+      }
+    }
+
+    &_SwapImage {
+      padding: 0;
+      margin: 0;
+      width: calc($elementSize - 8px);
+      height: calc($elementSize - 8px);
+    }
+  }
+
+  &_Input {
+    &_Container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 4px;
+      width: calc(100% - 16px);
+      max-width: 30em;
+    }
+
+    &_Searchbar {
+      display: flex;
+      flex-direction: column;
+      justify-self: start;
+      gap: 4px;
+      width: calc(100% - 16px);
+      max-width: 30em;
+      min-height: 18px;
+      grid-column: 2;
+
+      // outline: 1px solid #333;
+      box-shadow: 0 0 2px #00000033, 0 -1px 0 #00000005;
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 8px;
+
+      background-color: #ffffffe0;
+
+      & * {
+        font-size: 0.8em;
+        text-align: start;
+      }
+
+      & input {
+        border: none;
+        // background-color: white;
+      }
+
+      & input:focus {
+        outline: none;
+      }
+
+      &_Focused {
+        z-index: 25;
+      }
+    }
+  }
+}

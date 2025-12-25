@@ -9,30 +9,42 @@ import { setCookie } from "./utils/cookies";
 import GraphModal from "./components/GraphModal/GraphModal";
 import ToolBar from "./containers/ToolBar/ToolBar";
 import LoginControl from "./components/LoginControl/LoginControl";
-import PetrolMap, { MODES } from "./containers/PetrolMap/PetrolMap";
+import PetrolMap from "./containers/TestPetrolMap/PetrolMap";
 import SettingsModal from "./containers/SettingsModal/SettingsModal";
 import { AppContext } from "./contexts/AppContext";
 import WelcomeSplash from "./components/WelcomeSplash/WelcomeSplash";
 import RoutePlanner from "./components/RoutePlanner/RoutePlanner";
-import { capitalize } from "./utils/utils";
+import { capitalize, getImageFromStationBrandId } from "./utils/utils";
 import Toolbox from "./containers/Toolbox/Toolbox";
 import FuelSelector from "./components/FuelSelector/FuelSelector";
 import ToolboxTester from "./components/ToolboxTester/ToolboxTester";
-import { MapMoveTo, usePub } from "./utils/pubsub";
+import { MapMoveTo, usePub, UseSub } from "./utils/pubsub";
+import StationFilter from "./components/StationFilter/StationFilter";
+import LocationSelector from "./components/LocationSelector/LocationSelector";
+import { fromLonLat } from "ol/proj";
+import { PROJECTION } from "./utils/defaults";
+import AppMenu from "./containers/AppMenu/AppMenu";
+import CurrentLocation from "./components/CurrentLocation/CurrentLocation";
+import { formatFuelPrice } from "./containers/TestPetrolMap/utils";
 
 function App() {
   // set intial state
   const [mapFeatures, setMapFeatures] = useState([]);
+  const [stationData, setStationData] = useState([]);
   const [warningVisible, setWarning] = useState(false);
   const {
     clickMode,
     setClickMode,
     clickModeOptions,
+    setClickModeOptions,
     selectSite,
     fuelType,
     setFuelType,
     darkMode,
+    setDarkMode,
   } = useContext(AppContext);
+
+  const publisher = usePub();
 
   const handleFuelChange = (event) => {
     setFuelType(event.target.value);
@@ -49,6 +61,8 @@ function App() {
         return "Placing Work...";
       case 3:
         return `Placing ${capitalize(clickModeOptions.poi_name)}`;
+      case 4:
+        return `Choosing Current Location`;
     }
   };
 
@@ -66,11 +80,18 @@ function App() {
     localStorage.setItem("clickModeOptions", JSON.stringify(clickModeOptions));
   }, [clickModeOptions]);
 
+  UseSub("SetClickMode", (event) => {
+    setClickMode(event.mode);
+    setClickModeOptions(event.options);
+  });
+
   return (
     <div
-      className={`${styles.App} ${
-        darkMode ? styles.App__Dark : styles.App__Light
-      }`}
+      className={`${styles.App} ${darkMode ? styles.App__Dark : styles.App__Light
+        }`}
+      onClick={(event) => {
+        publisher("GlobalMouseDown", event);
+      }}
     >
       <WelcomeSplash />
 
@@ -89,21 +110,27 @@ function App() {
 
       <StationModal />
 
-      <div className={styles.App_Layout}>
+      {/* <div className={styles.App_Layout}>
+        <LoginControl />
         <Toolbox>
-          <LoginControl />
+          <LocationSelector />
           <FuelSelector />
+          <StationFilter />
           <PriceList>
             {mapFeatures
+              .filter((station) => station.Price && station.Price < 9999)
               .sort((a, b) => a.Price - b.Price)
               .map((feature) => (
                 <PriceListItem
-                  key={feature.SiteId}
+                  key={feature.SiteID}
                   name={feature.Name}
                   price={((feature.Price || 0) / 10).toFixed(1)}
+                  image={getImageFromStationBrandId(feature.BrandID)}
                   showDetails={() => {
-                    MapMoveTo({ coord: [feature.Lng, feature.Lat] });
-                    selectSite(feature.SiteId);
+                    MapMoveTo({
+                      coord: fromLonLat([feature.Lng, feature.Lat], PROJECTION),
+                    });
+                    selectSite(feature.SiteID);
                   }}
                 />
               ))}
@@ -112,9 +139,63 @@ function App() {
           <RoutePlanner />
           <SettingsModal />
         </Toolbox>
+        <AppMenu />
         <PetrolMap
           fuelType={fuelType}
           updateStations={setMapFeatures}
+        ></PetrolMap>
+      </div> */}
+      <div className={styles.App_Container}>
+        <AppMenu />
+        <Toolbox>
+          {/* <LocationSelector /> */}
+          <FuelSelector />
+          <StationFilter stationData={stationData} />
+          <PriceList>
+            {mapFeatures
+              .filter(
+                (station) =>
+                  station.FuelTypes.get(fuelType)?.Price &&
+                  station.FuelTypes.get(fuelType)?.Price < 9999
+              )
+              .sort(
+                (a, b) => fuelType < 10_000 ?
+                  a.FuelTypes.get(fuelType)?.Price -
+                  b.FuelTypes.get(fuelType)?.Price :
+                  b.FuelTypes.get(fuelType)?.Price -
+                  a.FuelTypes.get(fuelType)?.Price
+
+              )
+              .map((feature) => (
+                <PriceListItem
+                  key={feature.SiteID}
+                  name={feature.Name}
+                  price={formatFuelPrice(fuelType, feature.FuelTypes.get(fuelType)?.Price || 0)}
+                  image={getImageFromStationBrandId(feature.BrandID)}
+                  showDetails={() => {
+                    MapMoveTo({
+                      coord: fromLonLat([feature.Lng, feature.Lat], PROJECTION),
+                    });
+                    selectSite(feature.SiteID);
+                    publisher("ToolboxModalHide", -1);
+                  }}
+                />
+              ))}
+          </PriceList>
+          <GraphModal />
+          {/* <button
+            onClick={() => {
+              setDarkMode(!darkMode);
+            }}
+          ></button> */}
+          <SettingsModal />
+        </Toolbox>
+        <CurrentLocation />
+
+        <PetrolMap
+          fuelType={fuelType}
+          updateStations={setMapFeatures}
+          updateStationData={setStationData}
         ></PetrolMap>
       </div>
 
@@ -130,11 +211,11 @@ function App() {
             .sort((a, b) => a.Price - b.Price)
             .map((feature) => (
               <PriceListItem
-                key={feature.SiteId}
+                key={feature.SiteID}
                 name={feature.Name}
                 price={((feature.Price || 0) / 10).toFixed(1)}
                 showDetails={() => {
-                  selectSite(feature.SiteId);
+                  selectSite(feature.SiteID);
                 }}
               />
             ))}

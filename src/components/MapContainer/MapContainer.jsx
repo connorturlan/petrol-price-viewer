@@ -13,16 +13,27 @@ import Style from "ol/style/Style";
 import { UseSub } from "../../utils/pubsub";
 import { duration } from "@mui/material";
 
+// https://gist.github.com/bokub/dd85ffe1368bb10396f871111dff7201 - free map tiles
+const lightMapLayers = [
+  "https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
+  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  "https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}.png",
+  "https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png",
+  "http://c.tile.opentopomap.org/{z}/{x}/{y}.png",
+  "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
+  "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
+];
+
 const mapLayer = new TileLayer({
   source: new XYZ({
-    url: "https://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}",
+    url: lightMapLayers.at(5),
     transition: 0,
   }),
 });
 
 const darkMapLayer = new TileLayer({
   source: new XYZ({
-    url: "https://api.maptiler.com/maps/streets-v2-dark/256/{z}/{x}/{y}.png?key=xENXsVIdAZcfTT1E5DpW",
+    url: lightMapLayers.at(6),
     transition: 0,
   }),
 });
@@ -51,15 +62,17 @@ const MapContainer = ({
   UseSub("MapMoveTo", (newView) => {
     if (ObjectIsEmpty(newView) || !newView.coord || newView.coord.length <= 0) {
       console.error(
-        `[MAP]<event> map move triggered to invalid position. ${newView}`
+        `[MAP]<event> map move triggered to invalid position:`,
+        newView
       );
       return;
     }
-    console.log(`[MAP]<event> map move to ${newView}`);
+    console.log(`[MAP]<event> map move to ${newView.coord}`);
+    const zoom = newView.zoom || 16;
     mapRef.current.getView().animate({
       center: newView.coord,
       duration: 400,
-      zoom: 16,
+      zoom: zoom,
     });
   });
 
@@ -112,6 +125,10 @@ const MapContainer = ({
       onMove && onMove(event, mapRef.current);
     });
 
+    initialMap.on("zoomend", (event) => {
+      onMove && onMove(event, mapRef.current);
+    });
+
     setMap(initialMap);
     mapRef.current = initialMap;
     onInit && onInit(initialMap);
@@ -120,7 +137,9 @@ const MapContainer = ({
   useEffect(() => {
     console.debug("[MAP] updating layers");
     if (!map) return;
+    // mapLayers.current = [darkMode ? darkMapLayer : mapLayer, ...layers];
     map.setLayers(mapLayers.current);
+    console.log(mapLayers.current);
   }, [layers]);
 
   useEffect(() => {

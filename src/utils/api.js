@@ -1,17 +1,19 @@
 import { getCookie, setCookie } from "./cookies";
 import { ENDPOINT } from "./defaults";
 
-let USER_TOKEN = getCookie("usertoken");
+let USER_TOKEN = "";
 
 export function getLogin(userId) {
   return fetch(ENDPOINT + "/login" + `?userid=${userId}`);
 }
 
 export async function getToken(userId) {
+  if (!USER_TOKEN) USER_TOKEN = getCookie("usertoken");
+
   const currentToken = USER_TOKEN;
   if (currentToken && (await checkToken(userId, currentToken))) {
     console.debug(
-      `[LOGIN] current token is still valid! token:'${currentToken}'`
+      `[LOGIN] current token is still valid for U:${userId}! token:'${currentToken}'`
     );
     setCookie("usertoken", currentToken, 30);
     return currentToken;
@@ -21,7 +23,7 @@ export async function getToken(userId) {
 }
 
 export async function newToken(userId) {
-  console.debug("[LOGIN] getting new token...");
+  console.debug(`[LOGIN] getting new token for U:${userId}...`);
 
   const res = await fetch(ENDPOINT + "/token" + `?userid=${userId}`, {
     headers: {

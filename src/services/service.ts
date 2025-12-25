@@ -37,20 +37,18 @@ export async function getFuelPrices(
   const returnedSites = await res.json();
 
   const prices = [] as [number, number][];
-  sites.forEach((siteid) => {
-    prices[siteid] = returnedSites[siteid] || 0;
+  sites.forEach((siteID) => {
+    prices[siteID] = returnedSites[siteID] || 0;
   });
-
-  console.log(prices);
 
   return prices;
 }
 
 export async function getHistoricPrices() {
-  const res = await fetch(ENDPOINT + "/history");
+  const res = await fetch(ENDPOINT + "/api/v1/history");
   if (res.status != 200) {
     console.warn("unable to reach server.");
-    return;
+    return { dates: [], datasets: [] };
   }
   return await res.json();
 }

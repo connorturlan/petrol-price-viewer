@@ -5,7 +5,9 @@ import {
   defaultStyle,
   defaultStyleDark,
   lowestStyle,
+  nestedStationStyle,
   onRouteStyle,
+  stationStyle,
   waypointStyle,
 } from "./styles";
 import { Feature } from "ol";
@@ -22,21 +24,20 @@ import Style from "ol/style/Style";
 import { getPointsOfInterest } from "../../utils/api";
 import { getDebugBoundingPath } from "./utils";
 import zIndex from "@mui/material/styles/zIndex";
+import Cluster from "ol/source/Cluster.js";
 
-export const createStationLayer = () => {
+export const createStationLayer = (onRouteStations, darkMode) => {
   const initialSource = new VectorSource();
 
-  return new VectorLayer({
+  const clusterSource = new Cluster({
+    distance: 50,
+    minDistance: 0,
     source: initialSource,
-    // declutter: "obstacle",
-    zIndex: 10,
-    style: (feature) => {
-      defaultStyle
-        .getText()
-        .setText([`${feature.get("price")}`, "italic 12pt sans-serif"]);
-      // defaultStyle.setZIndex(200 - feature.get("price") * 10);
-      return defaultStyle;
-    },
+  });
+
+  return new VectorLayer({
+    source: clusterSource,
+    style: nestedStationStyle(onRouteStations, darkMode),
   });
 };
 
@@ -178,7 +179,7 @@ export const addRoutes = async (source, routes) => {
     );
     return;
   }
-  routes.forEach((waypoints) => {
+  routes?.forEach((waypoints) => {
     addRoute(source, waypoints);
   });
 };

@@ -1,15 +1,24 @@
 .PriceListItem {
-  max-width: 100%;
-  display: flex;
-  justify-content: space-between;
+  width: 100%;
+  // display: flex;
+  // justify-content: space-between;
+  display: grid;
+  grid-template-columns: 20px auto 40px;
+  gap: 2px;
   min-height: 1em;
 
   overflow: hidden;
 
+  & img {
+    width: 20px;
+    height: 1em;
+    object-position: top;
+    object-fit: cover;
+  }
+
   gap: 4px;
   height: fit-content;
   padding: 4px;
-
   text-align: left;
 
   user-select: none;

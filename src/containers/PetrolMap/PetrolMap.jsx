@@ -10,7 +10,7 @@ import {
   transform,
   transformWithProjections,
 } from "ol/proj";
-import { Point, Polygon } from "ol/geom";
+import { Circle, Point, Polygon } from "ol/geom";
 import { Feature } from "ol";
 import StationModal from "../../components/StationModal/StationModal";
 import { boundingExtent, containsCoordinate, getCenter } from "ol/extent";
@@ -29,20 +29,30 @@ import {
   getFeaturesOnRoute,
   getSites,
   setStationsOnRoute,
+  updateClusterWithChargerCount,
+  updateClusterWithLowestPrice,
   updateLowestPrices,
+  updateStationsWithLowestPrice,
 } from "./utils";
 import { MAX_STATION_REQUEST, PROJECTION } from "../../utils/defaults";
 import { AppContext } from "../../contexts/AppContext";
 import { UserContext } from "../../contexts/UserContext";
-import { convertCoord, ObjectIsEmpty } from "../../utils/utils";
+import {
+  convertCoord,
+  convertCoordFromLatLon,
+  ObjectIsEmpty,
+} from "../../utils/utils";
 import { getRoutesBetweenPoints } from "../../utils/navigation";
 import { fromExtent } from "ol/geom/Polygon";
 import { RouteContext } from "../../contexts/RouteContext";
 // import { getFuelPrices } from "../../services/service";
 import { getFuelPrices } from "../../services/StationPriceManager/StationPriceManager.service";
-import { createDefaultStyle } from "ol/style/Style";
+import Style, { createDefaultStyle } from "ol/style/Style";
 import { updateAllStations } from "../../services/StationPriceManager/StationPriceManager.service";
-import { FitMapToExtent, MapMoveTo } from "../../utils/pubsub";
+import { FitMapToExtent, MapMoveTo, UseSub } from "../../utils/pubsub";
+import { getCookie } from "../../utils/cookies";
+import { getDistance } from "ol/sphere";
+import { customStyle } from "./styles";
 
 export const MODES = Object.freeze({
   DEFAULT: 0,
@@ -51,7 +61,9 @@ export const MODES = Object.freeze({
   ADD_POI: 3,
 });
 
-const MAP_CENTER = [138.599503, -34.92123];
+const MAP_CENTER = getCookie("mapCenter")
+  ? JSON.parse(getCookie("mapCenter")) || [138.599503, -34.92123]
+  : [138.599503, -34.92123];
 
 const PetrolMap = ({ fuelType, updateStations }) => {
   const { setClickMode, clickModeOptions, selectSite, darkMode } =
@@ -86,6 +98,46 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   const [layers, setLayers] = useState([]);
 
+  const onRouteStations = useRef([]);
+
+  const filterLayer = useRef(
+    new VectorLayer({
+      style: (feature) => {
+        return new Style({
+          fill: new Fill({
+            color: "#FFFFFF",
+          }),
+          stroke: new Stroke({
+            color: `#${feature.get("driver_colour") || "333"}`,
+            width: 6,
+            miterLimit: 2,
+          }),
+          text: new Text({
+            justify: "center",
+            textBaseline: "top",
+            offsetY: -4.5,
+            font: "bold 5em sans-serif",
+            fill: new Fill({
+              color: "#222",
+            }),
+            padding: [2, 4, 2, 4],
+            text: `${feature.get("driver")}\n${feature.get(
+              "driver_name"
+            )}hello,world!`,
+            stroke: new Stroke({
+              color: "#FFFFFF",
+              width: 4,
+              miterLimit: 2,
+            }),
+          }),
+        });
+      },
+      source: new VectorSource(),
+    })
+  );
+
+  const [statefulFilterLayer, setFilterLayer] = useState(new VectorLayer());
+
   const [loadingStations, setStationsState] = useState(true);
   const [loadingPrices, setPricesState] = useState(false);
   const [loadingRouting, setRoutingState] = useState(false);
@@ -97,7 +149,7 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   const [center, setCenter] = useState(newCenter);
 
   useEffect(() => {
-    setStationsLayer(createStationLayer());
+    setStationsLayer(createStationLayer(onRouteStations, darkMode));
     setLowestLayer(createLowestLayer());
     setOnRouteLayer(createOnRouteLayer());
     setCustomLayer(createCustomLayer(POI));
@@ -105,22 +157,28 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     // getSites(setStationsState, setAllStations);
     const getAllSites = async () => {
       setStationsState(true);
-      const stations = await updateAllStations();
-      setAllStations(stations);
+      const newStations = await updateAllStations();
+      setAllStations(newStations);
       setStationsState(false);
     };
+    // setFilterLayer(
+    //   new VectorLayer({
+    //     style: filterLayer.current.getStyle(),
+    //     source: filterLayer.current.getSource(),
+    //   })
+    // );
     getAllSites();
   }, []);
 
   useEffect(() => {
     setLayers([
+      waypointLayer,
       stationLayer,
       lowestLayer,
-      waypointLayer,
       onRouteLayer,
       customLayer,
     ]);
-  }, [stationLayer, waypointLayer, onRouteLayer, lowestLayer, customLayer]);
+  }, [stationLayer, waypointLayer, onRouteLayer, customLayer]);
 
   useEffect(() => {
     if (!reload) return;
@@ -131,9 +189,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
 
   useEffect(() => {
     triggerReload(true);
-    setStationsLayer(
-      darkMode ? createStationLayerDark() : createStationLayer()
-    );
+    // setStationsLayer(
+    //   darkMode ? createStationLayerDark() : createStationLayer()
+    // );
   }, [darkMode]);
 
   useEffect(() => {
@@ -206,14 +264,17 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     // may be null on first render
     if (!stations || stations.length <= 0) return;
 
-    const source = new VectorSource();
-    stationLayer.setSource(source);
+    const clusterSource = stationLayer.getSource();
+    const source = clusterSource.getSource();
+
+    source.clear();
     const filteredstations = stations.filter(
       (feature) => feature.Price && feature.Price < 9999
     );
 
     const features = filteredstations.map((feature) => {
-      const point = new Point([feature.Lng, feature.Lat]);
+      const coord = [feature.Lng, feature.Lat];
+      const point = new Point(coord);
 
       let price;
       if (fuelType < 10_000) {
@@ -223,17 +284,22 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       }
 
       return new Feature({
+        coord,
         geometry: point,
-        siteid: feature.SiteId,
+        ...feature,
+        siteid: feature.SiteID,
         name: feature.Name,
         price: price || "loading...",
         placeid: feature.GPI,
+        brandid: feature.BrandID,
       });
     });
     source.addFeatures(features);
 
+    source.changed();
+
     console.debug(`[STATIONS] added ${filteredstations.length} stations.`);
-  }, [stations, allStations]);
+  }, [stations]);
 
   useEffect(() => {
     if (loadingStations || !allStations || loadingPrices) return;
@@ -243,16 +309,14 @@ const PetrolMap = ({ fuelType, updateStations }) => {
   useEffect(() => {
     if (!stations || !visibleBounds) return;
     if (fuelType >= 10_000) {
-      updateLowestPrices(lowestLayer, [], fuelType);
+      // updateLowestPrices(lowestLayer, [], fuelType);
+      updateClusterWithChargerCount(stationLayer.getSource());
       return;
     }
-    updateLowestPrices(lowestLayer, stations, fuelType);
+    // updateStationsWithLowestPrice(stationLayer);
+    updateClusterWithLowestPrice(stationLayer.getSource());
     updateStations && updateStations(stations);
   }, [stations, visibleBounds]);
-
-  useEffect(() => {
-    updateOnRouteStations();
-  }, [routes]);
 
   useEffect(() => {
     resetFuelPrices();
@@ -274,9 +338,30 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     console.debug(
       `[ROUTING] ${stationsOnRoute.length} points added of ${routes.length} routes`
     );
-    setStationsOnRoute(onRouteLayer, stationsOnRoute);
+    const lowestFeatures = setStationsOnRoute(onRouteLayer, stationsOnRoute);
+    const lowestIds = lowestFeatures.map((feature) => feature.get("siteid"));
+    onRouteStations.current = lowestIds;
+    // stationLayer
+    //   .getSource()
+    //   .getFeatures()
+    //   .forEach((cluster) => {
+    //     cluster.get("features").forEach((feature) => {
+    //       feature.set("isOnRoute", lowestIds.includes(feature.get("siteid")));
+    //       if (lowestIds.includes(feature.get("siteid"))) console.log(feature);
+    //     });
+    //   });
+    stationLayer.getSource().changed();
     setRoutingState(false);
   };
+
+  useEffect(() => {
+    updateOnRouteStations();
+  }, [routes]);
+
+  UseSub("FuelTypeChange", (data) => {
+    console.log(data);
+    updateOnRouteStations();
+  });
 
   const getSitePrices = async ({ reload } = {}) => {
     if (!allStations || allStations.length <= 0) {
@@ -290,15 +375,15 @@ const PetrolMap = ({ fuelType, updateStations }) => {
       containsCoordinate(visibleBounds, [station.Lng, station.Lat])
     );
 
-    const stationIds = stationsInView.map((station) => station.SiteId);
+    const stationIds = stationsInView.map((station) => station.SiteID);
 
     const fuelPrices = await getFuelPrices(fuelType, stationIds);
 
     const index = Object.keys(fuelPrices);
     const filteredStations = stationsInView
       .map((station) => {
-        if (index.includes(`${station.SiteId}`)) {
-          station.Price = fuelPrices[`${station.SiteId}`];
+        if (index.includes(`${station.SiteID}`)) {
+          station.Price = fuelPrices[`${station.SiteID}`];
         }
 
         return station;
@@ -334,8 +419,9 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     if (clickMode == MODES.DEFAULT) {
       map.forEachFeatureAtPixel(event.pixel, (feature) => {
         if (feature.get("siteid") !== undefined) {
-          MapMoveTo({ coord: feature.getGeometry().getCoordinates() });
+          MapMoveTo({ coord: feature.get("coord") });
           selectSite(feature.get("siteid"));
+          console.log(feature.get("siteid"));
           return;
         }
 
@@ -381,6 +467,58 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     }
   };
 
+  const getAllStations = useRef(() => {});
+  useEffect(() => {
+    getAllStations.current = () => {
+      return stations;
+    };
+  }, [stations]);
+
+  const handleFilter = (data) => {
+    console.log("getting features within range");
+
+    const filterCenter = [data.center.Lat, data.center.Lng];
+    const filterDistance = data.distance;
+
+    // const circle = new Circle({
+    //   center: convertCoord(filterCenter),
+    //   radius: 20,
+    // });
+
+    // const centerFeature = new Feature({
+    //   geometry: circle,
+    // });
+
+    // console.log(customLayer);
+    // const source = statefulFilterLayer.getSource();
+    // if (source) {
+    //   source.clear();
+    //   source.addFeature(centerFeature);
+    //   console.log("source was dewfined");
+    //   console.log(source.getFeatures());
+    //   MapMoveTo({ coord: convertCoord(filterCenter) });
+    // } else {
+    //   console.log("source was undewfined");
+    // }
+
+    console.log(allStations, stations, getAllStations.current());
+    const filteredStations = allStations.map((feature) => {
+      const coord = transform(
+        [feature.Lng, feature.Lat],
+        "EPSG:3857",
+        "EPSG:4326"
+      );
+      const distance = getDistance(filterCenter, coord);
+      const withinRange = distance < filterDistance;
+      // console.log(filterCenter, coord, distance, withinRange);
+      feature.inRange = withinRange;
+      return feature;
+    });
+    setAllStations(filteredStations);
+  };
+
+  UseSub("UpdateDistanceFilter", handleFilter);
+
   const onInit = (map) => {
     const extent = map.getView().calculateExtent(map.getSize());
     setVisibleBounds(extent);
@@ -393,8 +531,8 @@ const PetrolMap = ({ fuelType, updateStations }) => {
     setVisibleBounds(extent);
   };
 
-  if (!stationLayer || !lowestLayer || !allStations || allStations.length <= 0)
-    return;
+  // if (!stationLayer || !lowestLayer || !allStations || allStations.length <= 0)
+  //   return;
 
   return (
     <div className={styles.PetrolMap}>

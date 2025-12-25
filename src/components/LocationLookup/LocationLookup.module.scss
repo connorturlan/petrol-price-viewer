@@ -1,0 +1,131 @@
+$elementSize: 48px;
+$padding: 12px;
+
+.LocationLookup {
+  &_Container {
+    display: flex;
+    flex-direction: column;
+    justify-self: start;
+    gap: 4px;
+    width: calc(100% - 16px);
+    max-width: 30em;
+  }
+
+  &_Search {
+    &_Container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      width: 100%;
+    }
+  }
+
+  &_Searchbar {
+    display: flex;
+    flex-direction: column;
+    justify-self: end;
+    gap: 4px;
+    width: calc(100% - 16px);
+    max-width: calc(48em - $padding * 2);
+    min-height: calc($elementSize - $padding * 2);
+    grid-column: 2;
+
+    // outline: 1px solid #333;
+    box-shadow: 0 0 2px #00000033, 0 -1px 0 #00000005;
+    border-radius: calc($elementSize / 2);
+    overflow: hidden;
+    padding: $padding;
+
+    background-color: #ffffffe0;
+
+    & * {
+      text-align: start;
+    }
+
+    & input {
+      font-size: 1.2em;
+      border: none;
+      background: none;
+      width: 100%;
+    }
+
+    & input:focus {
+      outline: none;
+    }
+
+    &_Focused {
+      z-index: 25;
+    }
+  }
+
+  &_Focusbar {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    position: relative;
+    &_Show,
+    &_Hide {
+      animation-duration: 0.2s;
+    }
+
+    &_Show {
+      animation-name: slide-in;
+      display: flex;
+      height: 100%;
+      z-index: 250;
+    }
+
+    &_Hide {
+      animation-name: slide-out;
+    }
+
+    &_Hidden {
+      opacity: 0;
+      display: none;
+    }
+  }
+
+  &_Iconbar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 4px;
+
+    &__Hidden {
+      display: none;
+    }
+  }
+
+  &_Icon {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 4px;
+
+    border: none;
+    // background-color: var(--background);
+    border-radius: 8px;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    height: 0%;
+  }
+  to {
+    opacity: 1;
+    height: 100%;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

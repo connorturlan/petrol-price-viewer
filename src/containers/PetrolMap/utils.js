@@ -51,13 +51,94 @@ export const updateLowestPrices = async (layer, stations, fuelType) => {
 
     return new Feature({
       geometry: point,
-      siteid: station.SiteId,
+      siteid: station.SiteID,
       name: station.Name,
       price: price || "loading...",
       placeid: station.GPI,
     });
   });
   source.addFeatures(features);
+};
+
+export const getLowestFeature = (features) => {
+  const lowestPrice = features.reduce(
+    (lowest, current) =>
+      lowest.get("price") < current.get("price") ? lowest : current,
+    features[0]
+  );
+
+  return lowestPrice;
+};
+
+export const getPriorityFeature = (features) => {
+  const lowestPrice = features.reduce(
+    (lowest, current) =>
+      !lowest.get("isOnRoute") && current.get("Price")
+        ? current
+        : lowest.get("price") < current.get("Price")
+        ? lowest
+        : current,
+    features[0]
+  );
+
+  return lowestPrice;
+};
+
+export const getLowestFeaturePrice = (features) => {
+  const prices = features.map((feature) => Number(feature.get("Price")));
+
+  const lowestPrice = prices.reduce(
+    (lowest, current) => Math.min(lowest, current),
+    prices[0]
+  );
+
+  return lowestPrice;
+};
+
+export const updateSourceWithLowestPrice = async (source) => {
+  const features = source.getFeatures();
+
+  features.forEach((feature) => {
+    feature.set("isLowest", false);
+  });
+
+  const lowestPrice = getLowestFeaturePrice(features);
+
+  features.forEach((feature) => {
+    feature.set("isLowest", feature.get("Price") <= lowestPrice);
+  });
+};
+
+export const updateStationsWithLowestPrice = async (layer) => {
+  const source = layer.getSource();
+
+  updateSourceWithLowestPrice(source);
+};
+
+const doTheThing = async (clusterSource, checkLowest = true) => {
+  if (!clusterSource) return;
+
+  const features = clusterSource.getFeatures();
+
+  features.forEach((feature) => {
+    const lowestFeature = getLowestFeature(feature.get("features"));
+    feature.set("coord", lowestFeature?.get("coord"));
+    feature.set("name", lowestFeature?.get("name"));
+    feature.set("price", lowestFeature?.get("price"));
+    feature.set("siteid", lowestFeature?.get("siteid"));
+    feature.set("brandid", lowestFeature?.get("brandid"));
+    feature.set("inRange", lowestFeature?.get("inRange"));
+  });
+
+  if (checkLowest) updateSourceWithLowestPrice(clusterSource);
+};
+
+export const updateClusterWithLowestPrice = async (clusterSource) => {
+  doTheThing(clusterSource);
+};
+
+export const updateClusterWithChargerCount = async (clusterSource) => {
+  doTheThing(clusterSource, false);
 };
 
 function lerp(a, b, t) {
@@ -177,7 +258,7 @@ export const setStationsOnRoute = (layer, onRoute) => {
 
     return new Feature({
       geometry: point,
-      siteid: site.SiteId,
+      siteid: site.SiteID,
       name: site.Name,
       price: price || "loading...",
       placeid: site.GPI,
@@ -190,7 +271,9 @@ export const setStationsOnRoute = (layer, onRoute) => {
 
   // show some of the lowest prices.
   const lowestPrices = features.sort((a, b) => a.get("price") - b.get("price"));
-  source.addFeatures(lowestPrices.slice(0, ROUTING_STATION_COUNT));
+  const lowestStations = lowestPrices.slice(0, ROUTING_STATION_COUNT);
+  // source.addFeatures(lowestStations);
+  return lowestStations;
 };
 
 export const setDebugBoundsForRoute = (layer, route) => {

@@ -2,13 +2,17 @@
 
 .PriceList {
   &_Body {
-    padding: 12px;
+    max-width: 400px;
+    margin: 8px;
+    // padding: 12px;
 
-    display: grid;
-    grid-template-rows: auto 1fr;
+    // display: grid;
+    // grid-template-rows: auto 1fr;
 
-    height: 100%;
-    padding: 0;
+    // height: 100%;
+    // padding: 0;
+    background: var(--background);
+    border-radius: 8px;
   }
 
   &_List {
@@ -18,6 +22,7 @@
     padding: 12px;
     max-height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     gap: 4px;
 
     border-radius: 4px;

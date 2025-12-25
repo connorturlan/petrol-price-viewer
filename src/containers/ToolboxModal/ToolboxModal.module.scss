@@ -2,7 +2,8 @@
 @use "../../styles/palette";
 @use "../Toolbox/Toolbox.module.scss";
 
-$ModalWidth: 300px;
+$ModalWidth: 100vw;
+$elementSize: 48px;
 
 .ToolboxModal {
   &_Container {
@@ -12,14 +13,16 @@ $ModalWidth: 300px;
     align-items: center;
 
     position: fixed;
-    height: 100vh;
+    bottom: 0;
+    height: fit-content;
+    max-height: 50vh;
+    height: 50vh;
     width: $ModalWidth;
-    max-width: calc(100vw - Toolbox.$ToolboxWidth);
-    // background-color: rgba(0, 0, 0, 0.4);
+    // max-width: calc(100vw - Toolbox.$ToolboxWidth);
 
     gap: 8px;
 
-    background-color: var(--background);
+    background-color: #f6f6f6a0;
     color: var(--text);
 
     grid-column-start: 3;
@@ -40,7 +43,7 @@ $ModalWidth: 300px;
 
     &__Show {
       animation-name: slide-in;
-      left: Toolbox.$ToolboxWidth;
+      left: 0;
     }
 
     &__Hide {
@@ -51,7 +54,10 @@ $ModalWidth: 300px;
   }
 
   &_Show,
-  &_Button {
+  &_Button,
+  &_Hamburger {
+    grid-column-start: 1;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -72,8 +78,27 @@ $ModalWidth: 300px;
     }
   }
 
+  &_Hamburger {
+    box-shadow: 0 0 2px #00000033, 0 -1px 0 #00000005;
+    border: none;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 4px;
+    width: $elementSize;
+    height: $elementSize;
+    justify-self: center;
+
+    background-color: white;
+
+    & img {
+      padding: 0;
+      margin: 0;
+      width: calc($elementSize - 8px);
+      height: calc($elementSize - 8px);
+    }
+  }
+
   &_Show {
-    background-color: var(--background);
     grid-column-start: 1;
   }
 
@@ -98,14 +123,14 @@ $ModalWidth: 300px;
     // margin-right: -$ModalWidth;
   }
   100% {
-    left: Toolbox.$ToolboxWidth;
+    left: 0;
     // margin-right: 0px;
   }
 }
 
 @keyframes slide-out {
   from {
-    left: Toolbox.$ToolboxWidth;
+    left: 0;
     margin-right: 0px;
   }
   to {

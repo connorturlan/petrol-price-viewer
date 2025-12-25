@@ -1,7 +1,7 @@
 import polyline from "polyline";
 import { convertCoordFromLatLon, ObjectIsEmpty } from "./utils";
 import { fromLonLat } from "ol/proj";
-import { PROJECTION } from "./defaults";
+import { PROJECTION, GEOCODING_API } from "./defaults";
 import { parseLocation } from "australia-address-parser";
 
 const ALTERNATIVES = true;
@@ -44,8 +44,6 @@ export async function getRoutesBetweenPoints(start, finish) {
   return routes;
 }
 
-const GEOCODING_API = `https://nominatim.openstreetmap.org/search`;
-
 export async function getCoordinatesOfAddress(address) {
   console.debug(`[ROUTING] getting geocoding result for ${address}.`);
 
@@ -84,6 +82,21 @@ export async function getCoordinatesOfAddress(address) {
   // );
   const res = await fetch(
     `${GEOCODING_API}?format=json&country=australia&${paramString}`
+  );
+  if (res.status != 200) {
+    console.warn(
+      `[ROUTING] unable to get data from geocoding service, code:${res.status} message:code:${res.statusText}`
+    );
+    return {};
+  }
+  return res.json();
+}
+
+export async function getCoordinatesWithAddressQuery(address) {
+  console.debug(`[ROUTING] getting geocoding result for ${address}.`);
+
+  const res = await fetch(
+    `${GEOCODING_API}?format=json&limit=40&q=${address}, australia`
   );
   if (res.status != 200) {
     console.warn(

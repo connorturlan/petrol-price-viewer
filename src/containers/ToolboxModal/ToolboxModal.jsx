@@ -26,19 +26,28 @@ const ToolboxModal = ({ children, summary }) => {
   };
 
   UseSub("ToolboxModalHide", (data) => {
+    console.log("hide!");
     if (data != refId) setVisible(false);
   });
 
   return (
     <>
       <button
-        className={`${styles.ToolboxModal_Show} ${
+        className={`${styles.ToolboxModal_Hamburger} ${
           visible ? styles.ToolboxModal_Visible : styles.ToolboxModal_Hidden
         }`}
         onClick={toggleModal}
       >
         {summary}
       </button>
+      {/* <button
+        className={`${styles.ToolboxModal_Show} ${
+          visible ? styles.ToolboxModal_Visible : styles.ToolboxModal_Hidden
+        }`}
+        onClick={toggleModal}
+      >
+        {summary}
+      </button> */}
       {containerVisible && (
         <div
           className={`${styles.ToolboxModal_Container} ${
@@ -56,7 +65,13 @@ const ToolboxModal = ({ children, summary }) => {
               setVisible(false);
             }}
           >
-            Hide
+            <img
+              src="close_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+              className={styles.Toolbox_Image}
+              alt="Hide"
+              srcSet=""
+              title="Hide"
+            />
           </button>
           {children}
         </div>

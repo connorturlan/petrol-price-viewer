@@ -51,11 +51,11 @@ const GraphModal = () => {
           <img
             src="monitoring_24dp_FILL0_wght400_GRAD0_opsz24.svg"
             className={styles.GraphModal_Image}
-            alt="Show"
+            alt="History"
             srcSet=""
             title="Show price history chart"
           />
-          <p>History</p>
+          {/* <p>History</p> */}
         </>
       }
     >
@@ -66,12 +66,7 @@ const GraphModal = () => {
         }}
       >
         <h2 className={styles.GraphModal_Title}>Historical Prices</h2>
-        <div
-          className={styles.GraphModal_List}
-          onClick={() => {
-            setVisible(false);
-          }}
-        >
+        <div className={styles.GraphModal_List}>
           <p>Cents per Litre</p>
           {data && data.datasets && (
             <>
@@ -119,6 +114,10 @@ const GraphModal = () => {
               />
             </>
           )}
+          <p>
+            Price data is an average of all stations within the greater Adelaide
+            metro region.
+          </p>
         </div>
       </div>
     </ToolboxModal>

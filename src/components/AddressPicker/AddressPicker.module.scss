@@ -1,0 +1,24 @@
+.AddressPicker {
+  overflow-y: auto;
+
+  &_Button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 8px;
+    z-index: 2;
+    background-color: var(--background);
+    border: none;
+    border-radius: 8px;
+
+    user-select: none;
+    cursor: pointer;
+    color: var(--text);
+
+    &:hover {
+      background: rgb(216, 216, 216);
+    }
+  }
+}

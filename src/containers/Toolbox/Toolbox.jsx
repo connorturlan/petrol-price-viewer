@@ -9,8 +9,8 @@ const Toolbox = ({ children }) => {
 
   const handleHide = () => {
     setVisibility(false);
-    const hideModals = usePub();
-    hideModals("ToolboxModalHide");
+    const publisher = usePub();
+    publisher("ToolboxModalHide");
   };
 
   return (
@@ -26,8 +26,11 @@ const Toolbox = ({ children }) => {
         }}
         hidden={!showContainer}
       >
-        <button className={styles.Toolbox_Hide} onClick={handleHide}>
-          <svg
+        <button
+          className={styles.Toolbox_Hide + " " + styles.Toolbox_Hamburger}
+          onClick={handleHide}
+        >
+          {/* <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
             viewBox="0 -960 960 960"
@@ -35,20 +38,27 @@ const Toolbox = ({ children }) => {
             fill="#000000"
           >
             <path d="M440-280v-400L240-480l200 200Zm80 160h80v-720h-80v720Z" />
-          </svg>
+          </svg> */}
+          <img
+            src="close_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+            className={styles.Toolbox_Image}
+            alt="Hide"
+            srcSet=""
+            title="Hide"
+          />
         </button>
         <br />
         {children}
       </div>
       {!shown && (
         <button
-          className={styles.Toolbox_Show}
+          className={styles.Toolbox_Show + " " + styles.Toolbox_Hamburger}
           onClick={() => {
             setVisibility(true);
             setContainerVisibility(true);
           }}
         >
-          <svg
+          {/* <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
             viewBox="0 -960 960 960"
@@ -56,7 +66,14 @@ const Toolbox = ({ children }) => {
             fill="#000000"
           >
             <path d="M360-120v-720h80v720h-80Zm160-160v-400l200 200-200 200Z" />
-          </svg>
+          </svg> */}
+          <img
+            src="menu_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+            className={styles.Toolbox_Image}
+            alt="Show"
+            srcSet=""
+            title="Show"
+          />
         </button>
       )}
       {/* {showContainer ? (

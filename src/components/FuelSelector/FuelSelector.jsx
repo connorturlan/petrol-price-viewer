@@ -8,6 +8,7 @@ import { usePub } from "../../utils/pubsub";
 
 const FuelSelector = () => {
   const { fuelType, setFuelType } = useContext(AppContext);
+  const publisher = usePub();
 
   const handleFuelDropdownChange = (event) => {
     setFuelType(event.target.value);
@@ -19,8 +20,7 @@ const FuelSelector = () => {
   const handleFuelChange = (fuelId) => {
     setFuelType(fuelId);
 
-    // const hideModals = usePub();
-    // hideModals("ToolboxModalHide");
+    publisher("FuelTypeChange", null);
   };
 
   return (
@@ -30,11 +30,11 @@ const FuelSelector = () => {
           <img
             src="local_gas_station_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
             className={styles.FuelSelector_Image}
-            alt="Show"
+            alt="Fuel"
             srcSet=""
             title="Show fuel type planner"
           />
-          <p>Fuel</p>
+          {/* <p>Fuel</p> */}
         </>
       }
     >
@@ -46,7 +46,7 @@ const FuelSelector = () => {
       >
         <h2 className={styles.FuelSelector_Title}>Fuel Type</h2>
         <h3>Petrol</h3>
-        <div className={styles.FuelSelector_List}>
+        <div className={styles.FuelSelector_Grid}>
           {fueltypes["Fuels"]
             .filter((t) => t.FuelId < 10000)
             .map((t) => {
@@ -56,16 +56,20 @@ const FuelSelector = () => {
                   className={`${styles.FuelSelector_Selector} ${
                     t.FuelId == fuelType ? styles.FuelSelector__Selected : ""
                   }`}
-                  style={{ color: t.Color || "black" }}
+                  style={{
+                    color: t.Color || "black",
+                    borderColor: t.FuelId == fuelType && t.Color,
+                  }}
                   onClick={() => handleFuelChange(t.FuelId)}
                 >
-                  {t.Name}
+                  <img src="local_gas_station_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
+                  <p>{t.Name}</p>
                 </button>
               );
             })}
         </div>
         <h3>Electic</h3>
-        <div className={styles.FuelSelector_List}>
+        <div className={styles.FuelSelector_Grid}>
           {fueltypes["Fuels"]
             .filter((t) => t.FuelId >= 10000)
             .map((t) => {
@@ -78,7 +82,8 @@ const FuelSelector = () => {
                   style={{ color: t.Color || "black" }}
                   onClick={() => handleFuelChange(t.FuelId)}
                 >
-                  {t.Name}
+                  <img src="ev_station_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg" />
+                  <p>{t.Name}</p>
                 </button>
               );
             })}

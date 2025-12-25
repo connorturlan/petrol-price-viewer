@@ -2,9 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import styles from "./StationModal.module.scss";
 import { AppContext } from "../../contexts/AppContext";
 import { ENDPOINT } from "../../utils/defaults";
-import { ObjectIsEmpty } from "../../utils/utils";
+import { getImageFromStationBrandId, ObjectIsEmpty } from "../../utils/utils";
 import { getFuelTypeName } from "../../utils/fueltypes";
 import LoadingSplash from "../LoadingSplash/LoadingSplash";
+import { formatFuelPrice } from "../../containers/TestPetrolMap/utils";
 
 function StationModal() {
   const { siteId, unselectSite, fuelType } = useContext(AppContext);
@@ -41,7 +42,7 @@ function StationModal() {
       return (
         <div className={className} key={record.FuelId}>
           <p>{getFuelTypeName(record.FuelId)}</p>
-          <p>{((record.Price || 0) / 10).toFixed(1)}</p>
+          <p>{formatFuelPrice(record.FuelId, record.Price)}</p>
         </div>
       );
     });
@@ -61,6 +62,7 @@ function StationModal() {
 
   const date = new Date(siteDetails.LastUpdated);
   const datestring = `${date.toLocaleString()}`;
+  const imageSrc = getImageFromStationBrandId(siteDetails.BrandID);
 
   return ObjectIsEmpty(siteDetails) ? (
     <LoadingSplash />
@@ -75,12 +77,19 @@ function StationModal() {
         <button onClick={hideModal}>X</button>
         <div className={styles.StationModal_Container}>
           <div className={styles.StationModal_Title}>
+            <img src={imageSrc} alt="" srcset="" />
             <h2>{siteDetails.Name}</h2>
           </div>
           <div className={styles.StationModal_Prices}>{getSitePrices()}</div>
           <p></p>
           <a
-            href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
+            // href={`https://www.google.com/maps/place/?q=place_id:${siteDetails.GPI}`}
+            // href={`https://www.google.com/maps/place/?q=place_id:${encodeURI(
+            //   siteDetails.Name
+            // )}`}
+            href={`https://www.google.com/maps/search/?api=1&query_place_id=${encodeURI(
+              siteDetails.GPI
+            )}&query=${siteDetails.Lat},${siteDetails.Lng}`}
             target="_blank"
             className={styles.StationModal_Maps}
           >
@@ -90,7 +99,25 @@ function StationModal() {
               srcSet=""
               title="Navigate"
             />
-            <p>Open Maps</p>
+            <p>Open using Google Maps</p>
+          </a>
+          <a
+            // href={`https://maps.apple.com/search?map=transit&coordinate=${
+            //   siteDetails.Lat
+            // },${siteDetails.Lng}&query=${encodeURI(siteDetails.Name)}`}
+            href={`https://maps.apple.com/search?map=transit&coordinate=${
+              siteDetails.Lat
+            },${siteDetails.Lng}&query=${encodeURI(siteDetails.Name)}`}
+            target="_blank"
+            className={styles.StationModal_Maps}
+          >
+            <img
+              src="explore_24dp_FILL0_wght400_GRAD0_opsz24.svg"
+              alt="Navigate"
+              srcSet=""
+              title="Navigate"
+            />
+            <p>Open using Apple Maps</p>
           </a>
           <p>Last updated: {datestring || "Date Error"}</p>
         </div>
