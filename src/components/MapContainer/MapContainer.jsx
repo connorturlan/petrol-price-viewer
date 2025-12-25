@@ -12,6 +12,7 @@ import { convertCoord, ObjectIsEmpty } from "../../utils/utils";
 import Style from "ol/style/Style";
 import { UseSub } from "../../utils/pubsub";
 import { duration } from "@mui/material";
+import OLCesium from "olcs";
 
 // https://gist.github.com/bokub/dd85ffe1368bb10396f871111dff7201 - free map tiles
 const lightMapLayers = [
@@ -132,6 +133,9 @@ const MapContainer = ({
     setMap(initialMap);
     mapRef.current = initialMap;
     onInit && onInit(initialMap);
+
+    const ol3d = new OLCesium({ map: initialMap });
+    ol3d.setEnabled(true);
   }, []);
 
   useEffect(() => {
