@@ -20,8 +20,8 @@ const lightMapLayers = [
   "https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}.png",
   "https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png",
   "http://c.tile.opentopomap.org/{z}/{x}/{y}.png",
-  "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-  "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
+  "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png?key=cb1_471l_1_bd322860092d87e8acc34ada",
+  "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png?key=cb1_471l_1_bd322860092d87e8acc34ada",
 ];
 
 const mapLayer = new TileLayer({
